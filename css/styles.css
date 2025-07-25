@@ -12,6 +12,7 @@ body {
     text-align: center;
     padding-top: 80px; /* espacio para nav fija */
 }
+
 .contenedor-header {
     max-width: 700px;
     margin: auto;
@@ -29,7 +30,7 @@ body {
     top: 0;
     width: 100%;
     background-color: #2F2F2F;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
 }
 
@@ -72,7 +73,7 @@ html {
     background: white;
     padding: 25px;
     border-radius: 8px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
     transition: transform 0.3s ease;
 }
 
@@ -96,7 +97,6 @@ html {
     margin: 10px auto 0;
     border-radius: 2px;
 }
-
 
 
 .servicio h3 {
@@ -171,7 +171,7 @@ html {
     width: 250px;
     height: auto;
     object-fit: contain;
-   /* filter: grayscale(100%); */
+    /* filter: grayscale(100%); */
     transition: transform 0.3s ease;
 }
 
@@ -181,8 +181,13 @@ html {
 }
 
 @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); } /* Desplaza la mitad si duplicaste imágenes */
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+    /* Desplaza la mitad si duplicaste imágenes */
 }
 
 form {
@@ -292,6 +297,7 @@ form button:hover {
     height: 50px;
     z-index: 1000;
 }
+
 .whatsapp-icon img {
     width: 100%;
     height: auto;
@@ -299,16 +305,32 @@ form button:hover {
 
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 .whatsapp-icon img {
     animation: bounce 1.5s infinite;
 }
+
 .whatsapp-icon {
     display: none;
     position: fixed;
     bottom: 20px;
     right: 20px;
+}
+
+.footer-horarios {
+    margin-top: 20px;
+    font-size: 0.9em;
+    color: #ffffff;
+}
+
+.footer-horarios h4 {
+    margin-bottom: 5px;
+    color: #75BD06;
 }
