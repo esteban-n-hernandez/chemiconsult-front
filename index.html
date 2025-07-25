@@ -20,24 +20,49 @@
 
         icono.style.display = estaVisible ? "block" : "none";
     });
-</script>
 
+    document.addEventListener("DOMContentLoaded", function() {
+        const sections = [
+            document.getElementById("servicios"),
+            document.getElementById("clientes"),
+            document.getElementById("contacto")
+        ].filter(Boolean);
+
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add("visible");
+                        observer.unobserve(entry.target);
+                    }
+                });
+            },
+            { threshold: 0.2 }
+        );
+
+        sections.forEach(section => observer.observe(section));
+    });
+</script>
 
 <header id="inicio">
     <div class="contenedor-header">
-        <img src="img/Logo%20transparente.png" height="355" width="703" alt="CHEMI CONSULT logo">
+        <img id="imginicio" src="img/Logo%20transparente.png" alt="CHEMI CONSULT logo">
         <!--h1>CHEMICONSULT</h1-->
         <p>Más de 35 años de experiencia en análisis químico y consultoría ambiental.</p>
     </div>
 </header>
 
 <nav class="navbar">
-    <ul>
-        <li><a href="#inicio">Inicio</a></li>
-        <li><a href="#servicios">Servicios</a></li>
-        <li><a href="#clientes">Clientes</a></li>
-        <li><a href="#contacto">Contacto</a></li>
-    </ul>
+    <div class="navbar-fondo">
+        <div class="navbar-contenido">
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#servicios">Servicios</a></li>
+                <li><a href="#clientes">Clientes</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </div>
 </nav>
 
 <section id="servicios">
@@ -138,10 +163,10 @@
         <p><strong>Tel:</strong> +54 11 4444-4444</p>
     </div>
 </section>
-<footer class="footer">
+<footer class="footer full-width">
     <div class="container">
         <div class="footer-logo">
-            <img src="logo.png" alt="Logo de la empresa">
+            <img src="img/logo-ch.png" alt="Logo de la empresa">
         </div>
         <div class="footer-links">
             <a href="#inicio">Inicio</a>

@@ -1,5 +1,6 @@
-body {
-    background: linear-gradient(to bottom, #e1f8e6, #ffffff);
+html, body {
+    margin: 0;
+    padding: 0;
 }
 
 /* Header */
@@ -29,6 +30,8 @@ h2 {
 }
 
 /* Navbar */
+
+
 .navbar {
     position: fixed;
     top: 0;
@@ -74,7 +77,6 @@ html {
 }
 
 .servicio {
-    background: white;
     padding: 25px;
     border-radius: 8px;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -89,7 +91,29 @@ html {
 #clientes h2 {
     text-align: center;
 }
+#servicios {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
 
+#servicios.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+#clientes,
+#contacto {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+#clientes.visible,
+#contacto.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 .servicios h2::after,
 .clientes h2::after {
@@ -97,7 +121,6 @@ html {
     display: block;
     width: 60px;
     height: 3px;
-    background-color: #00aaff;
     margin: 10px auto 0;
     border-radius: 2px;
 }
@@ -343,4 +366,15 @@ form button:hover {
     text-align: center;
     margin: 0 auto;
     max-width: 700px;
+}
+
+.full-width {
+    width: 100vw;
+    position: relative;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
+    padding: 0;
+    box-sizing: border-box;
 }
