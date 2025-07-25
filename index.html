@@ -8,6 +8,21 @@
 </head>
 <body>
 
+<script>
+    document.addEventListener("scroll", function () {
+        const contacto = document.getElementById("contacto");
+        const icono = document.querySelector(".whatsapp-icon");
+
+        if (!contacto || !icono) return;
+
+        const rect = contacto.getBoundingClientRect();
+        const estaVisible = rect.top <= window.innerHeight && rect.bottom >= 0;
+
+        icono.style.display = estaVisible ? "block" : "none";
+    });
+</script>
+
+
 <header id="inicio">
     <div class="contenedor-header">
         <img src="img/Logo%20transparente.png" height="355" width="703" alt="CHEMI CONSULT logo">
@@ -105,10 +120,13 @@
         <button type="submit">Enviar mensaje</button>
     </form>
 
+    <a href="https://wa.me/5491158692422" target="_blank" class="whatsapp-icon">
+        <img src="https://img.icons8.com/?size=100&id=BkugfgmBwtEI&format=png&color=000000" alt="WhatsApp" style="width:60px; height:60px;">
+    </a>
+
     <div class="datos-contacto">
-        <p><strong>Email:</strong> contacto@chemiconsult.com.ar</p>
+        <p><strong>Email:</strong>contacto@chemiconsult.com.ar</p>
         <p><strong>Tel:</strong> +54 11 4444-4444</p>
-        <a href="https://wa.me/5491158692422" target="_blank" class="boton">Enviar mensaje por WhatsApp</a>
     </div>
 </section>
 <footer class="footer">
