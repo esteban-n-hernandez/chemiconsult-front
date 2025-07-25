@@ -86,7 +86,7 @@ h2 {
 
 #mision-vision h2 {
     margin-bottom: 30px;
-    color: var(--color-azul-profesional);
+    color: var(--color-gris-oscuro);
 }
 
 #mision-vision p {
@@ -124,6 +124,7 @@ h2 {
   transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
+#mision-vision.visible,
 #servicios.visible,
 #clientes.visible,
 #contacto.visible {
