@@ -94,6 +94,31 @@ h2 {
     color: var(--color-gris-oscuro);
 }
 
+#mision-vision .servicio {
+  max-width: 400px;
+  height: auto;
+  min-height: 280px;
+  margin: auto;
+  padding: 25px;
+  border-radius: 8px;
+  background-color: var(--color-blanco);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease;
+}
+
+#mision-vision .servicio {
+  aspect-ratio: 1 / 1;
+}
+
+#mision-vision {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+#mision-vision.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 
 /* Secciones */
