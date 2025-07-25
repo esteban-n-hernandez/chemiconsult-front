@@ -8,44 +8,124 @@
 </head>
 <body>
 
-<!-- Sección: Inicio / Hero -->
-<section id="inicio" class="seccion">
-    <img src="img/logo-ch.png" height="138" width="320" alt="chemi logo">
-    <p>Más de 40 años en análisis químico, ambiental y seguridad alimentaria</p>
-    <a href="#servicios" class="boton">Ver servicios</a>
-</section>
+<header id="inicio">
+    <div class="contenedor-header">
+        <img src="img/logo-ch.png" height="138" width="320" alt="CHEMI CONSULT logo">
+        <h1>CHEMICONSULT</h1>
+        <p>Más de 35 años de experiencia en análisis químico y consultoría ambiental.</p>
+        <a href="#servicios" class="boton">Ver servicios</a>
+    </div>
+</header>
 
-<!-- Sección: Servicios -->
+<nav class="navbar">
+    <ul>
+        <li><a href="#inicio">Inicio</a></li>
+        <li><a href="#servicios">Servicios</a></li>
+        <li><a href="#clientes">Clientes</a></li>
+        <li><a href="#contacto">Contacto</a></li>
+    </ul>
+</nav>
+
 <section id="servicios" class="seccion">
     <h2>Servicios</h2>
-    <div class="tarjetas">
-        <div class="tarjeta">
+    <div class="grupo-servicios">
+        <div class="servicio">
             <h3>Seguridad Alimentaria</h3>
-            <p>Hisopados, análisis microbiológicos, cumplimiento de normas SENASA...</p>
+            <ul>
+                <li>Hisopados de superficies</li>
+                <li>Análisis microbiológicos</li>
+                <li>Cumplimiento de normas SENASA</li>
+            </ul>
         </div>
-        <div class="tarjeta">
+        <div class="servicio">
             <h3>Control de Calidad</h3>
-            <p>Análisis físico-químicos de agua potable y efluentes.</p>
+            <ul>
+                <li>Análisis físico-químicos de agua potable</li>
+                <li>Efluentes y materias primas</li>
+                <li>Criterios normativos</li>
+            </ul>
+        </div>
+        <div class="servicio">
+            <h3>Consultoría Ambiental</h3>
+            <ul>
+                <li>Evaluaciones de impacto ambiental</li>
+                <li>Monitoreo de contaminantes</li>
+                <li>Gestión bajo legislación vigente</li>
+            </ul>
+        </div>
+        <div class="servicio">
+            <h3>Gestión Laboral</h3>
+            <ul>
+                <li>Mediciones en ambiente laboral</li>
+                <li>Ruido, gases y polvos</li>
+                <li>Informes técnicos regulatorios</li>
+            </ul>
         </div>
     </div>
 </section>
 
-<!-- Sección: Clientes -->
 <section id="clientes" class="seccion">
     <h2>Clientes</h2>
-    <p>Más de 300 empresas confían en nosotros</p>
+    <p class="texto-destacado">Más de 300 empresas confían en nuestra experiencia para garantizar la calidad y el
+        cumplimiento normativo.</p>
+
+    <div class="carrusel-clientes">
+        <div class="cinta">
+            <img src="img/FEMSA%20LOgo.png" alt="Empresa 1" title="Empresa 1">
+            <img src="img/club%20nautico%20san%20isidro%20logo.png" alt="Empresa 2" title="Empresa 2">
+            <img src="img/ariston%20logo.png" alt="Empresa 3" title="Empresa 3">
+            <img src="img/marinas%20golf%20logo.png" alt="Empresa 4" title="Empresa 4">
+            <img src="img/fortbenton.png" alt="Empresa 5" title="Empresa 5">
+            <img src="img/artesaniasavicoalslogo.png" alt="Empresa 6" title="Empresa 6">
+            <img src="img/dropur%20logo.png" alt="Empresa 7" title="Empresa 7">
+            <img src="img/avery%20logo.png" alt="Empresa 8" title="Empresa 8">
+            <img src="img/comisino%20energia%20logo.png" alt="Empresa 3" title="Empresa 9">
+            <img src="img/maprimed.png" alt="Empresa 10" title="Empresa 10">
+            <img src="img/arcor.png" alt="Empresa 11" title="Empresa 11">
+            <img src="img/agristr%20logo.png" alt="Empresa 11" title="Empresa 11">
+            <img src="img/maprimed.png" alt="Empresa 11" title="Empresa 11">
+            <img src="img/utnlogo.png" alt="Empresa 11" title="Empresa 11">
+        </div>
+    </div>
 </section>
 
-<!-- Sección: Contacto -->
 <section id="contacto" class="seccion">
     <h2>Contacto</h2>
-    <form>
-        <input type="text" placeholder="Nombre" required>
-        <input type="email" placeholder="Correo electrónico" required>
-        <textarea placeholder="Escribí tu mensaje..." required></textarea>
-        <button type="submit">Enviar</button>
+    <p>¿Querés que te ayudemos con tu consulta? Completá el siguiente formulario y nos comunicaremos a la brevedad.</p>
+
+    <form id="form-contacto">
+        <input type="text" name="nombre" placeholder="Nombre completo" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,}"
+               title="Ingresá tu nombre completo">
+
+        <input type="email" name="email" placeholder="Correo electrónico" required>
+
+        <input type="tel" name="telefono" placeholder="Teléfono (opcional)">
+
+        <textarea name="mensaje" rows="5" placeholder="Escribí tu mensaje..." required></textarea>
+
+        <button type="submit">Enviar mensaje</button>
     </form>
+
+    <div class="datos-contacto">
+        <p><strong>Email:</strong> contacto@chemiconsult.com.ar</p>
+        <p><strong>Tel:</strong> +54 11 4444-4444</p>
+        <a href="https://wa.me/5491158692422" target="_blank" class="boton">Enviar mensaje por WhatsApp</a>
+    </div>
 </section>
+
+<div class="mapa-contacto">
+    <h3>Encontranos aquí</h3>
+    <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!..."
+            width="100%"
+            height="300"
+            style="border:0;"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+    </iframe>
+</div>
+
 
 </body>
 </html>

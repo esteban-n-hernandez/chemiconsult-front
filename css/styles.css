@@ -1,81 +1,212 @@
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* Header */
+#inicio {
+    background-color: #F0FFF5;
+    color: black;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding-top: 80px; /* espacio para nav fija */
+}
+.contenedor-header {
+    max-width: 700px;
+    margin: auto;
 }
 
-/* Estilo general */
-body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    background-color: #f4f4f4;
+#inicio h1 {
+    font-size: 2.5em;
+    margin: 20px 0;
+    color: #005fab;
+}
+
+/* Navbar */
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    background-color: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    z-index: 100;
+}
+
+.navbar ul {
+    display: flex;
+    justify-content: center;
+    list-style: none;
+    padding: 10px 0;
+    margin: 0;
+}
+
+.navbar li {
+    margin: 0 15px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: #005fab;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+    color: #003f7d;
+}
+
+/* Scroll suave */
+html {
+    scroll-behavior: smooth;
+}
+
+.grupo-servicios {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 40px;
+}
+
+.servicio {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.3s ease;
+}
+
+.servicio:hover {
+    transform: scale(1.03);
+}
+
+.servicio h3 {
+    color: #005fab;
+    margin-bottom: 15px;
+}
+
+.servicio ul {
+    list-style-type: disc;
+    padding-left: 20px;
+    text-align: left;
     color: #333;
 }
 
-/* Secciones */
-.seccion {
-    padding: 60px 20px;
-    text-align: center;
+.servicio ul li {
+    margin-bottom: 8px;
 }
 
-#inicio {
-    background-color: #F0FFF5;
-    color: white;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;  /* centra verticalmente */
-    align-items: center;      /* centra horizontalmente */
-    text-align: center;       /* centra el texto */
-    padding: 20px;
-}
-.boton {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background: #005fab;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
+.texto-destacado {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    color: #005fab;
 }
 
-.tarjetas {
+.clientes-grid {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     gap: 20px;
-    flex-wrap: wrap;
     margin-top: 30px;
 }
 
-.tarjeta {
-    background: white;
-    padding: 20px;
-    border-radius: 8px;
+.clientes-grid img {
+    width: 120px;
+    height: auto;
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.clientes-grid img:hover {
+    transform: scale(1.1);
+}
+
+/* Sectores */
+.sectores {
+    margin-top: 20px;
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    font-style: italic;
+    color: #555;
+}
+
+
+.carrusel-clientes {
+    overflow: hidden;
+    width: 100%;
+    padding: 20px 0;
+}
+
+.cinta {
+    display: flex;
+    width: calc(250px * 20); /* ancho fijo estimado para 20 imágenes */
+    animation: scroll 30s linear infinite;
+    gap: 40px;
+}
+
+.cinta img {
     width: 250px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(100%);
+    transition: transform 0.3s ease;
+}
+
+.cinta img:hover {
+    filter: none;
+    transform: scale(1.1);
+}
+
+@keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); } /* Desplaza la mitad si duplicaste imágenes */
 }
 
 form {
     display: flex;
     flex-direction: column;
-    max-width: 400px;
+    gap: 12px;
+    max-width: 450px;
     margin: auto;
+    text-align: left;
 }
 
 form input,
 form textarea {
-    margin: 10px 0;
-    padding: 10px;
-    border: 1px solid #ccc;
+    padding: 12px;
     border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1em;
 }
 
 form button {
-    background: #005fab;
+    background-color: #005fab;
     color: white;
     border: none;
-    padding: 10px;
+    padding: 12px;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+form button:hover {
+    background-color: #003f7d;
+}
+
+/* Estilo complementario */
+.datos-contacto {
+    margin-top: 30px;
+    font-size: 1em;
+    text-align: center;
+}
+
+.mapa-contacto {
+    margin-top: 40px;
+    text-align: center;
+}
+
+.mapa-contacto h3 {
+    margin-bottom: 15px;
+    color: #005fab;
 }
