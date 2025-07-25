@@ -77,6 +77,23 @@ h2 {
   color: var(--color-verde-hover);
 }
 
+#mision-vision {
+    background-color: #f9f9f9;
+    padding: 60px 20px;
+}
+
+#mision-vision h2 {
+    margin-bottom: 30px;
+    color: var(--color-azul-profesional);
+}
+
+#mision-vision p {
+    font-size: 1.1em;
+    color: var(--color-gris-oscuro);
+}
+
+
+
 /* Secciones */
 .grupo-servicios {
   display: grid;
