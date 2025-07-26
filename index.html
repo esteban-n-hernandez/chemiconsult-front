@@ -237,9 +237,15 @@
         <form id="form-contacto" action="https://formsubmit.co/estebanh34@gmail.com" method="POST">
             <input type="text" name="nombre" placeholder="Nombre completo" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,}"
                    title="Ingresá tu nombre completo">
-            <input type="email" name="email" placeholder="Correo electrónico" required>
-            <input type="tel" name="telefono" placeholder="Teléfono (opcional)">
-            <textarea name="mensaje" rows="5" placeholder="Escribí tu mensaje..." required></textarea>
+            <label>
+                <input type="email" name="email" placeholder="Correo electrónico" required>
+            </label>
+            <label>
+                <input type="tel" name="telefono" placeholder="Teléfono (opcional)">
+            </label>
+            <label>
+                <textarea name="mensaje" rows="5" placeholder="Escribí tu mensaje..." required></textarea>
+            </label>
             <button type="submit">Enviar mensaje</button>
         </form>
         <div class="datos-contacto">
