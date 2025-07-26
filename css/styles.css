@@ -545,13 +545,13 @@
 
 @media (max-width: 600px) {
     #imginicio {
-        width: 200px;
+        width: 400px;
         height: auto;
     }
 }
 @media (max-width: 430px) {
     #imginicio {
-        width: 110px;
+        width: 250px;
         height: auto;
     }
 }
@@ -578,13 +578,12 @@
     transition: 0.3s;
 }
 
-/* Show hamburger on mobile */
 @media (max-width: 600px) {
-    .navbar-toggle {
-        display: block;
-    }
     .navbar ul {
         display: none;
+    }
+    .navbar.active ul {
+        display: flex;
         flex-direction: column;
         background: #fff;
         position: absolute;
@@ -594,7 +593,23 @@
         box-shadow: 0 2px 12px rgba(0,0,0,0.08);
         padding: 10px 0;
     }
-    .navbar.active ul {
-        display: flex;
+}
+
+/* Remove hamburger button styles */
+.navbar-toggle {
+    display: none !important;
+}
+
+/* Hide navbar on mobile */
+@media (max-width: 600px) {
+    .navbar {
+        display: none !important;
+    }
+}
+
+/* Show navbar on desktop */
+@media (min-width: 601px) {
+    .navbar {
+        display: block !important;
     }
 }
