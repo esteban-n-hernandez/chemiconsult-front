@@ -613,3 +613,13 @@
         display: block !important;
     }
 }
+
+@media (max-width: 600px) {
+    #inicio {
+        min-height: 60vh;
+        padding-top: 30px;
+    }
+    #inicio .contenedor-header img {
+        width: 220px;
+    }
+}
