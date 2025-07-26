@@ -1,5 +1,5 @@
 :root {
-        --color-verde-principal: #75BD06;
+        --color-verde-principal: rgba(117, 189, 6, 0.78);
         --color-verde-hover: #5EA504;
         --color-negro: #000000;
         --color-gris-oscuro: #2F2F2F;
@@ -98,15 +98,13 @@
         left: 50%;
         transform: translateX(-50%);
         padding: 8px 0;
-        background: #fff;
+        background: var(--color-gris-oscuro);
         border-radius: 20px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         margin: 0;
     }
 
     .navbar.navbar-small a {
-        color: #fff;
-        background-color: var(--color-verde-principal);
         border-radius: 8px;
         padding: 6px 14px;
         transition: background-color 0.3s, color 0.3s;
