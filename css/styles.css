@@ -13,7 +13,6 @@
         margin: 0;
         padding: 0;
         font-family: 'Roboto', Arial, sans-serif;
-        background-color: var(--color-blanco);
         color: var(--color-negro);
         scroll-behavior: smooth;
     }
@@ -39,7 +38,6 @@
     .texto-destacado {
         font-size: 1.2em;
         margin-bottom: 20px;
-        color: var(--color-verde-principal);
     }
 
     /* Header */
@@ -93,12 +91,13 @@
     }
 
     .navbar.navbar-small {
+        top: 5px; /* Moves it 20px from the top */
         width: 80vw;
         max-width: 900px;
         left: 50%;
         transform: translateX(-50%);
         padding: 8px 0;
-        background: var(--color-gris-oscuro);
+        background-color: #1a1a1a;
         border-radius: 20px;
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         margin: 0;
@@ -131,17 +130,6 @@
 
     .navbar a:hover {
         color: var(--color-verde-hover);
-    }
-
-    /* Section backgrounds */
-    #mision-vision,
-    #clientes {
-        background-color: #f9f9f9;
-    }
-
-    #servicios,
-    #contacto {
-        background-color: var(--color-blanco);
     }
 
     /* Section transitions */
@@ -620,4 +608,25 @@
     #inicio .contenedor-header img {
         width: 220px;
     }
+}
+
+
+.btn-grad {background-image: linear-gradient(to right, #232526 0%, #414345  51%, #232526  100%)}
+.btn-grad {
+    margin: 10px;
+    padding: 15px 45px;
+    text-align: center;
+    text-transform: uppercase;
+    transition: 0.5s;
+    background-size: 200% auto;
+    color: white;
+    box-shadow: 0 0 20px #eee;
+    border-radius: 10px;
+    display: block;
+}
+
+.btn-grad:hover {
+    background-position: right center; /* change the direction of the change here */
+    color: #fff;
+    text-decoration: none;
 }
