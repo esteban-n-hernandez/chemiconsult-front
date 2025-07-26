@@ -102,11 +102,20 @@ p {
     left: 50%;
     transform: translateX(-50%);
     padding: 8px 0;
+    background: white ;
     border-radius: 20px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     position: fixed;
     top: 0;
     margin: 0;
+}
+
+.navbar.navbar-small a {
+    color: white;
+    background-color: #75BD06;
+    border-radius: 8px;
+    padding: 6px 14px;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 .navbar ul {
