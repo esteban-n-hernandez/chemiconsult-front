@@ -9,6 +9,48 @@
 <body>
 
 <script>
+    // Add to your <script> in index.html
+    document.addEventListener("DOMContentLoaded", function () {
+        const header = document.getElementById("inicio");
+        setTimeout(() => {
+            header.classList.add("visible");
+        }, 200); // slight delay for effect
+    });
+
+    // Typewriter effect for header <p>
+    document.addEventListener("DOMContentLoaded", function () {
+        const header = document.getElementById("inicio");
+        setTimeout(() => {
+            header.classList.add("visible");
+            // Typewriter effect
+            const p = header.querySelector(".contenedor-header p");
+            const text = p.textContent;
+            p.textContent = "";
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    p.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, 40); // speed of typing
+                }
+            }
+
+            setTimeout(type, 400); // delay after fade-in
+        }, 200);
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const navbar = document.querySelector(".navbar");
+        window.addEventListener("scroll", function () {
+            if (window.scrollY >= 300) {
+                navbar.classList.add("navbar-small");
+            } else {
+                navbar.classList.remove("navbar-small");
+            }
+        });
+    });
+
     document.addEventListener("scroll", function () {
         const contacto = document.getElementById("contacto");
         const icono = document.querySelector(".whatsapp-icon");
@@ -65,14 +107,16 @@
 </nav>
 
 <section id="mision-vision" class="grupo-servicios">
-  <div class="servicio">
-    <h3>Misión</h3>
-    <p>Brindar servicios de análisis químico y consultoría ambiental con los más altos estándares de calidad, ética profesional y compromiso con el desarrollo sostenible.</p>
-  </div>
-  <div class="servicio">
-    <h3>Visión</h3>
-    <p>Ser referentes en soluciones integrales para el control ambiental y alimentario, impulsando la innovación, la mejora continua y la responsabilidad empresarial en Latinoamérica.</p>
-  </div>
+    <div class="servicio">
+        <h3>Misión</h3>
+        <p>Brindar servicios de análisis químico y consultoría ambiental con los más altos estándares de calidad, ética
+            profesional y compromiso con el desarrollo sostenible.</p>
+    </div>
+    <div class="servicio">
+        <h3>Visión</h3>
+        <p>Ser referentes en soluciones integrales para el control ambiental y alimentario, impulsando la innovación, la
+            mejora continua y la responsabilidad empresarial en Latinoamérica.</p>
+    </div>
 </section>
 
 
@@ -114,7 +158,10 @@
     </div>
 </section>
 
+<br>
+
 <section id="clientes">
+    <br>
     <h2>Clientes</h2>
     <p class="texto-centrado texto-destacado">Más de 300 empresas confían en nuestra experiencia para garantizar la
         calidad y el cumplimiento normativo.</p>
@@ -146,21 +193,16 @@
     </div>
 </section>
 
-<se
 <section id="contacto" class="seccion">
     <h2>Contacto</h2>
     <p class="texto-centrado texto-destacado">¿Querés que te ayudemos con tu consulta? Completá el siguiente formulario
         y nos comunicaremos a la brevedad.</p>
 
-         <a href="https://wa.me/5491158692422" target="_blank" class="whatsapp-icon">
+    <a href="https://wa.me/5491158692422" target="_blank" class="whatsapp-icon">
 
 
         <img src="https://img.icons8.com/?size=100&id=BkugfgmBwtEI&format=png&color=000000" alt="WhatsApp"
-
-
              style="width:60px; height:60px;">
-
-
     </a>
 
     <div class="contacto-flex">
