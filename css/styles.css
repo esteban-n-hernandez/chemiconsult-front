@@ -214,6 +214,14 @@ p {
     margin-top: 40px;
 }
 
+#servicios {
+    max-width: 900px;
+    min-height: 500px; /* or use height: 500px; */
+    margin: 0 auto;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
 .servicio {
     padding: 25px;
     border-radius: 8px;
@@ -283,15 +291,19 @@ p {
 
 /* Carrusel */
 .carrusel-clientes {
-    overflow: hidden;
-    width: 100%;
+    width: 50%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
     padding: 20px 0;
+    box-sizing: border-box;
+    overflow: hidden; /* Ensures images stay inside the 50% width */
 }
 
 .cinta {
     display: flex;
-    width: calc(250px * 20);
-    animation: scroll 30s linear infinite;
+    width: 100%; /* Make the image row fit the carousel */
+    animation: scroll 10s linear infinite;
     gap: 40px;
 }
 
