@@ -545,14 +545,56 @@
 
 @media (max-width: 600px) {
     #imginicio {
-        width: 120px;
+        width: 200px;
+        height: auto;
+    }
+}
+@media (max-width: 430px) {
+    #imginicio {
+        width: 110px;
         height: auto;
     }
 }
 
-@media (max-width: 430px) {
-    #imginicio {
-        width: 80px;
-        height: auto;
+/* Hamburger button */
+.navbar-toggle {
+    display: none;
+    position: absolute;
+    right: 20px;
+    top: 18px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    z-index: 101;
+}
+
+.navbar-toggle span {
+    display: block;
+    width: 28px;
+    height: 4px;
+    margin: 6px 0;
+    background: var(--color-verde-principal);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* Show hamburger on mobile */
+@media (max-width: 600px) {
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar ul {
+        display: none;
+        flex-direction: column;
+        background: #fff;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        width: 100%;
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+        padding: 10px 0;
+    }
+    .navbar.active ul {
+        display: flex;
     }
 }

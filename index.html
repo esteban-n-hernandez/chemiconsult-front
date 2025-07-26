@@ -85,6 +85,12 @@
 
         sections.forEach(section => observer.observe(section));
     });
+
+    const navbarToggle = document.querySelector('.navbar-toggle');
+    const navbar = document.querySelector('.navbar');
+    navbarToggle.addEventListener('click', () => {
+        navbar.classList.toggle('active');
+    });
 </script>
 
 <header id="inicio">
@@ -94,6 +100,12 @@
         <p>Más de 35 años de experiencia en análisis químico y consultoría ambiental</p>
     </div>
 </header>
+
+<button class="navbar-toggle" aria-label="Open menu">
+    <span></span>
+    <span></span>
+    <span></span>
+</button>
 
 <nav class="navbar">
     <div class="container">
