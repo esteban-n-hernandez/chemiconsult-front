@@ -9,90 +9,7 @@
 </head>
 <body>
 
-<script>
-    // Add to your <script> in index.html
-    document.addEventListener("DOMContentLoaded", function () {
-        const header = document.getElementById("inicio");
-        setTimeout(() => {
-            header.classList.add("visible");
-        }, 200); // slight delay for effect
-    });
-
-    // Typewriter effect for header <p>
-    document.addEventListener("DOMContentLoaded", function () {
-        const header = document.getElementById("inicio");
-        setTimeout(() => {
-            header.classList.add("visible");
-            // Typewriter effect
-            const p = header.querySelector(".contenedor-header p");
-            const text = p.textContent;
-            p.textContent = "";
-            let i = 0;
-
-            function type() {
-                if (i < text.length) {
-                    p.textContent += text.charAt(i);
-                    i++;
-                    setTimeout(type, 40); // speed of typing
-                }
-            }
-
-            setTimeout(type, 400); // delay after fade-in
-        }, 200);
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const navbar = document.querySelector(".navbar");
-        window.addEventListener("scroll", function () {
-            if (window.scrollY >= 300) {
-                navbar.classList.add("navbar-small");
-            } else {
-                navbar.classList.remove("navbar-small");
-            }
-        });
-    });
-
-    document.addEventListener("scroll", function () {
-        const contacto = document.getElementById("contacto");
-        const icono = document.querySelector(".whatsapp-icon");
-
-        if (!contacto || !icono) return;
-
-        const rect = contacto.getBoundingClientRect();
-        const estaVisible = rect.top <= window.innerHeight && rect.bottom >= 0;
-
-        icono.style.display = estaVisible ? "block" : "none";
-    });
-
-    document.addEventListener("DOMContentLoaded", function () {
-        const sections = [
-            document.getElementById("mision-vision"),
-            document.getElementById("servicios"),
-            document.getElementById("clientes"),
-            document.getElementById("contacto")
-        ].filter(Boolean);
-
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                        observer.unobserve(entry.target);
-                    }
-                });
-            },
-            {threshold: 0.2}
-        );
-
-        sections.forEach(section => observer.observe(section));
-    });
-
-    const navbarToggle = document.querySelector('.navbar-toggle');
-    const navbar = document.querySelector('.navbar');
-    navbarToggle.addEventListener('click', () => {
-        navbar.classList.toggle('active');
-    });
-</script>
+<script src="js/main.js"></script>
 
 <header id="inicio">
     <div class="contenedor-header">
@@ -112,20 +29,24 @@
     </div>
 </nav>
 
-<!--
 <section id="identificador-quienes-somos">
-    <div>
-<h2>¿Quiénes somos?</h2>
-<p>
-    Somos un grupo de profesionales abocados a brindar servicios de laboratorio y consultoría en las áreas de Control de Calidad, Gestión, Monitoreo e Ingeniería Ambiental y Laboral . Nuestro grupo de trabajo interdisciplinario nos permite abordar los servicios ofrecidos de forma profesional y versátil, y gracias a nuestra amplia trayectoria podemos ofrecerle una sólida experiencia para los requerimientos  de su empresa. Buscamos brindar una atención profesional, personalizada y confiable.
+    <div class="servicio">
+        <h2>¿Quiénes somos?</h2>
+        <p>
+            Somos un grupo de profesionales abocados a brindar servicios de laboratorio y consultoría en las áreas de
+            Control de Calidad, Gestión, Monitoreo e Ingeniería Ambiental y Laboral . Nuestro grupo de trabajo
+            interdisciplinario nos permite abordar los servicios ofrecidos de forma profesional y versátil, y gracias a
+            nuestra amplia trayectoria podemos ofrecerle una sólida experiencia para los requerimientos de su empresa.
+            Buscamos brindar una atención profesional, personalizada y confiable.
+        </p>
+        <p>
+            Contamos con tecnología instrumental de primer nivel y profesionales en constante capacitación.
 
-Contamos con tecnología instrumental de primer nivel y profesionales en constante capacitación.
-
-Además de nuestro laboratorio y oficinas en Buenos Aires, contamos con una filial en Córdoba dedicada a monitoreos ambientales, de esta manera podemos dar una rápida respuesta a las empresas de todo el país.
-</p>
+            Además de nuestro laboratorio y oficinas en Buenos Aires, contamos con una filial en Córdoba dedicada a
+            monitoreos ambientales, de esta manera podemos dar una rápida respuesta a las empresas de todo el país.
+        </p>
     </div>
 </section>
--->
 
 
 <section id="mision-vision" class="grupo-servicios">
@@ -140,7 +61,6 @@ Además de nuestro laboratorio y oficinas en Buenos Aires, contamos con una fili
             mejora continua y la responsabilidad empresarial en Latinoamérica.</p>
     </div>
 </section>
-
 
 
 <!-- This section contains the services offered by Chemiconsult
@@ -204,7 +124,9 @@ Además de nuestro laboratorio y oficinas en Buenos Aires, contamos con una fili
                 <li>Charlas y capacitaciones</li>
                 <li>Análisis microbiológicos y fisicoquímicos</li>
                 <li>Análisis de metales pesados</li>
-                <li>Análisis de compuestos orgánicos (pesticidas, THM, BTEX, solventes, Hidrocarburos totales y GRO/DRO, HAPN, PCB, clorofila, microcistina, entre otros)</li>
+                <li>Análisis de compuestos orgánicos (pesticidas, THM, BTEX, solventes, Hidrocarburos totales y GRO/DRO,
+                    HAPN, PCB, clorofila, microcistina, entre otros)
+                </li>
             </ul>
         </div>
         <div class="servicio">
@@ -256,7 +178,11 @@ Además de nuestro laboratorio y oficinas en Buenos Aires, contamos con una fili
                 <li>Análisis de alimentos</li>
                 <li>Hisopado de superficies</li>
                 <li>Auditorías bromatológicas internas y externas</li>
-                <li>Asesoramiento a empresas alimenticias (caterings, comedores industriales, geriátricos, clínicas, comedores escolares, restaurantes, supermercados y transportes). Asesoramiento en Buenas prácticas de manufactura (BPM), Prerrequisitos (PAS 220 o ISO/TS 22002-1, PAS 222, PAS 223), sistema HACCP según Codex Alimentarius, ISO 22000 y esquemas reconocidos por GFSI (BRC, FSSC 22000)</li>
+                <li>Asesoramiento a empresas alimenticias (caterings, comedores industriales, geriátricos, clínicas,
+                    comedores escolares, restaurantes, supermercados y transportes). Asesoramiento en Buenas prácticas
+                    de manufactura (BPM), Prerrequisitos (PAS 220 o ISO/TS 22002-1, PAS 222, PAS 223), sistema HACCP
+                    según Codex Alimentarius, ISO 22000 y esquemas reconocidos por GFSI (BRC, FSSC 22000)
+                </li>
                 <li>Capacitaciones para Manipuladores de Alimentos</li>
             </ul>
         </div>

@@ -58,7 +58,6 @@ p {
 
 #inicio h1 {
     margin: 20px 0;
-    color: var(--color-azul-profesional);
     font-size: 2.5em;
 }
 
@@ -87,7 +86,6 @@ p {
     background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
-    transition: width 0.3s, padding 0.3s, font-size 0.3s;
 }
 
 .navbar.navbar-small {
@@ -133,6 +131,7 @@ p {
 }
 
 /* Section transitions */
+#identificador-quienes-somos,
 #mision-vision,
 #servicios,
 #clientes,
@@ -142,12 +141,23 @@ p {
     transition: opacity 0.8s, transform 0.8s;
 }
 
+#identificador-quienes-somos.visible,
 #mision-vision.visible,
 #servicios.visible,
 #clientes.visible,
 #contacto.visible {
     opacity: 1;
     transform: translateY(0);
+}
+
+#identificador-quienes-somos {
+    text-align: center;
+    width: 80%;
+    margin: auto;
+}
+
+#identificador-quienes-somos h2{
+    color: var(--color-verde-principal);
 }
 
 /* Mision-Vision */
@@ -353,7 +363,6 @@ form button:hover {
 
 .mapa-contacto h3 {
     margin-bottom: 15px;
-    color: var(--color-azul-profesional);
 }
 
 /* Footer */
