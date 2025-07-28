@@ -299,6 +299,10 @@
         margin: 10px;
     }
 
+       #mision-vision .servicio h3 {
+        text-align: center;
+        }
+
     /* =========================
        Servicios Section
        ========================= */
