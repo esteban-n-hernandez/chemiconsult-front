@@ -339,6 +339,7 @@
     .servicio h3 {
         color: var(--color-green-main);
         margin-bottom: 15px;
+        text-align: center;
     }
 
     .servicio ul {
