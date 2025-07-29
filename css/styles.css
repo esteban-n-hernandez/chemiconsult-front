@@ -795,3 +795,33 @@ body::-webkit-scrollbar {
             display: block !important;
         }
     }
+
+
+    .scroll-servicios-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .grupo-servicios {
+    display: none;
+  }
+
+  .scroll-servicios-mobile {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    gap: 20px;
+    padding: 10px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .scroll-servicios-mobile .servicio {
+    min-width: 85%;
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    padding: 20px;
+  }
+}
