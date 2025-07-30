@@ -1,6 +1,6 @@
 // Add to your <script> in index.html
 document.addEventListener("DOMContentLoaded", function () {
-    const header = document.getElementById("inicio");
+    const header = document.getElementById("header-id");
     setTimeout(() => {
         header.classList.add("visible");
     }, 200); // slight delay for effect
@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 // Typewriter effect for header <p>
 document.addEventListener("DOMContentLoaded", function () {
-    const header = document.getElementById("inicio");
+    const header = document.getElementById("header-id");
     setTimeout(() => {
         header.classList.add("visible");
         // Typewriter effect
@@ -54,7 +54,7 @@ document.addEventListener("scroll", function () {
 
 document.addEventListener("DOMContentLoaded", function () {
     const sections = [
-        document.getElementById("identificador-quienes-somos"),
+        document.getElementById("quienes-somos-section"),
         document.getElementById("mision-vision"),
         document.getElementById("servicios"),
         document.getElementById("clientes"),

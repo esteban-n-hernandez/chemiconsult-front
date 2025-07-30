@@ -64,7 +64,7 @@ body::-webkit-scrollbar {
     /* =========================
        Header
        ========================= */
-    #inicio {
+    #header-id {
         color: var(--color-black);
         min-height: 100vh;
         display: flex;
@@ -88,20 +88,20 @@ body::-webkit-scrollbar {
         position: relative;
     }
 
-    #inicio h1 {
+    #header-id h1 {
         margin: 20px 0;
         font-size: 2.5em;
     }
 
-    #inicio .contenedor-header img,
-    #inicio .contenedor-header p {
+    #header-id .contenedor-header img,
+    #header-id .contenedor-header p {
         opacity: 0;
         transform: translateY(40px);
         transition: opacity 0.8s ease, transform 0.8s ease;
     }
 
-    #inicio.visible .contenedor-header img,
-    #inicio.visible .contenedor-header p {
+    #header-id.visible .contenedor-header img,
+    #header-id.visible .contenedor-header p {
         opacity: 1;
         transform: translateY(0);
     }
@@ -225,7 +225,7 @@ body::-webkit-scrollbar {
     /* =========================
        Section Transitions
        ========================= */
-    #identificador-quienes-somos,
+    #quienes-somos-section,
     #mision-vision,
     #servicios,
     #clientes,
@@ -235,7 +235,7 @@ body::-webkit-scrollbar {
         transition: opacity 0.8s, transform 0.8s;
     }
 
-    #identificador-quienes-somos.visible,
+    #quienes-somos-section.visible,
     #mision-vision.visible,
     #servicios.visible,
     #clientes.visible,
@@ -244,7 +244,7 @@ body::-webkit-scrollbar {
         transform: translateY(0);
     }
 
-    #identificador-quienes-somos.visible {
+    #quienes-somos-section.visible {
         margin-top: 50px;
         opacity: 1;
         transform: translateY(0);
@@ -722,6 +722,12 @@ body::-webkit-scrollbar {
             width: 120px;
         }
 
+
+        .mision-vision-section {
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
         .grupo-servicios {
             grid-template-columns: 1fr;
             gap: 15px;
@@ -737,12 +743,12 @@ body::-webkit-scrollbar {
             padding: 0 10px;
         }
 
-        #inicio {
+        #header-id {
             min-height: 60vh;
             padding-top: 30px;
         }
 
-        #inicio .contenedor-header img {
+        #header-id .contenedor-header img {
             width: 220px;
         }
 
