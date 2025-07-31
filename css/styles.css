@@ -40,6 +40,10 @@ p {
     font-size: clamp(1rem, 4vw, 1.2rem);
 }
 
+li::marker {
+  color: rgba(117, 189, 6, 0.78);
+}
+
 .texto-centrado {
     text-align: center;
     margin: 0 auto;
