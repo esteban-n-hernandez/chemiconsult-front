@@ -735,6 +735,17 @@ form button:hover {
         margin-bottom: 0;
         box-sizing: border-box;
     }
+    .grupo-servicios .servicio {
+        border-radius: 0;
+    }
+    .grupo-servicios .servicio:first-child {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    .grupo-servicios .servicio:last-child {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
 
     .carousel-indicators {
         display: flex;
