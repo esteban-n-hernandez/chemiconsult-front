@@ -76,8 +76,34 @@ document.addEventListener("DOMContentLoaded", function () {
     sections.forEach(section => observer.observe(section));
 });
 
-const navbarToggle = document.querySelector('.navbar-toggle');
-const navbar = document.querySelector('.navbar');
-navbarToggle.addEventListener('click', () => {
-    navbar.classList.toggle('active');
+document.addEventListener("DOMContentLoaded", function () {
+    const navbarToggle = document.querySelector('.navbar-toggle');
+    const navbar = document.querySelector('.navbar');
+    if (navbarToggle && navbar) {
+        navbarToggle.addEventListener('click', () => {
+            navbar.classList.toggle('active');
+        });
+    }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const grupo = document.querySelector("#servicios .grupo-servicios");
+    const indicators = document.querySelector("#servicios .carousel-indicators");
+    if (!grupo || !indicators) return;
+
+    const items = grupo.querySelectorAll(".servicio");
+    items.forEach((_, i) => {
+        const dot = document.createElement("span");
+        dot.className = "dot" + (i === 0 ? " active" : "");
+        indicators.appendChild(dot);
+    });
+
+    grupo.addEventListener("scroll", () => {
+        const scrollLeft = grupo.scrollLeft;
+        const itemWidth = items[0].offsetWidth + 15; // 15px gap
+        const index = Math.round(scrollLeft / itemWidth);
+        indicators.querySelectorAll(".dot").forEach((dot, i) => {
+            dot.classList.toggle("active", i === index);
+        });
+    });
 });

@@ -717,13 +717,40 @@ form button:hover {
     }
 
     .grupo-servicios {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
         gap: 15px;
+        padding-bottom: 10px;
+    }
+    .servicio {
+        border-top: 4px solid var(--color-green-main);
+        min-width: 90vw;
+        max-width: 90vw;
+        flex: 0 0 90vw;
+        scroll-snap-align: start;
+        margin-bottom: 0;
+        box-sizing: border-box;
     }
 
-    .servicio {
-        padding: 15px;
-        font-size: 1em;
+    .carousel-indicators {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+        margin: 12px 0 0 0;
+    }
+    .carousel-indicators .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #cfd8dc;
+        transition: background 0.3s;
+    }
+    .carousel-indicators .dot.active {
+        background: var(--color-green-main);
     }
 
     form {
@@ -789,3 +816,5 @@ form button:hover {
         display: block !important;
     }
 }
+
+
