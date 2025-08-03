@@ -8,7 +8,6 @@
     --color-gray-dark: #2F2F2F;
     --color-gray-medium: #CCCCCC;
     --color-white: #FFFFFF;
-    --color-blue-professional: #005fab;
 
     --icon-ambiental: url('https://cdn-icons-png.flaticon.com/512/5495/5495928.png');
     --icon-higiene: url('https://cdn-icons-png.flaticon.com/512/949/949333.png');
@@ -199,10 +198,15 @@ li::marker {
     left: 50%;
     transform: translateX(-50%);
     padding: 8px 0;
+    /*
     background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+     */
+    backdrop-filter: blur(10px);
+    background: none;
     border-radius: 20px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     margin: 0;
+    border-bottom: #5EA504 solid 2px;
 }
 
 .navbar.navbar-small #logo-navbar-id {
@@ -210,12 +214,12 @@ li::marker {
 }
 
 .navbar.navbar-small #logo-navbar-id {
-    display: block;
-    width: 105px;
+    width: 70px;
 }
 
 .navbar.navbar-small a {
     border-radius: 8px;
+    color: #5EA504;
     padding: 6px 14px;
     transition: background-color 0.3s, color 0.3s;
 }
