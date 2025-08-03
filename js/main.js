@@ -29,16 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 200);
 });
 
-document.addEventListener("DOMContentLoaded", function () {
-    const navbar = document.querySelector(".navbar");
-    window.addEventListener("scroll", function () {
-        if (window.scrollY >= 300) {
-            navbar.classList.add("navbar-small");
-        } else {
-            navbar.classList.remove("navbar-small");
-        }
-    });
-});
 
 document.addEventListener("scroll", function () {
     const contacto = document.getElementById("contacto");
