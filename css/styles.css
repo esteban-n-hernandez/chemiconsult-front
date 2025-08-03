@@ -114,41 +114,6 @@ li::marker {
     align-items: center;
 }
 
-.slider-laboratorio img {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0;
-    animation: fade 18s infinite;
-}
-
-.slider-laboratorio img:nth-child(1) {
-    animation-delay: 0s;
-}
-
-.slider-laboratorio img:nth-child(2) {
-    animation-delay: 6s;
-}
-
-.slider-laboratorio img:nth-child(3) {
-    animation-delay: 12s;
-}
-
-@keyframes fade {
-    0%, 100% {
-        opacity: 0;
-    }
-    10%, 30% {
-        opacity: 1;
-    }
-    40%, 100% {
-        opacity: 0;
-    }
-}
-
 /* =========================
    Header Overlay
    ========================= */
@@ -165,87 +130,63 @@ li::marker {
     color: var(--color-white);
 }
 
-.contenedor-header-superpuesto p {
-    font-size: clamp(1rem, 4vw, 1.3rem);
-    max-width: 600px;
-    margin-top: 20px;
-}
 
+.contenedor-header-superpuesto p {
+    margin-top: 20px;
+    font-family: 'Raleway', sans-serif;
+    font-size: 45px;
+    text-shadow: var(--color-black) 2px 0 10px;
+}
 /* =========================
    Navbar
    ========================= */
 .navbar {
     width: 100%;
-    max-width: 100%;
-    margin: 0 auto;
     padding: 10px 0;
     font-size: 1.1em;
     position: fixed;
     top: 0;
-    background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+    background: var(--color-white);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     z-index: 100;
-}
-
-.navbar #logo-navbar-id {
-    display: none;
-}
-
-.navbar.navbar-small {
-    top: 5px;
-    width: 80vw;
-    max-width: 900px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 8px 0;
-    /*
-    background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
-     */
-    backdrop-filter: blur(10px);
-    background: none;
-    border-radius: 20px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    margin: 0;
     border-bottom: #5EA504 solid 2px;
 }
 
-.navbar.navbar-small #logo-navbar-id {
-    display: block;
-}
-
-.navbar.navbar-small #logo-navbar-id {
-    width: 70px;
-}
-
-.navbar.navbar-small a {
-    border-radius: 8px;
-    color: #5EA504;
-    padding: 6px 14px;
-    transition: background-color 0.3s, color 0.3s;
-}
-
-.navbar ul {
+.container-navbar {
+    max-width: 1200px;
+    margin: 0 auto;
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.logo-navbar img {
+    width: 150px;
+}
+
+.menu-navbar {
+    display: flex;
     list-style: none;
-    padding: 10px 0;
+    padding: 0;
     margin: 0;
 }
 
-.navbar li {
-    margin: 0 15px;
+.menu-navbar li {
+    margin-left: 20px;
 }
 
-.navbar a {
+.menu-navbar a {
+    color: var(--color-green-hover);
     text-decoration: none;
-    color: var(--color-white);
     font-weight: bold;
     transition: color 0.3s;
 }
 
-.navbar a:hover {
+.menu-navbar a:hover {
     color: var(--color-green-hover);
 }
+
 
 /* =========================
    Section Transitions
@@ -614,7 +555,7 @@ form button:hover {
 .footer-horarios {
     margin-top: 20px;
     font-size: 0.9em;
-    color: var(--color-white);
+    color: var(--color-black);
 }
 
 .footer-horarios h4 {
@@ -667,8 +608,10 @@ form button:hover {
 /* =========================
    Buttons
    ========================= */
+
+
 .btn-grad {
-    background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
+    background-image: linear-gradient(to right, #5EA504 0%, #80d226 51%, #5EA504 100%);
     margin: 10px;
     padding: 15px 45px;
     text-align: center;
@@ -682,34 +625,11 @@ form button:hover {
 }
 
 .btn-grad:hover {
-    background-position: right center;
+    background-position: right center; /* change the direction of the change here */
     color: #fff;
     text-decoration: none;
 }
 
-/* =========================
-   Hamburger button (hidden)
-   ========================= */
-.navbar-toggle {
-    display: none !important;
-    position: absolute;
-    right: 20px;
-    top: 18px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    z-index: 101;
-}
-
-.navbar-toggle span {
-    display: block;
-    width: 28px;
-    height: 4px;
-    margin: 6px 0;
-    background: var(--color-green-main);
-    border-radius: 2px;
-    transition: 0.3s;
-}
 
 /* =========================
    Responsive Styles
