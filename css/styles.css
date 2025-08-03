@@ -495,10 +495,21 @@ form button:hover {
    Contacto
    ========================= */
 .datos-contacto {
+    color: var(--color-black);
     margin-top: 30px;
     font-size: 1em;
     text-align: center;
 }
+
+.titulo-contacto {
+    color: var(--color-black);
+    font-weight: bold;
+}
+
+.texto-contacto {
+    color: var(--color-black);
+}
+
 
 
 /* =========================
