@@ -41,7 +41,7 @@ p {
 }
 
 li::marker {
-  color: rgba(117, 189, 6, 0.78);
+    color: rgba(117, 189, 6, 0.78);
 }
 
 .texto-centrado {
@@ -126,14 +126,28 @@ li::marker {
     animation: fade 18s infinite;
 }
 
-.slider-laboratorio img:nth-child(1) { animation-delay: 0s; }
-.slider-laboratorio img:nth-child(2) { animation-delay: 6s; }
-.slider-laboratorio img:nth-child(3) { animation-delay: 12s; }
+.slider-laboratorio img:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.slider-laboratorio img:nth-child(2) {
+    animation-delay: 6s;
+}
+
+.slider-laboratorio img:nth-child(3) {
+    animation-delay: 12s;
+}
 
 @keyframes fade {
-    0%, 100% { opacity: 0; }
-    10%, 30% { opacity: 1; }
-    40%, 100% { opacity: 0; }
+    0%, 100% {
+        opacity: 0;
+    }
+    10%, 30% {
+        opacity: 1;
+    }
+    40%, 100% {
+        opacity: 0;
+    }
 }
 
 /* =========================
@@ -174,6 +188,10 @@ li::marker {
     z-index: 100;
 }
 
+.navbar #logo-navbar-id {
+    display: none;
+}
+
 .navbar.navbar-small {
     top: 5px;
     width: 80vw;
@@ -185,6 +203,15 @@ li::marker {
     border-radius: 20px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
     margin: 0;
+}
+
+.navbar.navbar-small #logo-navbar-id {
+    display: block;
+}
+
+.navbar.navbar-small #logo-navbar-id {
+    display: block;
+    width: 105px;
 }
 
 .navbar.navbar-small a {
@@ -311,7 +338,6 @@ li::marker {
    Servicios Section
    ========================= */
 .grupo-servicios {
-    display: flex;
     flex-wrap: wrap;
     gap: 20px;
     justify-content: space-between; /* o center si preferís */
@@ -476,8 +502,12 @@ li::marker {
 }
 
 @keyframes scroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 /* =========================
@@ -608,8 +638,12 @@ form button:hover {
 }
 
 @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
 }
 
 /* =========================
@@ -726,6 +760,7 @@ form button:hover {
         gap: 15px;
         padding-bottom: 10px;
     }
+
     .servicio {
         border-top: 4px solid var(--color-green-main);
         min-width: 90vw;
@@ -735,15 +770,18 @@ form button:hover {
         margin-bottom: 0;
         box-sizing: border-box;
     }
+
     .grupo-servicios .servicio {
         border-radius: 0;
     }
+
     .grupo-servicios .servicio:first-child {
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;
         border-bottom-right-radius: 8px;
         border-top-right-radius: 8px;
     }
+
     .grupo-servicios .servicio:last-child {
         border-top-left-radius: 8px;
         border-bottom-left-radius: 8px;
@@ -757,6 +795,7 @@ form button:hover {
         gap: 8px;
         margin: 12px 0 0 0;
     }
+
     .carousel-indicators .dot {
         width: 10px;
         height: 10px;
@@ -764,6 +803,7 @@ form button:hover {
         background: #cfd8dc;
         transition: background 0.3s;
     }
+
     .carousel-indicators .dot.active {
         background: var(--color-green-main);
     }
