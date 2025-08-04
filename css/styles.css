@@ -287,7 +287,7 @@ li::marker {
 .grupo-servicios {
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between; /* o center si preferís */
+    justify-content: space-between; 
 }
 
 #servicios {
@@ -617,8 +617,6 @@ form button:hover {
 /* =========================
    Buttons
    ========================= */
-
-
 .btn-grad {
     background-image: linear-gradient(to right, #5EA504 0%, #80d226 51%, #5EA504 100%);
     margin: 10px;
@@ -634,7 +632,7 @@ form button:hover {
 }
 
 .btn-grad:hover {
-    background-position: right center; /* change the direction of the change here */
+    background-position: right center; 
     color: #fff;
     text-decoration: none;
 }
@@ -804,5 +802,3 @@ form button:hover {
         display: block !important;
     }
 }
-
-
