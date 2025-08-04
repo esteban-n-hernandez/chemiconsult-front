@@ -495,30 +495,6 @@ form button:hover {
     background-color: var(--color-gray-dark);
 }
 
-/* =========================
-   Contacto
-   ========================= */
-.datos-contacto {
-    color: var(--color-black);
-    margin-top: 30px;
-    font-size: 1em;
-    text-align: left;
-}
-
-.datos-contacto p{
-    text-align: left;
-}
-
-
-.titulo-contacto {
-    color: var(--color-black);
-    font-weight: bold;
-}
-
-.texto-contacto {
-    color: var(--color-black);
-}
-
 
 
 /* =========================
@@ -579,6 +555,32 @@ form button:hover {
     margin-bottom: 5px;
     color: var(--color-green-main);
 }
+
+/* =========================
+   Contacto
+   ========================= */
+.datos-contacto {
+    color: var(--color-black);
+    margin-top: 30px;
+    font-size: 1em;
+    text-align: left;
+}
+
+.datos-contacto p{
+    text-align: left;
+}
+
+
+.titulo-contacto {
+    color: var(--color-black);
+    font-weight: bold;
+}
+
+.texto-contacto {
+    color: var(--color-black);
+}
+
+
 
 /* =========================
    WhatsApp
