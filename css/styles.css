@@ -238,6 +238,7 @@ li::marker {
 .quienes-somos-div h2 {
     color: var(--color-green-main);
 }
+
 #identificador-quienes-somos h2 {
     font-family: 'Raleway', sans-serif;
     font-size: 2.2em;
@@ -418,6 +419,7 @@ li::marker {
     margin-bottom: 40px;
     position: relative;
 }
+
 #servicios h2::after {
     content: "";
     position: absolute;
@@ -463,6 +465,7 @@ li::marker {
     margin-bottom: 40px;
     position: relative;
 }
+
 #clientes h2::after {
     content: "";
     position: absolute;
@@ -635,7 +638,7 @@ form button:hover {
 }
 
 
-#contacto h2 {
+#clientes h2 {
     font-size: 2em;
     font-weight: 700;
     font-family: 'Raleway', sans-serif;
@@ -644,7 +647,8 @@ form button:hover {
     margin-bottom: 40px;
     position: relative;
 }
-#contacto h2::after {
+
+#clientes h2::after {
     content: "";
     position: absolute;
     bottom: -10px;
@@ -656,6 +660,38 @@ form button:hover {
     border-radius: 3px;
 }
 
+
+/* =========================
+   Logos Legales
+   ========================= */
+
+.logos-contacto {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    padding: 20px 0;
+    text-align: center;
+}
+
+.logo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 150px;
+}
+
+.logo-item img {
+    max-height: 60px;
+    max-width: 150px;
+    object-fit: contain;
+}
+
+.logo-item p {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #444;
+}
 
 /* =========================
    WhatsApp
