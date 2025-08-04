@@ -291,7 +291,7 @@ li::marker {
 .grupo-servicios {
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between; 
+    justify-content: space-between;
 }
 
 #servicios {
@@ -496,7 +496,6 @@ form button:hover {
 }
 
 
-
 /* =========================
    Footer
    ========================= */
@@ -562,11 +561,12 @@ form button:hover {
 .datos-contacto {
     color: var(--color-black);
     margin-top: 30px;
+    font-family: 'Raleway', sans-serif;
     font-size: 1em;
     text-align: left;
 }
 
-.datos-contacto h4{
+.datos-contacto h4 {
     text-align: left;
     font-size: 5px;
 }
@@ -580,7 +580,6 @@ form button:hover {
 .texto-contacto {
     color: var(--color-black);
 }
-
 
 
 /* =========================
@@ -643,7 +642,7 @@ form button:hover {
 }
 
 .btn-grad:hover {
-    background-position: right center; 
+    background-position: right center;
     color: #fff;
     text-decoration: none;
 }
