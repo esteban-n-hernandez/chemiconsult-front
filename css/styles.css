@@ -664,7 +664,6 @@ form button:hover {
 /* =========================
    Logos Legales
    ========================= */
-
 .logos-contacto {
     display: flex;
     justify-content: center;
@@ -679,19 +678,23 @@ form button:hover {
     flex-direction: column;
     align-items: center;
     max-width: 150px;
+    min-height: 180px;
+    justify-content: space-between;
+    text-align: center;
 }
 
 .logo-item img {
-    max-height: 60px;
-    max-width: 150px;
+    max-width: 130px;
     object-fit: contain;
+
 }
 
 .logo-item p {
-    margin-top: 10px;
     font-size: 14px;
     color: #444;
+    margin-top: 10px;
 }
+
 
 /* =========================
    WhatsApp
