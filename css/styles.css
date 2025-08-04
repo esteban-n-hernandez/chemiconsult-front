@@ -505,6 +505,11 @@ form button:hover {
     text-align: left;
 }
 
+.datos-contacto p{
+    text-align: left;
+}
+
+
 .titulo-contacto {
     color: var(--color-black);
     font-weight: bold;
