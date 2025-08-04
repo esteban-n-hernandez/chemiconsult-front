@@ -37,6 +37,7 @@ h2 {
 
 p {
     font-size: clamp(1rem, 4vw, 1.2rem);
+    font-family: 'Raleway', sans-serif;
 }
 
 li::marker {
@@ -174,7 +175,6 @@ li::marker {
 }
 
 .menu-navbar li {
-    font-family: 'Raleway', sans-serif;
     margin-left: 20px;
 }
 
@@ -241,7 +241,6 @@ li::marker {
 
 .quienes-somos-div p {
     color: black;
-    font-family: 'Raleway', sans-serif;
 }
 
 /* =========================
@@ -527,7 +526,6 @@ form button:hover {
     border-top: 2px solid var(--color-green-hover);
     color: var(--color-white);
     padding: 40px 0;
-    font-family: 'Segoe UI', sans-serif;
 }
 
 .footer .container {
