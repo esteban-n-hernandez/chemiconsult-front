@@ -502,7 +502,7 @@ form button:hover {
     color: var(--color-black);
     margin-top: 30px;
     font-size: 1em;
-    text-align: center;
+    text-align: left;
 }
 
 .titulo-contacto {
