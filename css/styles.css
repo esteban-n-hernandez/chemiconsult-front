@@ -239,6 +239,11 @@ li::marker {
     color: var(--color-green-main);
 }
 
+.quienes-somos-div p {
+    color: black;
+    font-family: 'Raleway', sans-serif;
+}
+
 /* =========================
    Mision-Vision
    ========================= */
