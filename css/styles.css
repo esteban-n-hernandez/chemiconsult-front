@@ -263,28 +263,17 @@ li::marker {
 .mision-vision-class {
     flex-wrap: wrap;
     gap: 20px;
-    justify-content: space-between;
-}
-
-#mision-vision {
     padding: 60px 20px;
     display: flex;
     justify-content: center;
-    gap: 20px;
-    flex-wrap: wrap;
 }
 
-#mision-vision h2 {
+.mision-vision-div h2 {
     margin-bottom: 30px;
     color: var(--color-gray-dark);
 }
 
-#mision-vision p {
-    font-size: 1.1em;
-    color: var(--color-gray-dark);
-}
-
-#mision-vision .servicio {
+.mision-vision-div {
     max-width: 400px;
     max-height: 320px;
     overflow: hidden;
@@ -297,11 +286,19 @@ li::marker {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    flex: 0 1 400px;
-    margin: 10px;
+    flex: 1;
+    min-width: 280px;
+    margin-bottom: 15px;
+    border-top: 4px solid var(--color-green-main);
 }
 
-#mision-vision .servicio h3 {
+.mision-vision-div h3{
+    text-align: center;
+}
+
+.mision-vision-div p {
+    font-size: 1.1em;
+    color: var(--color-black);
     text-align: center;
 }
 
