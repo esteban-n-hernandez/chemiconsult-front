@@ -240,17 +240,26 @@ li::marker {
 }
 
 #identificador-quienes-somos h2 {
+    font-size: 2em;
+    font-weight: 700;
     font-family: 'Raleway', sans-serif;
-    font-size: 2.2em;
-    font-weight: 600;
-    color: var(--color-green-hover);
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 20px;
-    position: relative;
+    color: var(--color-green-main);
     text-align: center;
+    margin-bottom: 40px;
+    position: relative;
 }
 
+#identificador-quienes-somos h2::after {
+    content: "";
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 4px;
+    background-color: var(--color-green-main);
+    border-radius: 3px;
+}
 
 .quienes-somos-div p {
     color: black;
@@ -448,6 +457,7 @@ li::marker {
     transform: scale(1.1);
 }
 
+
 #clientes h2 {
     font-size: 2em;
     font-weight: 700;
@@ -629,8 +639,7 @@ form button:hover {
     color: var(--color-black);
 }
 
-
-#clientes h2 {
+#contacto h2 {
     font-size: 2em;
     font-weight: 700;
     font-family: 'Raleway', sans-serif;
@@ -640,7 +649,7 @@ form button:hover {
     position: relative;
 }
 
-#clientes h2::after {
+#contacto h2::after {
     content: "";
     position: absolute;
     bottom: -10px;
