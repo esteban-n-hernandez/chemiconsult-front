@@ -1,4 +1,25 @@
 // Add to your <script> in index.html
+
+const imagenFondo = document.getElementById("fondo-lab");
+  const contenedor = document.querySelector(".contenedor-header-superpuesto");
+  const texto = document.getElementById("texto-header");
+  const mensaje = "SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA";
+
+  imagenFondo.onload = () => {
+    contenedor.style.display = "flex"; // mostramos logo y p
+
+    // Tipado efecto
+    let index = 0;
+    const escribir = () => {
+      if (index < mensaje.length) {
+        texto.textContent += mensaje.charAt(index);
+        index++;
+        setTimeout(escribir, 60); // velocidad del tipado
+      }
+    };
+    escribir();
+  };
+
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.getElementById("inicio");
     setTimeout(() => {
