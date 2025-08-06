@@ -1,4 +1,3 @@
-// Add to your <script> in index.html
 
  window.addEventListener("load", () => {
     const imagenFondo = document.getElementById("fondo-lab");
@@ -6,14 +5,13 @@
     const texto = document.getElementById("texto-header");
     const mensaje = "SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA";
 
-    // Verificamos si la imagen está completamente cargada
     if (imagenFondo.complete) {
-      mostrarContenido();
+      iniciar();
     } else {
-      imagenFondo.onload = mostrarContenido;
+      imagenFondo.onload = iniciar;
     }
 
-    function mostrarContenido() {
+    function iniciar() {
       contenedor.style.display = "flex";
       let index = 0;
 
@@ -21,13 +19,13 @@
         if (index < mensaje.length) {
           texto.textContent += mensaje.charAt(index);
           index++;
-          setTimeout(escribir, 60);
+          setTimeout(escribir, 50); // velocidad tipado
+        } else {
+          texto.classList.add("tipado"); // fuerza visualización final
         }
       };
-      escribir();
 
-      // Activamos el resto de la web (si tenés elementos ocultos)
-      document.body.classList.add("contenido-visible");
+      escribir();
     }
   });
 

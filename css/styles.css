@@ -100,6 +100,13 @@ li::marker {
     transform: translateY(0);
 }
 
+#texto-header.tipado {
+  font-size: 45px;
+  color: var(--color-white);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+  text-shadow: var(--color-black) 2px 0 10px;
+}
 /* =========================
    Slider
    ========================= */
