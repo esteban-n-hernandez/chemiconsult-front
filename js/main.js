@@ -1,24 +1,35 @@
 // Add to your <script> in index.html
 
-const imagenFondo = document.getElementById("fondo-lab");
-  const contenedor = document.querySelector(".contenedor-header-superpuesto");
-  const texto = document.getElementById("texto-header");
-  const mensaje = "SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA";
+ window.addEventListener("load", () => {
+    const imagenFondo = document.getElementById("fondo-lab");
+    const contenedor = document.querySelector(".contenedor-header-superpuesto");
+    const texto = document.getElementById("texto-header");
+    const mensaje = "SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA";
 
-  imagenFondo.onload = () => {
-    contenedor.style.display = "flex"; // mostramos logo y p
+    // Verificamos si la imagen está completamente cargada
+    if (imagenFondo.complete) {
+      mostrarContenido();
+    } else {
+      imagenFondo.onload = mostrarContenido;
+    }
 
-    // Tipado efecto
-    let index = 0;
-    const escribir = () => {
-      if (index < mensaje.length) {
-        texto.textContent += mensaje.charAt(index);
-        index++;
-        setTimeout(escribir, 60); // velocidad del tipado
-      }
-    };
-    escribir();
-  };
+    function mostrarContenido() {
+      contenedor.style.display = "flex";
+      let index = 0;
+
+      const escribir = () => {
+        if (index < mensaje.length) {
+          texto.textContent += mensaje.charAt(index);
+          index++;
+          setTimeout(escribir, 60);
+        }
+      };
+      escribir();
+
+      // Activamos el resto de la web (si tenés elementos ocultos)
+      document.body.classList.add("contenido-visible");
+    }
+  });
 
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.getElementById("inicio");
