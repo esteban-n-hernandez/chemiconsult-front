@@ -127,3 +127,15 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
+
+const imagenes = document.querySelectorAll('.servicio-imagenes img');
+let index = 0;
+
+function rotarImagenes() {
+    imagenes.forEach(img => img.classList.remove('active'));
+    imagenes[index].classList.add('active');
+    index = (index + 1) % imagenes.length;
+}
+
+setInterval(rotarImagenes, 3000);
+rotarImagenes();

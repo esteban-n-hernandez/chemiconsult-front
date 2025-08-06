@@ -14,6 +14,9 @@
     --icon-calidad: url('https://cdn-icons-png.flaticon.com/512/4866/4866974.png');
     --icon-farma: url('https://cdn-icons-png.flaticon.com/512/387/387557.png');
     --icon-alimentaria: url('https://cdn-icons-png.flaticon.com/512/4939/4939099.png');
+    --icon-mision: url('https://cdn-icons-png.flaticon.com/512/3233/3233474.png');
+    --icon-vision: url('https://cdn-icons-png.flaticon.com/512/1934/1934044.png');
+
 }
 
 /* =========================
@@ -318,9 +321,31 @@ li::marker {
     text-align: center;
 }
 
+#mision h3::after {
+    content: "";
+    width: 28px;
+    height: 28px;
+    background-image: var(--icon-mision);
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
+#vision h3::after {
+    content: "";
+    width: 28px;
+    height: 28px;
+    background-image: var(--icon-vision);
+    background-size: contain;
+    background-repeat: no-repeat;
+    display: inline-block;
+}
+
 /* =========================
    Servicios Section
    ========================= */
+
+
 .grupo-servicios {
     flex-wrap: wrap;
     gap: 20px;
@@ -440,6 +465,13 @@ li::marker {
     border-radius: 3px;
 }
 
+.img-servicio{
+    display: flex;
+    margin: 0 auto 15px auto;
+    max-width: 100px;
+    height: auto;
+    flex-direction: column;
+}
 
 /* =========================
    Clientes
