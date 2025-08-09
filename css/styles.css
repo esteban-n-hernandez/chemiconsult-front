@@ -709,8 +709,12 @@ form button:hover {
 }
 
 .footer-horarios h4 {
-    margin-bottom: 5px;
     color: var(--color-green-main);
+}
+
+.footer-horarios ul {
+    list-style: none;
+    padding-left: 0;
 }
 
 /* =========================
@@ -718,15 +722,14 @@ form button:hover {
    ========================= */
 .datos-contacto {
     color: var(--color-black);
-    margin-top: 30px;
     font-family: 'Raleway', sans-serif;
-    font-size: 1em;
     text-align: left;
+    margin-top: 20px;
+    font-size: 0.9em;
 }
 
 .datos-contacto h4 {
     text-align: left;
-    font-size: 5px;
 }
 
 
