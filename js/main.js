@@ -1,33 +1,32 @@
-
- window.addEventListener("load", () => {
+window.addEventListener("load", () => {
     const imagenFondo = document.getElementById("fondo-lab");
     const contenedor = document.querySelector(".contenedor-header-superpuesto");
     const texto = document.getElementById("texto-header");
     const mensaje = "SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA";
 
     if (imagenFondo.complete) {
-      iniciar();
+        iniciar();
     } else {
-      imagenFondo.onload = iniciar;
+        imagenFondo.onload = iniciar;
     }
 
     function iniciar() {
-      contenedor.style.display = "flex";
-      let index = 0;
+        contenedor.style.display = "flex";
+        let index = 0;
 
-      const escribir = () => {
-        if (index < mensaje.length) {
-          texto.textContent += mensaje.charAt(index);
-          index++;
-          setTimeout(escribir, 50); // velocidad tipado
-        } else {
-          texto.classList.add("tipado"); // fuerza visualización final
-        }
-      };
+        const escribir = () => {
+            if (index < mensaje.length) {
+                texto.textContent += mensaje.charAt(index);
+                index++;
+                setTimeout(escribir, 50); // velocidad tipado
+            } else {
+                texto.classList.add("tipado"); // fuerza visualización final
+            }
+        };
 
-      escribir();
+        escribir();
     }
-  });
+});
 
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.getElementById("inicio");
@@ -128,14 +127,19 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-const imagenes = document.querySelectorAll('.servicio-imagenes img');
-let index = 0;
+document.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".imagenes-servicio").forEach(contenedor => {
+        let imagenes = contenedor.querySelectorAll("img");
+        let indice = 0;
 
-function rotarImagenes() {
-    imagenes.forEach(img => img.classList.remove('active'));
-    imagenes[index].classList.add('active');
-    index = (index + 1) % imagenes.length;
-}
+        if (imagenes.length > 0) {
+            imagenes[0].classList.add("activa");
+        }
 
-setInterval(rotarImagenes, 3000);
-rotarImagenes();
+        setInterval(() => {
+            imagenes[indice].classList.remove("activa");
+            indice = (indice + 1) % imagenes.length;
+            imagenes[indice].classList.add("activa");
+        }, 3000); // cambia cada 3 segundos
+    });
+});
