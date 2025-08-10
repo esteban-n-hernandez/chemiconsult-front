@@ -870,6 +870,11 @@ form button:hover {
    Responsive Styles
    ========================= */
 @media (max-width: 600px) {
+
+    .quienes-somos-div{
+        width: 80%;
+    }
+
     .footer .container {
         flex-direction: column;
         text-align: center;
