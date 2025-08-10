@@ -410,7 +410,7 @@ li::marker {
 .servicio-alimentaria .contenido-servicio {
     display: flex;
     gap: 20px;
-    align-items: flex-start;
+    align-items: center;
 }
 
 /* Texto a la izquierda */
@@ -444,6 +444,7 @@ li::marker {
     object-fit: cover;
     opacity: 0;
     transition: opacity 1s ease-in-out;
+    align-items: center; /* centra verticalmente el texto y la imagen */
 }
 
 .imagenes-servicio img.activa {
