@@ -809,6 +809,7 @@ form button:hover {
     bottom: 20px;
     right: 20px;
     width: 50px;
+    left: 85%;
     height: 50px;
     z-index: 1000;
     display: none;
