@@ -143,3 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 3000); // cambia cada 3 segundos
     });
 });
+
+const cinta = document.querySelector('.cinta');
+cinta.innerHTML += cinta.innerHTML;
