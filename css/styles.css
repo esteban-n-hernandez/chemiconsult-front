@@ -365,9 +365,7 @@ li::marker {
     min-width: 280px;
     padding: 25px;
     margin-bottom: 15px;
-    border-top: 4px solid var(--color-green-main);
 }
-
 
 .servicio h3 {
     color: var(--color-green-main);
@@ -392,9 +390,9 @@ li::marker {
 .servicio-farma .titulo-servicio,
 .servicio-alimentaria .titulo-servicio {
     position: relative;
-    display: inline-block; /* or block, as needed */
+    display: inline-block;
     padding-bottom: 5px;
-    border-bottom: none; /* remove existing border */
+    border-bottom: none;
 }
 
 .servicio-ambiental .titulo-servicio::after,
@@ -404,22 +402,35 @@ li::marker {
 .servicio-alimentaria .titulo-servicio::after {
     content: "";
     display: block;
-    width: 100px; /* set desired line length */
+    width: 100px;
     height: 4px;
     background: var(--color-green-main);
+    margin-top: 10px;
     border-radius: 3px;
 }
 
+/* Opcion 2 */
 .fondo-laboratorio {
-    width: 100vw; /* 100% del viewport */
+    width: 80vw; /* 80% del ancho del viewport */
     height: 200px;
     object-fit: cover;
     display: block;
-    margin-left: calc(-50vw + 50%); /* truco para centrarla fuera del contenedor */
+    border-radius: 3px;
+    margin: 0 auto 20px auto; /* centra horizontalmente y agrega espacio abajo */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* opcional: sombra sutil */
+}
+
+/* Opcion 1 */
+.fondo-laboratorio {
+    width: 100vw; /* 100% del viewport */
+    height: 300px;
+    object-fit: cover;
+    display: block;
+    margin-left: calc(-50vw + 50%); /* centrarla fuera del contenedor */
 }
 
 .fondo-laboratorio {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     filter: brightness(0.95);
 }
 
@@ -428,14 +439,16 @@ li::marker {
     height: auto;
     overflow: visible;
 }
+
 .servicio-ambiental .contenido-servicio,
 .servicio-higiene .contenido-servicio,
 .servicio-calidad .contenido-servicio,
 .servicio-farma .contenido-servicio,
 .servicio-alimentaria .contenido-servicio {
     display: flex;
+    width: 60%;
+    margin: auto;
     gap: 20px;
-    align-items: center;
 }
 
 .contenido-servicio {
@@ -474,12 +487,12 @@ li::marker {
     object-fit: cover;
     opacity: 0;
     transition: opacity 1s ease-in-out;
-    align-items: center; /* centra verticalmente el texto y la imagen */
 }
 
 .imagenes-servicio img.activa {
     opacity: 1;
 }
+
 
 /* =========================
    Servicio Icons
@@ -958,7 +971,6 @@ form button:hover {
     }
 
     .servicio {
-        border-top: 4px solid var(--color-green-main);
         min-width: 90vw;
         max-width: 90vw;
         flex: 0 0 90vw;
