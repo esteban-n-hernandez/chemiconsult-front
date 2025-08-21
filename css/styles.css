@@ -493,60 +493,6 @@ li::marker {
     opacity: 1;
 }
 
-
-/* =========================
-   Servicio Icons
-   ========================= */
-.servicio-ambiental h3::after {
-    content: "";
-    width: 28px;
-    height: 28px;
-    background-image: var(--icon-ambiental);
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: inline-block;
-}
-
-.servicio-higiene h3::after {
-    content: "";
-    width: 28px;
-    height: 28px;
-    background-image: var(--icon-higiene);
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: inline-block;
-}
-
-.servicio-calidad h3::after {
-    content: "";
-    width: 28px;
-    height: 28px;
-    background-image: var(--icon-calidad);
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: inline-block;
-}
-
-.servicio-farma h3::after {
-    content: "";
-    width: 28px;
-    height: 28px;
-    background-image: var(--icon-farma);
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: inline-block;
-}
-
-.servicio-alimentaria h3::after {
-    content: "";
-    width: 28px;
-    height: 28px;
-    background-image: var(--icon-alimentaria);
-    background-size: contain;
-    background-repeat: no-repeat;
-    display: inline-block;
-}
-
 #servicios h2 {
     font-size: 2em;
     font-weight: 700;
@@ -569,8 +515,6 @@ li::marker {
     border-radius: 3px;
 }
 
-
-
 .img-servicio {
     display: flex;
     margin: 0 auto 15px auto;
@@ -578,6 +522,7 @@ li::marker {
     height: auto;
     flex-direction: column;
 }
+
 .img-title-wrapper {
     position: relative;
     display: inline-block;
@@ -596,8 +541,7 @@ li::marker {
     pointer-events: none;
     z-index: 2;
     font-family: Arial, sans-serif;
-    font-weight: bold;
-    font-size: 70px;
+    font-size: 60px;
     color: var(--color-white);
     opacity: 1;
     text-shadow: 2px 2px 0 #000000;
@@ -1067,6 +1011,45 @@ form button:hover {
 
     .imagenes-servicio {
         display: none;
+    }
+
+    .img-servicio {
+        display: flex;
+        max-width: 100px;
+        height: auto;
+        flex-direction: column;
+    }
+
+    .img-title-wrapper {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    .servicios-img-titles {
+        border-radius: 8px;
+        color: var(--color-white);
+        font-family: Arial, sans-serif;
+        font-size: 45px;
+        font-weight: bold;
+        padding: 8px 16px;
+        position: absolute;
+        top: 35%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+        pointer-events: none;
+        z-index: 2;
+        opacity: 1;
+        text-shadow: 2px 2px 0 #000000;
+    }
+
+    .fondo-laboratorio {
+        max-width: 400px;
+        height: 300px;
+        object-fit: cover;
+        display: block;
+        margin: 0 auto 20px auto; /* 👈 centrado horizontal clásico */
     }
 
 }
