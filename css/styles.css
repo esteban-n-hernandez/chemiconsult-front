@@ -452,6 +452,7 @@ li::marker {
 }
 
 .contenido-servicio {
+    align-items: center;
     position: relative;
     z-index: 2;
 }
