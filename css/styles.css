@@ -593,11 +593,10 @@ li::marker {
 
 /* Carrusel */
 .carrusel-clientes {
-    max-width: 60%;
+    max-width: 63%;
     overflow: hidden;
     position: relative;
-    margin: 0 auto;
-    margin-bottom: 14px;
+    margin: 0 auto 14px;
 }
 
 .cinta {
