@@ -800,6 +800,10 @@ form button:hover {
 
 }
 
+#apra-img img{
+    max-width: 200px
+}
+
 .logo-item p {
     font-size: 14px;
     color: #444;
