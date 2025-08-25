@@ -593,34 +593,31 @@ li::marker {
 
 /* Carrusel */
 .carrusel-clientes {
-    width: 50%;
-    margin: 0 auto;
+    max-width: 60%;
     overflow: hidden;
-    box-sizing: border-box;
-    padding: 20px 0;
-    display: flex;
-    justify-content: center;
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: 14px;
 }
 
 .cinta {
+    margin-bottom: 50px;
     display: flex;
-    width: fit-content;
-    animation: scroll 60s linear infinite;
-    gap: 40px;
+    white-space: nowrap;
+    animation: scroll-cinta 15s linear infinite;
 }
 
 .cinta img {
-    width: 250px;
-    height: auto;
-    object-fit: contain;
-    transition: transform 0.3s;
+    height: 60px;
+    margin: 0 20px;
+    flex-shrink: 0;
 }
 
 .cinta img:hover {
     transform: scale(1.1);
 }
 
-@keyframes scroll {
+@keyframes scroll-cinta {
     0% {
         transform: translateX(0);
     }
