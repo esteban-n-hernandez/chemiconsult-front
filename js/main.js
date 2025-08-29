@@ -1,33 +1,3 @@
-window.addEventListener("load", () => {
-    const imagenFondo = document.getElementById("fondo-lab");
-    const contenedor = document.querySelector(".contenedor-header-superpuesto");
-    const texto = document.getElementById("texto-header");
-    const mensaje = "SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA";
-
-    if (imagenFondo.complete) {
-        iniciar();
-    } else {
-        imagenFondo.onload = iniciar;
-    }
-
-    function iniciar() {
-        contenedor.style.display = "flex";
-        let index = 0;
-
-        const escribir = () => {
-            if (index < mensaje.length) {
-                texto.textContent += mensaje.charAt(index);
-                index++;
-                setTimeout(escribir, 50); // velocidad tipado
-            } else {
-                texto.classList.add("tipado"); // fuerza visualización final
-            }
-        };
-
-        escribir();
-    }
-});
-
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.getElementById("inicio");
     setTimeout(() => {
