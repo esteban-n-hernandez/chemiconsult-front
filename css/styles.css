@@ -880,7 +880,7 @@ form button:hover {
 /* =========================
    Responsive Styles
    ========================= */
-@media (max-width: 1280px) {
+@media (max-width: 1366px) {
 
     .quienes-somos-div {
         width: 80%;
