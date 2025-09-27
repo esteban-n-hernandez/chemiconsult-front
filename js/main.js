@@ -116,3 +116,107 @@ document.addEventListener("DOMContentLoaded", () => {
 
 const cinta = document.querySelector('.cinta');
 cinta.innerHTML += cinta.innerHTML;
+
+// Carousel arrows for .grupo-servicios (mobile)
+document.addEventListener('DOMContentLoaded', function () {
+    const grupoServicios = document.querySelector('.grupo-servicios');
+    const leftArrow = document.querySelector('.carousel-arrow.left');
+    const rightArrow = document.querySelector('.carousel-arrow.right');
+
+    if (grupoServicios && leftArrow && rightArrow) {
+        const scrollAmount = grupoServicios.offsetWidth * 0.9; // scroll by one card
+
+        leftArrow.addEventListener('click', () => {
+            grupoServicios.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+        });
+
+        rightArrow.addEventListener('click', () => {
+            grupoServicios.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+        });
+    }
+});
+
+
+// Add this to your main.js file
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to check if an element is in viewport
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    // Get the services section
+    const serviciosSection = document.getElementById('servicios');
+
+    // Add a class for visibility debugging
+    serviciosSection.classList.add('section-debug');
+
+    // Check if services section is visible
+    function checkServicesVisibility() {
+        if (!isInViewport(serviciosSection)) {
+            console.log('Services section is not in viewport');
+            // Make section more visible by adding a distinctive style
+            serviciosSection.style.padding = '50px 0';
+            serviciosSection.style.margin = '20px 0';
+        }
+    }
+
+    // Check visibility on load and scroll
+    checkServicesVisibility();
+    window.addEventListener('scroll', checkServicesVisibility);
+    window.addEventListener('resize', checkServicesVisibility);
+
+    // Add a click handler for the navigation link to ensure scrolling works
+    document.querySelector('a[href="#servicios"]').addEventListener('click', function(e) {
+        e.preventDefault();
+        serviciosSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+});
+
+// Add this to your JavaScript file
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to force the servicios section to be visible regardless of scaling
+    function forceServiciosVisibility() {
+        const serviciosSection = document.getElementById('servicios');
+
+        if (serviciosSection) {
+            // Ensure the section is visible by adding these critical properties
+            serviciosSection.style.display = "block";
+            serviciosSection.style.visibility = "visible";
+            serviciosSection.style.opacity = "1";
+            serviciosSection.style.transform = "translateY(0)";
+            serviciosSection.style.position = "relative";
+            serviciosSection.style.zIndex = "1";
+            serviciosSection.classList.add("visible");
+
+            // Add a clear margin to ensure spacing
+            serviciosSection.style.marginTop = "100px";
+            serviciosSection.style.marginBottom = "100px";
+
+            console.log("Force visibility applied to services section");
+        }
+    }
+
+    // Run immediately and on resize
+    forceServiciosVisibility();
+    window.addEventListener('resize', forceServiciosVisibility);
+
+    // Also run when scrolling near the section
+    window.addEventListener('scroll', function() {
+        const serviciosSection = document.getElementById('servicios');
+        if (!serviciosSection) return;
+
+        const rect = serviciosSection.getBoundingClientRect();
+        const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+        // If we're anywhere near the section, make it visible
+        if (rect.top <= windowHeight && rect.bottom >= 0) {
+            forceServiciosVisibility();
+        }
+    });
+});

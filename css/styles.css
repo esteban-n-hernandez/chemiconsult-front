@@ -350,10 +350,25 @@ li::marker {
 }
 
 #servicios {
-    min-height: 500px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    box-sizing: border-box;
+    /* Reset critical properties to ensure visibility */
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    transform: none !important;
+    min-height: 300px;
+    position: relative;
+    z-index: 1;
+    margin: 100px 0;
+    border: 1px solid transparent; /* Helps with content containment */
+    scroll-margin-top: 100px;
+    overflow: visible;
+}
+
+/* Prevent any parent containers from hiding the section */
+#servicios.visible {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
 }
 
 .servicio {
@@ -1122,6 +1137,15 @@ form button:hover {
 
     .navbar {
         display: block !important;
+    }
+}
+
+/* Fix for when Windows scaling is applied */
+@media screen and (max-width: 768px), screen and (min-resolution: 120dpi) {
+    #servicios {
+        margin-top: 50px;
+        margin-bottom: 50px;
+        padding: 30px 0;
     }
 
 }
