@@ -940,17 +940,20 @@ form button:hover {
     }
 
     .cinta img {
-        height: 60px;
-        margin: 0 20px;
+        height: 50px; /* Reducir altura para móviles */
+        margin: 0 15px; /* Reducir margen */
         flex-shrink: 0;
+        min-width: 60px; /* Ancho mínimo para evitar imágenes muy pequeñas */
+        object-fit: contain;
     }
-
 
     .cinta {
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 8s linear infinite;
+        animation: scroll-cinta 25s linear infinite;
+        /* Asegurar que el contenido se repita suficientemente */
+        width: 200%;
     }
 
     @keyframes scroll-cinta {
@@ -958,7 +961,7 @@ form button:hover {
             transform: translateX(0);
         }
         100% {
-            transform: translateX(-50%);
+            transform: translateX(-100%); /* Cambiar a -100% para mejor scroll */
         }
     }
 
