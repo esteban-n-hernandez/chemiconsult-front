@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 200); // slight delay for effect
 });
 
-// Typewriter effect for header <p>
 document.addEventListener("DOMContentLoaded", function () {
     const header = document.getElementById("inicio");
     setTimeout(() => {
@@ -114,10 +113,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-const cinta = document.querySelector('.cinta');
-cinta.innerHTML += cinta.innerHTML;
-
-// Carousel arrows for .grupo-servicios (mobile)
 document.addEventListener('DOMContentLoaded', function () {
     const grupoServicios = document.querySelector('.grupo-servicios');
     const leftArrow = document.querySelector('.carousel-arrow.left');
@@ -136,8 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-
-// Add this to your main.js file
 document.addEventListener('DOMContentLoaded', function() {
     // Function to check if an element is in viewport
     function isInViewport(element) {
@@ -150,13 +143,10 @@ document.addEventListener('DOMContentLoaded', function() {
         );
     }
 
-    // Get the services section
     const serviciosSection = document.getElementById('servicios');
 
-    // Add a class for visibility debugging
     serviciosSection.classList.add('section-debug');
 
-    // Check if services section is visible
     function checkServicesVisibility() {
         if (!isInViewport(serviciosSection)) {
             console.log('Services section is not in viewport');
@@ -166,7 +156,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Check visibility on load and scroll
     checkServicesVisibility();
     window.addEventListener('scroll', checkServicesVisibility);
     window.addEventListener('resize', checkServicesVisibility);
@@ -178,7 +167,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// Add this to your JavaScript file
 document.addEventListener('DOMContentLoaded', function() {
     // Function to force the servicios section to be visible regardless of scaling
     function forceServiciosVisibility() {
@@ -202,11 +190,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Run immediately and on resize
     forceServiciosVisibility();
     window.addEventListener('resize', forceServiciosVisibility);
 
-    // Also run when scrolling near the section
     window.addEventListener('scroll', function() {
         const serviciosSection = document.getElementById('servicios');
         if (!serviciosSection) return;
@@ -214,7 +200,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const rect = serviciosSection.getBoundingClientRect();
         const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
-        // If we're anywhere near the section, make it visible
         if (rect.top <= windowHeight && rect.bottom >= 0) {
             forceServiciosVisibility();
         }

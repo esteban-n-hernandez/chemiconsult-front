@@ -238,9 +238,9 @@ li::marker {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    text-align: justify;
     align-items: center;
     gap: 20px;
-    text-align: center;
     width: 50%;
     margin: auto;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
@@ -306,16 +306,18 @@ li::marker {
     min-width: 280px;
     margin-bottom: 15px;
     border-top: 4px solid var(--color-green-main);
+    color: 2px solid var(--color-green-hover);
 }
 
 .mision-vision-div h3 {
     text-align: center;
+    color:  var(--color-green-hover);
 }
 
 .mision-vision-div p {
     font-size: 1.1em;
     color: var(--color-black);
-    text-align: center;
+    text-align: justify;
 }
 
 #mision h3::after {
@@ -897,16 +899,19 @@ form button:hover {
    ========================= */
 @media (max-width: 600px) {
 
+    /* Quienes Somos Responsive */
     .quienes-somos-div {
         width: 80%;
     }
 
+    /* Footer Responsive */
     .footer .container {
         flex-direction: column;
         text-align: center;
         gap: 10px;
     }
 
+    /* Navbar Responsive */
     .navbar {
         font-size: 1em;
         padding: 10px 0;
@@ -931,6 +936,7 @@ form button:hover {
         padding: 10px 0;
     }
 
+    /* Carrusel Clientes Responsive */
     .carrusel-clientes {
         max-width: 100%;
         overflow: hidden;
@@ -940,10 +946,10 @@ form button:hover {
     }
 
     .cinta img {
-        height: 50px; /* Reducir altura para móviles */
-        margin: 0 15px; /* Reducir margen */
+        height: 50px;
+        margin: 0 15px;
         flex-shrink: 0;
-        min-width: 60px; /* Ancho mínimo para evitar imágenes muy pequeñas */
+        min-width: 60px;
         object-fit: contain;
     }
 
@@ -952,8 +958,7 @@ form button:hover {
         display: flex;
         white-space: nowrap;
         animation: scroll-cinta 25s linear infinite;
-        /* Asegurar que el contenido se repita suficientemente */
-        width: 200%;
+        width: 210%;
     }
 
     @keyframes scroll-cinta {
@@ -965,6 +970,7 @@ form button:hover {
         }
     }
 
+    /* Servicios Slide Responsive */
     .grupo-servicios {
         display: flex;
         flex-direction: row;
