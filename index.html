@@ -4,48 +4,353 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHEMICONSULT</title>
+    <link rel="icon" href="img/icon%20logo.png" type="image/x-icon">
     <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Raleway&display=swap" rel="stylesheet">
+
 </head>
 <body>
 
-<!-- Sección: Inicio / Hero -->
-<section id="inicio" class="seccion">
-    <img src="img/logo-ch.png" height="138" width="320" alt="chemi logo">
-    <p>Más de 40 años en análisis químico, ambiental y seguridad alimentaria</p>
-    <a href="#servicios" class="boton">Ver servicios</a>
+<script src="js/main.js"></script>
+
+<header id="inicio">
+    <div class="slider-laboratorio">
+        <img style="backdrop-filter: blur(10px);" src="img/Laboratorio-acreditado-scaled.jpeg"
+             alt="Laboratorio CHEMICONSULT 1">
+    </div>
+    <div class="contenedor-header-superpuesto">
+        <img id="imginicio" src="img/Logo%20transparente.png" alt="CHEMI CONSULT logo">
+        <p id="texto-header" class="tipado">SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA</p>
+    </div>
+</header>
+
+<nav class="navbar">
+    <div class="container-navbar">
+        <div class="logo-navbar">
+            <img id="logo-navbar-id" src="img/Logo%20navbar.png" alt="logo">
+        </div>
+        <ul class="menu-navbar">
+            <li><a href="#inicio">Inicio</a></li>
+            <li><a href="#identificador-quienes-somos">¿Quiénes somos?</a></li>
+            <li><a href="#servicios">Servicios</a></li>
+            <li><a href="#clientes">Clientes</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+        </ul>
+    </div>
+</nav>
+
+
+<section id="identificador-quienes-somos">
+    <h2>¿Quiénes somos?</h2>
+    <div class="quienes-somos-div">
+        <p>
+            Somos un equipo de profesionales, que desde hace más de 30 años, brinda servicios de laboratorio y consultoría en las áreas de análisis ambientales, control de calidad, mediciones de higiene y seguridad. Nuestro grupo de trabajo interdisciplinario y nuestra amplia trayectoria nos permiten ofrecer una sólida respuesta para los requerimientos de su empresa, con una atención profesional, personalizada, rápida y confiable.
+        </p>
+        <p>
+            Además de nuestro laboratorio y oficinas en Buenos Aires, tenemos una filial en Córdoba dedicada a
+            monitoreos ambientales, lo que nos permite dar una rápida respuesta a las empresas de todo el país.
+        </p>
+    </div>
 </section>
 
-<!-- Sección: Servicios -->
-<section id="servicios" class="seccion">
+<section id="mision-vision" class="mision-vision-class">
+    <div id="mision" class="mision-vision-div">
+        <h3>MISIÓN </h3>
+        <p>Brindar servicios de análisis químicos y ambientales confiables y con los más altos estándares de calidad,
+            ética profesional y compromiso con el desarrollo sostenible a través de una relación personalizada con
+            nuestros clientes.</p>
+    </div>
+    <div id="vision" class="mision-vision-div">
+        <h3>VISIÓN </h3>
+        <p>Ser un laboratorio referente en nuestras áreas de trabajo por nuestro compromiso con el cliente y por brindar
+            servicios eficientes y de calidad a través de la mejora continua.</p>
+    </div>
+</section>
+
+<section id="servicios">
     <h2>Servicios</h2>
-    <div class="tarjetas">
-        <div class="tarjeta">
-            <h3>Seguridad Alimentaria</h3>
-            <p>Hisopados, análisis microbiológicos, cumplimiento de normas SENASA...</p>
+    <div class="grupo-servicios">
+        <div class="servicio servicio-ambiental">
+            <div>
+                <div>
+                    <div class="img-title-wrapper">
+                        <img class="fondo-laboratorio" src="img/servicios/01%20ambientales%20sin%20letra.jpg"
+                             alt="Imagen 1">
+                        <p class="servicios-img-titles">AMBIENTALES</p>
+                    </div>
+                    <div class="contenido-servicio">
+                        <div class="texto-servicio">
+                            <ul>
+                                <li>Muestreo y análisis de aguas (superficiales y subterráneas)</li>
+                                <li>Muestreo y análisis de efluentes</li>
+                                <li>Muestreo y análisis de barros y suelos</li>
+                                <li>Calidad de aire</li>
+                                <li>Emisiones gaseosas de fuentes móviles y fijas</li>
+                                <li>Estudios de ruidos molestos fuentes fijas y móviles</li>
+                                <li>Vibraciones</li>
+                                <li>Variables meteorológicas</li>
+                                <li>Investigación y desarrollo de mejoras</li>
+                                <li>Gestión y consultoría</li>
+                                <li>Charlas y capacitaciones</li>
+                                <li>Análisis microbiológicos y fisicoquímicos</li>
+                                <li>Análisis de metales pesados</li>
+                                <li>Análisis de compuestos orgánicos (pesticidas, THM, BTEX, solventes, Hidrocarburos
+                                    totales y
+                                    GRO/DRO,
+                                    HAPN, PCB, clorofila, microcistina, entre otros)
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="imagenes-servicio">
+                            <img src="img/transition/ambiental/ambiental1.jpg" alt="Imagen 1">
+                            <img src="img/transition/ambiental/ambiental2.jpg" alt="Imagen 2">
+                            <img src="img/transition/ambiental/ambiental3.jpg" alt="Imagen 3">
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="tarjeta">
-            <h3>Control de Calidad</h3>
-            <p>Análisis físico-químicos de agua potable y efluentes.</p>
+        <div class="servicio servicio-higiene">
+            <div>
+                <div class="img-title-wrapper">
+                    <img class="fondo-laboratorio" src="img/servicios/02%20hys%20sin%20letra.jpg" alt="Imagen 1">
+                    <p class="servicios-img-titles">HIGIENE Y SEGURIDAD LABORAL</p>
+                </div>
+                <div class="contenido-servicio">
+                    <div class="texto-servicio">
+                        <ul>
+                            <li>Potabilidad de aguas</li>
+                            <li>Sustancias químicas en ambientes laborales</li>
+                            <li>Iluminación</li>
+                            <li>Ruido – Estático y dosimetrías</li>
+                            <li>Vibraciones – Estático y dosimetrías</li>
+                            <li>Carga Térmica</li>
+                            <li>Puestas a tierra y seguridad eléctrica</li>
+                            <li>Evaluación de ventilación</li>
+                            <li>Radiaciones UV</li>
+                            <li>Investigación y desarrollo de mejoras</li>
+                            <li>Charlas y capacitaciones</li>
+                        </ul>
+                    </div>
+                    <div class="imagenes-servicio">
+                        <img src="img/transition/seguridadhigiene/syh1.jpeg" alt="Imagen 1">
+                        <img src="img/transition/seguridadhigiene/syh2.jpg" alt="Imagen 2">
+                        <img src="img/transition/seguridadhigiene/syh3.jpg" alt="Imagen 3">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="servicio servicio-calidad">
+            <div>
+                <div class="img-title-wrapper">
+                    <img class="fondo-laboratorio" src="img/servicios/03%20control%20calidad%20sin%20letra.jpg"
+                         alt="Imagen 1">
+                    <p class="servicios-img-titles">CONTROL DE CALIDAD</p>
+                </div>
+                <div class="contenido-servicio">
+                    <div class="texto-servicio">
+                        <ul>
+                            <li>Cromatografía gaseosa</li>
+                            <li>Absorción atómica</li>
+                            <li>Espectros UV – visible</li>
+                            <li>Valoraciones potenciométricas</li>
+                            <li>Rotación específica; índice de refracción</li>
+                            <li>Ensayos varios de mesada</li>
+                            <li>Validación de Métodos Analíticos</li>
+                            <li>Espectrometría IR, RMN-H y de Masas</li>
+                            <li>Valoración de ingrediente activo (HPLC – GC – AA – Volumetrías – Gravimetrías)</li>
+                        </ul>
+                    </div>
+                    <div class="imagenes-servicio">
+                        <img src="img/transition/qa/controlcalidad1.jpg" alt="Imagen 1">
+                        <img src="img/transition/qa/controlcalidad2.jpg" alt="Imagen 2">
+                        <img src="img/transition/qa/controlcalidad3.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="servicio servicio-farma">
+            <div>
+                <div class="img-title-wrapper">
+                    <img class="fondo-laboratorio" src="img/servicios/04%20farma%20sin%20letra.jpg" alt="Imagen 1">
+                    <p class="servicios-img-titles">FARMA</p>
+                </div>
+                <div class="contenido-servicio">
+                    <div class="texto-servicio">
+                        <ul>
+                            <li>Estudios de preformulación</li>
+                            <li>Diseño y desarrollo galénico de medicamentos</li>
+                            <li>Diseño de procesos de fabricación</li>
+                            <li>Transferencia de tecnología de fabricación y soporte in situ</li>
+                        </ul>
+                    </div>
+                    <div class="imagenes-servicio">
+                        <img src="img/transition/farma/farma1.png" alt="Imagen 1">
+                        <img src="img/transition/farma/farma2.png" alt="Imagen 2">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="servicio servicio-alimentaria">
+            <div>
+                <div class="img-title-wrapper">
+                    <img class="fondo-laboratorio" src="img/servicios/05%20alimentos%20sin%20letra.jpg" alt="Imagen 1">
+                    <p class="servicios-img-titles">SEGURIDAD ALIMENTARIA</p>
+                </div>
+                <div class="contenido-servicio">
+                    <div class="texto-servicio">
+                        <ul>
+                            <li>Análisis de alimentos</li>
+                            <li>Hisopado de superficies</li>
+                            <li>Auditorías bromatológicas internas y externas</li>
+                            <li>Asesoramiento a empresas alimenticias (caterings, comedores industriales, geriátricos,
+                                clínicas,
+                                comedores escolares, restaurantes, supermercados y transportes). Asesoramiento en Buenas
+                                prácticas
+                                de manufactura (BPM), Prerrequisitos (PAS 220 o ISO/TS 22002-1, PAS 222, PAS 223),
+                                sistema
+                                HACCP
+                                según Codex Alimentarius, ISO 22000 y esquemas reconocidos por GFSI (BRC, FSSC 22000)
+                            </li>
+                            <li>Capacitaciones para Manipuladores de Alimentos</li>
+                        </ul>
+                    </div>
+                    <div class="imagenes-servicio">
+                        <img src="img/transition/alimentaria/seguridad%20alimentaria1.jpg" alt="Imagen 1">
+                        <img src="img/transition/alimentaria/seguridad%20alimentaria2.jpg" alt="Imagen 2">
+                        <img src="img/transition/alimentaria/seguridad%20alimentaria3.jpg" alt="Imagen 2">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="carousel-indicators"></div>
+
+</section>
+<br>
+
+<section id="clientes">
+    <br>
+    <h2>Clientes</h2>
+    <p class="texto-centrado texto-destacado">Confían en nuestra experiencia para garantizar la
+        calidad y el cumplimiento normativo.</p>
+    <div class="carrusel-clientes">
+        <div class="cinta">
+            <img src="img/empresas/AgristarLogo.png" alt="Empresa 1" title="Agri Star">
+            <img src="img/empresas/ArcorLogo.png" alt="Empresa 2" title="Arcor">
+            <img src="img/empresas/AristonLogo.png" alt="Empresa 3" title="Ariston">
+            <img src="img/empresas/ArtesaniasAvicolasLogo.png" alt="Empresa 4" title="Artesanias Avicolas">
+            <img src="img/empresas/AveryLogo.png" alt="Empresa 5" title="Avery">
+            <img src="img/empresas/BarbarellaLogo.png" alt="Empresa 6" title="Barbarella">
+            <img src="img/empresas/BioprosurLogo.png" alt="Empresa 7" title="Bioprosur">
+            <img src="img/empresas/CeramicasCanuelasLogo.png" alt="Empresa 8" title="Ceramicas Canuelas">
+            <img src="img/empresas/ClubNauticoLogo.png" alt="Empresa 9" title="Club Nautico San Isidro">
+            <img src="img/empresas/ComisionEnergiaLogo.png" alt="Empresa 10"
+                 title="Comision Nacional de Energia Atomica">
+            <img src="img/empresas/DropurLogo.png" alt="Empresa 11" title="Dro Pur ">
+            <img src="img/empresas/FibraltexLogo.png" alt="Empresa 23" title="Fibraltex">
+        </div>
+        <div class="cinta">
+            <img src="img/empresas/FabraLogo.png" alt="Empresa 12" title="Fabra">
+            <img src="img/empresas/FemsaLogo.png" alt="Empresa 13" title="FEMSA">
+            <img src="img/empresas/FortbentonLogo.png" alt="Empresa 14" title="Fortbenton">
+            <img src="img/empresas/IngenatLogo.png" alt="Empresa 15" title="Ingenat">
+            <img src="img/empresas/InstitutoAgropecuariaLogo.png" alt="Empresa 16"
+                 title="Instituto Nacional de Energia Agropecuaria">
+            <img src="img/empresas/MaprimedLogo.png" alt="Empresa 17" title="Maprimed">
+            <img src="img/empresas/MarinasGolfLogo.png" alt="Empresa 18" title="Marinas Golf">
+            <img src="img/empresas/MiniesterioAmbienteLogo.png" alt="Empresa 19"
+                 title="Ministerio de Ambiente y Desarollo">
+            <img src="img/empresas/TratecoLogo.png" alt="Empresa 20" title="TratEco">
+            <img src="img/empresas/utnlogo.png" alt="Empresa 21" title="UTN">
+            <img src="img/empresas/ForeverPipeLogo.jpeg" alt="Empresa 22" title="Forever Pipe">
         </div>
     </div>
 </section>
 
-<!-- Sección: Clientes -->
-<section id="clientes" class="seccion">
-    <h2>Clientes</h2>
-    <p>Más de 300 empresas confían en nosotros</p>
-</section>
-
-<!-- Sección: Contacto -->
 <section id="contacto" class="seccion">
     <h2>Contacto</h2>
-    <form>
-        <input type="text" placeholder="Nombre" required>
-        <input type="email" placeholder="Correo electrónico" required>
-        <textarea placeholder="Escribí tu mensaje..." required></textarea>
-        <button type="submit">Enviar</button>
-    </form>
+    <p class="texto-centrado texto-destacado">¿Querés que te ayudemos con tu consulta? Completá el siguiente formulario
+        y nos comunicaremos a la brevedad.</p>
+
+    <a href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información" target="_blank"
+       class="whatsapp-icon">
+        <img src="https://img.icons8.com/?size=100&id=BkugfgmBwtEI&format=png&color=000000" alt="WhatsApp"
+             style="width:60px; height:60px;">
+    </a>
+
+    <div class="contacto-flex">
+        <form id="form-contacto" action="https://formsubmit.co/info@chemiconsult.com.ar" method="POST">
+            <input type="text" name="nombre" placeholder="Nombre completo" required pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ\s]{3,}"
+                   title="Ingresá tu nombre completo">
+            <input type="email" name="email" placeholder="Correo electrónico" required>
+            <input type="tel" name="telefono" placeholder="Teléfono (opcional)">
+            <textarea name="mensaje" rows="5" placeholder="Escribí tu mensaje..." required></textarea>
+            <button type="submit" class="btn-grad">Enviar mensaje</button>
+        </form>
+    </div>
 </section>
 
+<section class="logos-contacto">
+    <div class="logo-item">
+        <img src="img/legales/cofilab.png" alt="COFILAB">
+        <p>Certificado por COFILAB</p>
+    </div>
+    <div id="apra-img" class="logo-item">
+        <img src="img/legales/apra.png" alt="ApRA">
+        <p>Registro "RELADA" N°29</p>
+    </div>
+    <div class="logo-item">
+        <img src="img/legales/OPDS-removebg-preview.png" alt="OPDS">
+        <p>Registro "OPDS" (BsAs) N°26</p>
+    </div>
+    <div class="logo-item">
+        <img src="img/legales/cba-logo%20azul.png" alt="Gobierno de Córdoba">
+        <p>Registro "ROLA" (Córdoba) N°14</p>
+    </div>
+</section>
+
+<footer class="footer full-width">
+    <div class="container">
+        <div class="footer-logo">
+            <img style="width: 200px;" src="img/Logo transparente.png" alt="Logo de la empresa">
+        </div>
+        <div class="datos-contacto">
+            <ul style="list-style: none">
+                <li><strong>Email:</strong> info@chemiconsult.com.ar</li>
+                <li><strong>Tel:</strong> +54 11 4723 5698</li>
+                <li>
+                    <strong>WhatsApp:</strong>
+                    <a style="color: inherit; text-decoration: none;"
+                       href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información" target="_blank">
+                        +54 11 5869 2422
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="footer-social">
+            <a href="https://www.instagram.com/chemiconsult.lab/" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram"
+                     width="30">
+            </a>
+            <a href="https://ar.linkedin.com/company/chemiconsult-ar" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png" alt="LinkedIn"
+                     width="30">
+            </a>
+            <a href="https://maps.app.goo.gl/omrBacEPZCKpe8n19" target="_blank" rel="noopener noreferrer">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Google_Maps_icon_%282015-2020%29.svg"
+                     alt="Google Maps" width="30">
+            </a>
+        </div>
+        <div class="footer-horarios">
+            <h4>Horarios de atención</h4>
+            <ul>
+                <li><strong>Lunes a Viernes:</strong> 9 a 17 hs</li>
+                <li><strong>Sábado y Domingo:</strong> Cerrado</li>
+            </ul>
+        </div>
+    </div>
+</footer>
 </body>
 </html>
