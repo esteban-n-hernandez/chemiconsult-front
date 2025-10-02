@@ -959,6 +959,7 @@ form button:hover {
         white-space: nowrap;
         animation: scroll-cinta 25s linear infinite;
         width: 210%;
+        padding-right: 2.5em; /* igual o mayor al gap */
     }
 
     @keyframes scroll-cinta {
