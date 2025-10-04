@@ -1004,7 +1004,7 @@ form button:hover {
 }
 
 
-@media (max-width: 600px) {
+@media (max-width: 600px) and (orientation: portrait) {
 
     /* Quienes Somos Responsive */
     .quienes-somos-div {
@@ -1018,10 +1018,7 @@ form button:hover {
         gap: 10px;
     }
 
-    /* Navbar Responsive */
     .navbar {
-        font-size: 1em;
-        padding: 10px 0;
         display: none !important;
     }
 
@@ -1282,9 +1279,7 @@ form button:hover {
     }
 }
 
-@media (min-width: 700px) and (max-width: 1200px) and (orientation: portrait) {
-    /* Tablet portrait styles here */
-
+@media (min-width: 700px) and (max-width: 1800px) and (orientation: portrait) {
     /* Carrusel */
     .carrusel-clientes {
         max-width: 100%;
