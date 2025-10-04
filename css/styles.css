@@ -899,11 +899,39 @@ form button:hover {
    ========================= */
 
 
+/* tablets grandes o notebooks chicos */
+@media (min-width: 1025px) and (max-width: 1240px) {
+
+    /* Carrusel */
+    .carrusel-clientes {
+        max-width: 90%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .cinta {
+        margin-bottom: 50px;
+        display: flex;
+        white-space: nowrap;
+        animation: scroll-cinta 15s linear infinite;
+    }
+
+    @keyframes scroll-cinta {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+}
+
 @media (min-width: 700px) and (max-width: 1000px) {
     html, body {
         overflow-x: hidden;
         width: 100vw;
     }
+
     /* Optional: Ensure main containers do not exceed viewport */
     .container, .carrusel-clientes, #servicios, #clientes {
         max-width: 100vw;
@@ -971,7 +999,6 @@ form button:hover {
             transform: translateX(-100%); /* Cambiar a -100% para mejor scroll */
         }
     }
-
 
 
 }
