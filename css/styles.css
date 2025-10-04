@@ -900,7 +900,7 @@ form button:hover {
 
 
 /* tablets grandes o notebooks chicos */
-@media (min-width: 1025px) and (max-width: 1240px) {
+@media (min-width: 10px) and (max-width: 1200px) {
 
     /* Carrusel */
     .carrusel-clientes {
