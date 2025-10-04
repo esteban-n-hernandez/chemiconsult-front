@@ -1125,7 +1125,7 @@ Telefonos
     }
 }
 
-@media (min-width: 601px) and (max-width: 1000px) and (orientation: landscape) or (orientation: portrait)   {
+@media (min-width: 601px) and (max-width: 1000px) and (orientation: landscape)  {
     html, body {
         overflow-x: hidden;
         width: 100vw;
@@ -1197,8 +1197,8 @@ Telefonos
     }
 }
 
-/* tablets grandes o notebooks chicos */
-@media (min-width: 1001px) and (max-width: 1600px) {
+/* tablets grandes horizontal o notebooks chicos */
+@media (min-width: 1001px) and (max-width: 1600px) and (orientation: landscape) or (min-width: 700px) and (max-width: 1800px) and (orientation: portrait){
     .carrusel-clientes {
         -webkit-overflow-scrolling: touch;
         max-width: 90%;
@@ -1222,6 +1222,7 @@ Telefonos
         }
     }
 }
+
 
 /* Fix for when Windows scaling is applied */
 @media screen and (max-width: 768px), screen and (min-resolution: 120dpi) {
