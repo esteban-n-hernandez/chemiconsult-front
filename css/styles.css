@@ -905,14 +905,12 @@ form button:hover {
         overflow: hidden;
         position: relative;
     }
-
     .cinta {
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
         animation: scroll-cinta 15s linear infinite;
     }
-
     @keyframes scroll-cinta {
         0% {
             transform: translateX(0);
@@ -928,12 +926,10 @@ form button:hover {
         overflow-x: hidden;
         width: 100vw;
     }
-
     .container, .carrusel-clientes, #servicios, #clientes {
         max-width: 100vw;
         box-sizing: border-box;
     }
-
     .carrusel-clientes {
         max-width: 100%;
         overflow-x: auto;
@@ -945,7 +941,6 @@ form button:hover {
         scroll-snap-type: x mandatory;
         display: flex;
     }
-
     .cinta {
         display: flex;
         flex-direction: row;
@@ -956,7 +951,6 @@ form button:hover {
         margin-bottom: 0;
         scroll-snap-align: start;
     }
-
     .cinta img {
         height: 50px;
         margin: 0 15px;
@@ -965,14 +959,12 @@ form button:hover {
         object-fit: contain;
         scroll-snap-align: start;
     }
-
     .carousel-indicators-clientes {
         display: flex;
         justify-content: center;
         margin-top: 10px;
         gap: 8px;
     }
-
     .carousel-indicators-clientes .dot {
         width: 10px;
         height: 10px;
@@ -980,11 +972,9 @@ form button:hover {
         background: #ccc;
         transition: background 0.3s;
     }
-
     .carousel-indicators-clientes .dot.active {
         background: #333;
     }
-
     @keyframes scroll-cinta {
         0% {
             transform: translateX(0);
@@ -996,58 +986,23 @@ form button:hover {
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
-    css
-    html, body {
-        overflow-x: hidden !important;
-        width: 100vw;
-        position: relative;
-    }
-
-    #servicios, #clientes, #contacto, #inicio {
-        max-width: 100vw;
-        overflow-x: hidden;
-        box-sizing: border-box;
-        position: relative;
-    }
-
-    .fondo-laboratorio {
-        width: 100vw;
-        max-width: 100vw;
-        box-sizing: border-box;
-    }
-
-    #servicios, #clientes, #contacto, #inicio {
-        max-width: 100vw;
-        overflow-x: hidden;
-        box-sizing: border-box;
-    }
-
-    .fondo-laboratorio {
-        width: 100vw;
-        max-width: 100vw;
-        box-sizing: border-box;
-    }
 
     .quienes-somos-div {
         width: 80%;
     }
-
     .footer .container {
         flex-direction: column;
         text-align: center;
         gap: 10px;
     }
-
     .navbar {
         display: none !important;
     }
-
     .navbar ul {
         flex-direction: column;
         gap: 10px;
         display: none;
     }
-
     .navbar.active ul {
         display: flex;
         flex-direction: column;
@@ -1059,7 +1014,6 @@ form button:hover {
         box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
         padding: 10px 0;
     }
-
     .carrusel-clientes {
         max-width: 100%;
         overflow-x: auto;
@@ -1071,7 +1025,6 @@ form button:hover {
         scroll-snap-type: x mandatory;
         display: flex;
     }
-
     .cinta {
         display: flex;
         flex-direction: row;
@@ -1082,7 +1035,6 @@ form button:hover {
         margin-bottom: 0;
         scroll-snap-align: start;
     }
-
     .cinta img {
         height: 50px;
         margin: 0 15px;
@@ -1091,14 +1043,12 @@ form button:hover {
         object-fit: contain;
         scroll-snap-align: start;
     }
-
     .carousel-indicators-clientes {
         display: flex;
         justify-content: center;
         margin-top: 10px;
         gap: 8px;
     }
-
     .carousel-indicators-clientes .dot {
         width: 10px;
         height: 10px;
@@ -1106,11 +1056,9 @@ form button:hover {
         background: #ccc;
         transition: background 0.3s;
     }
-
     .carousel-indicators-clientes .dot.active {
         background: #333;
     }
-
     @keyframes scroll-cinta {
         0% {
             transform: translateX(0);
@@ -1129,7 +1077,6 @@ form button:hover {
         gap: 15px;
         padding-bottom: 10px;
     }
-
     .servicio {
         min-width: 90vw;
         max-width: 90vw;
@@ -1138,23 +1085,19 @@ form button:hover {
         margin-bottom: 0;
         box-sizing: border-box;
     }
-
     .grupo-servicios .servicio {
         border-radius: 0;
     }
-
     .grupo-servicios .servicio:first-child,
     .grupo-servicios .servicio:last-child {
         border-radius: 8px;
     }
-
     .carousel-indicators {
         display: flex;
         justify-content: center;
         gap: 8px;
         margin: 12px 0 0 0;
     }
-
     .carousel-indicators .dot {
         width: 10px;
         height: 10px;
@@ -1162,51 +1105,41 @@ form button:hover {
         background: #cfd8dc;
         transition: background 0.3s;
     }
-
     .carousel-indicators .dot.active {
         background: var(--color-green-main);
     }
-
     form {
         max-width: 100%;
         padding: 0 10px;
     }
-
     #inicio {
         min-height: 60vh;
         padding-top: 30px;
     }
-
     #inicio .contenedor-header img {
         width: 220px;
     }
-
     #imginicio {
         width: 400px;
         height: auto;
     }
-
     .whatsapp-icon img {
         display: none;
     }
-
     .imagenes-servicio {
         display: none;
     }
-
     .img-servicio {
         display: flex;
         max-width: 100px;
         height: auto;
         flex-direction: column;
     }
-
     .img-title-wrapper {
         position: relative;
         display: inline-block;
         width: 100%;
     }
-
     .servicios-img-titles {
         border-radius: 8px;
         color: var(--color-white);
@@ -1224,7 +1157,6 @@ form button:hover {
         opacity: 1;
         text-shadow: 2px 2px 0 #000000;
     }
-
     .fondo-laboratorio {
         max-width: 400px;
         height: 300px;
@@ -1238,43 +1170,34 @@ form button:hover {
     .whatsapp-icon img {
         display: none;
     }
-
     body {
         padding: 5px;
     }
-
     h1, h2 {
         font-size: 1.2em;
     }
-
     .navbar {
         font-size: 0.95em;
     }
-
     .cinta img {
         width: 80px;
     }
-
     .footer-logo img {
         width: 60px;
     }
-
     .contenedor {
         display: block;
     }
-
     .servicio,
     .cliente,
     .card {
         width: 100%;
         margin-bottom: 20px;
     }
-
     #imginicio {
         width: 250px;
         height: auto;
     }
-
     .imagenes-servicio {
         display: none;
     }
@@ -1292,14 +1215,12 @@ form button:hover {
         overflow: hidden;
         position: relative;
     }
-
     .cinta {
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
         animation: scroll-cinta 15s linear infinite;
     }
-
     @keyframes scroll-cinta {
         0% {
             transform: translateX(0);
