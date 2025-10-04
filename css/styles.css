@@ -904,7 +904,7 @@ form button:hover {
 
     /* Carrusel */
     .carrusel-clientes {
-        max-width: 90%;
+        max-width: 100%;
         overflow: hidden;
         position: relative;
     }
