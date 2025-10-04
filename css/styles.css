@@ -422,16 +422,6 @@ li::marker {
     border-radius: 3px;
 }
 
-/* Opcion 2 */
-.fondo-laboratorio {
-    width: 80vw; /* 80% del ancho del viewport */
-    height: 200px;
-    object-fit: cover;
-    display: block;
-    margin: 0 auto 20px auto; /* centra horizontalmente y agrega espacio abajo */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* opcional: sombra sutil */
-}
-
 /* Opcion 1 */
 .fondo-laboratorio {
     width: 100vw; /* 100% del viewport */
@@ -609,7 +599,7 @@ li::marker {
 
 /* Carrusel */
 .carrusel-clientes {
-    max-width: 70%;
+    max-width: 60%;
     overflow: hidden;
     position: relative;
     margin: 0 auto 14px;
@@ -637,7 +627,7 @@ li::marker {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(-50%);
+        transform: translateX(-60%);
     }
 }
 
@@ -681,9 +671,6 @@ form button:hover {
    Footer
    ========================= */
 .footer {
-    /*
-      background-image: linear-gradient(to right, #232526 0%, #414345 51%, #232526 100%);
-     */
     border-top: 2px solid var(--color-green-hover);
     color: var(--color-white);
     padding: 40px 0;
@@ -899,7 +886,7 @@ form button:hover {
    ========================= */
 
 /* tablets grandes o notebooks chicos */
-@media (min-width: 1000px) and (max-width: 1366px) {
+@media (min-width: 1000px) and (max-width: 1375px) {
     .carrusel-clientes {
         max-width: 100%;
         overflow: hidden;
