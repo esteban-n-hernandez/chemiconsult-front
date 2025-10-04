@@ -886,9 +886,9 @@ form button:hover {
    ========================= */
 
 /* tablets grandes o notebooks chicos */
-@media (min-width: 1000px) and (max-width: 1375px) {
+@media (min-width: 1000px) and (max-width: 1600px) {
     .carrusel-clientes {
-        max-width: 100%;
+        max-width: 80%;
         overflow: hidden;
         position: relative;
     }
@@ -897,7 +897,7 @@ form button:hover {
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 10s linear infinite;
+        animation: scroll-cinta  12s linear infinite;
     }
 
     @keyframes scroll-cinta {
@@ -905,7 +905,7 @@ form button:hover {
             transform: translateX(0);
         }
         100% {
-            transform: translateX(-100%);
+            transform: translateX(-80%);
         }
     }
 }
