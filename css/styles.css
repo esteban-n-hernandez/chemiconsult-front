@@ -1223,31 +1223,6 @@ Telefonos
     }
 }
 
-@media (min-width: 700px) and (max-width: 1800px) and (orientation: portrait) {
-    .carrusel-clientes {
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .cinta {
-        margin-bottom: 50px;
-        display: flex;
-        white-space: nowrap;
-        animation: scroll-cinta 10s linear infinite;
-    }
-
-    @keyframes scroll-cinta {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-    }
-}
-
 /* Fix for when Windows scaling is applied */
 @media screen and (max-width: 768px), screen and (min-resolution: 120dpi) {
     #servicios {
