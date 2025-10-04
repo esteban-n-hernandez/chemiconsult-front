@@ -609,7 +609,7 @@ li::marker {
 
 /* Carrusel */
 .carrusel-clientes {
-    max-width: 63%;
+    max-width: 80%;
     overflow: hidden;
     position: relative;
     margin: 0 auto 14px;
@@ -619,7 +619,7 @@ li::marker {
     margin-bottom: 50px;
     display: flex;
     white-space: nowrap;
-    animation: scroll-cinta 15s linear infinite;
+    animation: scroll-cinta 10s linear infinite;
 }
 
 .cinta img {
@@ -910,7 +910,7 @@ form button:hover {
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 15s linear infinite;
+        animation: scroll-cinta 10s linear infinite;
     }
 
     @keyframes scroll-cinta {
@@ -1297,7 +1297,7 @@ form button:hover {
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 15s linear infinite;
+        animation: scroll-cinta 10s linear infinite;
     }
 
     @keyframes scroll-cinta {
