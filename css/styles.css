@@ -1125,7 +1125,7 @@ Telefonos
     }
 }
 
-@media (min-width: 601px) and (max-width: 1000px) {
+@media (min-width: 601px) and (max-width: 1000px) and (orientation: landscape) or (orientation: portrait)   {
     html, body {
         overflow-x: hidden;
         width: 100vw;
