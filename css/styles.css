@@ -599,7 +599,7 @@ li::marker {
 
 /* Carrusel */
 .carrusel-clientes {
-    max-width: 60%;
+    max-width: 80%;
     overflow: hidden;
     position: relative;
     margin: 0 auto 14px;
