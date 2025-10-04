@@ -986,6 +986,35 @@ form button:hover {
 }
 
 @media (max-width: 600px) and (orientation: portrait) {
+
+    html, body {
+        overflow-x: hidden;
+        width: 100vw;
+    }html, body {
+    overflow-x: hidden;
+    width: 100vw;
+  }
+  #servicios, #clientes, #contacto, #inicio {
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  .fondo-laboratorio {
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+  }
+    #servicios, #clientes, #contacto, #inicio {
+        max-width: 100vw;
+        overflow-x: hidden;
+        box-sizing: border-box;
+    }
+    .fondo-laboratorio {
+        width: 100vw;
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+
     .quienes-somos-div {
         width: 80%;
     }
@@ -1089,10 +1118,7 @@ form button:hover {
     }
     .grupo-servicios .servicio:first-child,
     .grupo-servicios .servicio:last-child {
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-        border-bottom-right-radius: 8px;
-        border-top-right-radius: 8px;
+        border-radius: 8px;
     }
     .carousel-indicators {
         display: flex;
