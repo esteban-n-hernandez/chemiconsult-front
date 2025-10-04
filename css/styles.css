@@ -1197,9 +1197,7 @@ Telefonos
     }
 }
 
-/* tablets grandes horizontal o notebooks chicos */
-@media (min-width: 1001px) and (max-width: 1600px) and (orientation: landscape) or (min-width: 700px) and (max-width: 1800px) and (orientation: portrait){
-
+@media (min-width: 700px) and (max-width: 1800px) and (orientation: portrait){
     .carrusel-clientes {
         -webkit-overflow-scrolling: touch;
         max-width: 100%;
@@ -1211,7 +1209,33 @@ Telefonos
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 15s linear infinite;
+        animation: scroll-cinta 1s linear infinite;
+    }
+
+    @keyframes scroll-cinta {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+}
+
+/* tablets grandes horizontal o notebooks chicos */
+@media (min-width: 1001px) and (max-width: 1600px) and (orientation: landscape)  {
+    .carrusel-clientes {
+        -webkit-overflow-scrolling: touch;
+        max-width: 100%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .cinta {
+        margin-bottom: 50px;
+        display: flex;
+        white-space: nowrap;
+        animation: scroll-cinta 12s linear infinite;
     }
 
     @keyframes scroll-cinta {
