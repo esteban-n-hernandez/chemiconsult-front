@@ -311,7 +311,7 @@ li::marker {
 
 .mision-vision-div h3 {
     text-align: center;
-    color:  var(--color-green-hover);
+    color: var(--color-green-hover);
 }
 
 .mision-vision-div p {
@@ -897,6 +897,86 @@ form button:hover {
 /* =========================
    Responsive Styles
    ========================= */
+
+
+@media (min-width: 700px) and (max-width: 1000px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100vw;
+    }
+    /* Optional: Ensure main containers do not exceed viewport */
+    .container, .carrusel-clientes, #servicios, #clientes {
+        max-width: 100vw;
+        box-sizing: border-box;
+    }
+
+
+    /* Carrusel Clientes Responsive */
+    .carrusel-clientes {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        position: relative;
+        margin: 0 auto 14px;
+        padding: 10px 0;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        display: flex;
+    }
+
+    .cinta {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        white-space: nowrap;
+        animation: none !important;
+        width: auto;
+        margin-bottom: 0;
+        scroll-snap-align: start;
+    }
+
+    .cinta img {
+        height: 50px;
+        margin: 0 15px;
+        flex-shrink: 0;
+        min-width: 60px;
+        object-fit: contain;
+        scroll-snap-align: start;
+    }
+
+    .carousel-indicators-clientes {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        gap: 8px;
+    }
+
+    .carousel-indicators-clientes .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        transition: background 0.3s;
+    }
+
+    .carousel-indicators-clientes .dot.active {
+        background: #333;
+    }
+
+    @keyframes scroll-cinta {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%); /* Cambiar a -100% para mejor scroll */
+        }
+    }
+
+
+
+}
+
+
 @media (max-width: 600px) {
 
     /* Quienes Somos Responsive */
@@ -939,10 +1019,25 @@ form button:hover {
     /* Carrusel Clientes Responsive */
     .carrusel-clientes {
         max-width: 100%;
-        overflow: hidden;
+        overflow-x: auto;
+        overflow-y: hidden;
         position: relative;
         margin: 0 auto 14px;
         padding: 10px 0;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        display: flex;
+    }
+
+    .cinta {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        white-space: nowrap;
+        animation: none !important;
+        width: auto;
+        margin-bottom: 0;
+        scroll-snap-align: start;
     }
 
     .cinta img {
@@ -951,15 +1046,26 @@ form button:hover {
         flex-shrink: 0;
         min-width: 60px;
         object-fit: contain;
+        scroll-snap-align: start;
     }
 
-    .cinta {
-        margin-bottom: 50px;
+    .carousel-indicators-clientes {
         display: flex;
-        white-space: nowrap;
-        animation: scroll-cinta 25s linear infinite;
-        width: 210%;
-        padding-right: 2.5em; /* igual o mayor al gap */
+        justify-content: center;
+        margin-top: 10px;
+        gap: 8px;
+    }
+
+    .carousel-indicators-clientes .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        transition: background 0.3s;
+    }
+
+    .carousel-indicators-clientes .dot.active {
+        background: #333;
     }
 
     @keyframes scroll-cinta {

@@ -133,3 +133,33 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// Carousel indicators for clientes (mobile)
+document.addEventListener('DOMContentLoaded', function () {
+    const carousel = document.querySelector('.carrusel-clientes');
+    const cinta = carousel.querySelector('.cinta');
+    const indicators = document.querySelector('.carousel-indicators-clientes');
+    const images = cinta.querySelectorAll('img');
+    const imagesPerPage = 4; // Adjust as needed for mobile
+    const totalPages = Math.ceil(images.length / imagesPerPage);
+
+    // Remove old dots if any
+    indicators.innerHTML = '';
+
+    // Create dots
+    for (let i = 0; i < totalPages; i++) {
+        const dot = document.createElement('span');
+        dot.classList.add('dot');
+        if (i === 0) dot.classList.add('active');
+        indicators.appendChild(dot);
+    }
+
+    // Update active dot on scroll
+    carousel.addEventListener('scroll', function () {
+        const scrollLeft = carousel.scrollLeft;
+        const scrollWidth = carousel.scrollWidth - carousel.clientWidth;
+        const page = Math.round((scrollLeft / scrollWidth) * (totalPages - 1));
+        indicators.querySelectorAll('.dot').forEach((d, i) => {
+            d.classList.toggle('active', i === page);
+        });
+    });
+});
