@@ -884,104 +884,9 @@ form button:hover {
 /* =========================
    Responsive Styles
    ========================= */
-
-/* tablets grandes o notebooks chicos */
-@media (min-width: 1000px) and (max-width: 1600px) {
-    .carrusel-clientes {
-        max-width: 80%;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .cinta {
-        margin-bottom: 50px;
-        display: flex;
-        white-space: nowrap;
-        animation: scroll-cinta  12s linear infinite;
-    }
-
-    @keyframes scroll-cinta {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-80%);
-        }
-    }
-}
-
-@media (min-width: 700px) and (max-width: 1000px) {
-    html, body {
-        overflow-x: hidden;
-        width: 100vw;
-    }
-
-    .container, .carrusel-clientes, #servicios, #clientes {
-        max-width: 100vw;
-        box-sizing: border-box;
-    }
-
-    .carrusel-clientes {
-        max-width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
-        position: relative;
-        margin: 0 auto 14px;
-        padding: 10px 0;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
-        display: flex;
-    }
-
-    .cinta {
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-        white-space: nowrap;
-        animation: none !important;
-        width: auto;
-        margin-bottom: 0;
-        scroll-snap-align: start;
-    }
-
-    .cinta img {
-        height: 50px;
-        margin: 0 15px;
-        flex-shrink: 0;
-        min-width: 60px;
-        object-fit: contain;
-        scroll-snap-align: start;
-    }
-
-    .carousel-indicators-clientes {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-        gap: 8px;
-    }
-
-    .carousel-indicators-clientes .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #ccc;
-        transition: background 0.3s;
-    }
-
-    .carousel-indicators-clientes .dot.active {
-        background: #333;
-    }
-
-    @keyframes scroll-cinta {
-        0% {
-            transform: translateX(0);
-        }
-        100% {
-            transform: translateX(-100%);
-        }
-    }
-}
-
+/*
+Telefonos
+ */
 @media (max-width: 600px) and (orientation: portrait) {
 
     html, body {
@@ -1112,8 +1017,7 @@ form button:hover {
         flex-wrap: nowrap;
         overflow-x: auto;
         scroll-snap-type: x mandatory;
-        -webkit-overflow-scrolling: touch;
-        gap: 15px;
+        gap: 25px;
         padding-bottom: 10px;
     }
 
@@ -1191,7 +1095,7 @@ form button:hover {
     .img-title-wrapper {
         position: relative;
         display: inline-block;
-        width: 100%;
+        width: 120%;
     }
 
     .servicios-img-titles {
@@ -1217,59 +1121,106 @@ form button:hover {
         height: 300px;
         object-fit: cover;
         display: block;
-        margin: 0 auto 20px auto;
+        margin: 0 auto 0 auto;
     }
 }
 
-@media (max-width: 430px) {
-    .whatsapp-icon img {
-        display: none;
+@media (min-width: 601px) and (max-width: 1000px) {
+    html, body {
+        overflow-x: hidden;
+        width: 100vw;
     }
 
-    body {
-        padding: 5px;
+    .container, .carrusel-clientes, #servicios, #clientes {
+        max-width: 100vw;
+        box-sizing: border-box;
     }
 
-    h1, h2 {
-        font-size: 1.2em;
+    .carrusel-clientes {
+        max-width: 100%;
+        overflow-x: auto;
+        overflow-y: hidden;
+        position: relative;
+        margin: 0 auto 14px;
+        padding: 10px 0;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: x mandatory;
+        display: flex;
     }
 
-    .navbar {
-        font-size: 0.95em;
+    .cinta {
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        white-space: nowrap;
+        animation: none !important;
+        width: auto;
+        margin-bottom: 0;
+        scroll-snap-align: start;
     }
 
     .cinta img {
-        width: 80px;
+        height: 50px;
+        margin: 0 15px;
+        flex-shrink: 0;
+        min-width: 60px;
+        object-fit: contain;
+        scroll-snap-align: start;
     }
 
-    .footer-logo img {
-        width: 60px;
+    .carousel-indicators-clientes {
+        display: flex;
+        justify-content: center;
+        margin-top: 10px;
+        gap: 8px;
     }
 
-    .contenedor {
-        display: block;
+    .carousel-indicators-clientes .dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #ccc;
+        transition: background 0.3s;
     }
 
-    .servicio,
-    .cliente,
-    .card {
-        width: 100%;
-        margin-bottom: 20px;
+    .carousel-indicators-clientes .dot.active {
+        background: #333;
     }
 
-    #imginicio {
-        width: 250px;
-        height: auto;
-    }
-
-    .imagenes-servicio {
-        display: none;
+    @keyframes scroll-cinta {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
     }
 }
 
-@media (min-width: 601px) {
-    .navbar {
-        display: block !important;
+
+
+/* tablets grandes o notebooks chicos */
+@media (min-width: 1001px) and (max-width: 1600px) {
+    .carrusel-clientes {
+        max-width: 90%;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .cinta {
+        margin-bottom: 50px;
+        display: flex;
+        white-space: nowrap;
+        animation: scroll-cinta 15s linear infinite;
+    }
+
+    @keyframes scroll-cinta {
+        0% {
+            transform: translateX(0);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
     }
 }
 
