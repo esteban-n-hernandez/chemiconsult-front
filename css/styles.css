@@ -1197,11 +1197,10 @@ Telefonos
     }
 }
 
-
-
 /* tablets grandes o notebooks chicos */
 @media (min-width: 1001px) and (max-width: 1600px) {
     .carrusel-clientes {
+        -webkit-overflow-scrolling: touch;
         max-width: 90%;
         overflow: hidden;
         position: relative;
@@ -1226,6 +1225,7 @@ Telefonos
 
 @media (min-width: 700px) and (max-width: 1800px) and (orientation: portrait) {
     .carrusel-clientes {
+        -webkit-overflow-scrolling: touch;
         max-width: 100%;
         overflow: hidden;
         position: relative;
