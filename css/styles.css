@@ -1209,7 +1209,7 @@ Telefonos
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 1s linear infinite;
+        animation: scroll-cinta 10s linear infinite;
     }
 
     @keyframes scroll-cinta {
