@@ -599,7 +599,7 @@ li::marker {
 
 /* Carrusel */
 .carrusel-clientes {
-    max-width: 80%;
+    max-width: 60%;
     overflow: hidden;
     position: relative;
     margin: 0 auto 14px;
@@ -609,7 +609,7 @@ li::marker {
     margin-bottom: 50px;
     display: flex;
     white-space: nowrap;
-    animation: scroll-cinta 12s linear infinite;
+    animation: scroll-cinta 10s linear infinite;
 }
 
 .cinta img {
@@ -627,7 +627,7 @@ li::marker {
         transform: translateX(0);
     }
     100% {
-        transform: translateX(-80%);
+        transform: translateX(-60%);
     }
 }
 
