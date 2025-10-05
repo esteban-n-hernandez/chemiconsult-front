@@ -448,7 +448,9 @@ li::marker {
 .servicio-farma .contenido-servicio,
 .servicio-alimentaria .contenido-servicio {
     display: flex;
-    width: 60%;
+   /* width: 60%;
+
+    */
     margin: auto;
     gap: 20px;
 }
