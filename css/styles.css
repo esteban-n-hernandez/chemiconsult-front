@@ -1011,6 +1011,7 @@ Telefonos
             transform: translateX(-100%);
         }
     }
+
     .grupo-servicios {
         display: flex;
         flex-direction: row;
@@ -1117,7 +1118,7 @@ Telefonos
     }
 
     .fondo-laboratorio {
-        max-width: 400px;
+        max-width: 350px;
         height: 300px;
         object-fit: cover;
         display: block;
@@ -1209,7 +1210,7 @@ Telefonos
         margin-bottom: 50px;
         display: flex;
         white-space: nowrap;
-        animation: scroll-cinta 10s linear infinite;
+        animation: scroll-cinta 15s linear infinite;
     }
 
     @keyframes scroll-cinta {
