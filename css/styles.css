@@ -1124,137 +1124,156 @@ Telefonos
         display: block;
         margin: 0 auto 0 auto;
     }
-}
 
-@media (min-width: 601px) and (max-width: 1000px) and (orientation: landscape)  {
-    html, body {
-        overflow-x: hidden;
-        width: 100vw;
-    }
 
-    .container, .carrusel-clientes, #servicios, #clientes {
-        max-width: 100vw;
-        box-sizing: border-box;
-    }
-
-    .carrusel-clientes {
-        max-width: 100%;
-        overflow-x: auto;
-        overflow-y: hidden;
+    .img-title-wrapper {
         position: relative;
-        margin: 0 auto 14px;
-        padding: 10px 0;
-        -webkit-overflow-scrolling: touch;
-        scroll-snap-type: x mandatory;
+        display: inline-block;
+        width: 115%;
+    }
+
+    .servicio-ambiental .contenido-servicio,
+    .servicio-higiene .contenido-servicio,
+    .servicio-calidad .contenido-servicio,
+    .servicio-farma .contenido-servicio,
+    .servicio-alimentaria .contenido-servicio {
         display: flex;
+        width: 100%;
+        gap: 20px;
+        margin-left: 3%;
     }
 
-    .cinta {
-        display: flex;
-        flex-direction: row;
-        gap: 15px;
-        white-space: nowrap;
-        animation: none !important;
-        width: auto;
-        margin-bottom: 0;
-        scroll-snap-align: start;
-    }
-
-    .cinta img {
-        height: 50px;
-        margin: 0 15px;
-        flex-shrink: 0;
-        min-width: 60px;
-        object-fit: contain;
-        scroll-snap-align: start;
-    }
-
-    .carousel-indicators-clientes {
-        display: flex;
-        justify-content: center;
-        margin-top: 10px;
-        gap: 8px;
-    }
-
-    .carousel-indicators-clientes .dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: #ccc;
-        transition: background 0.3s;
-    }
-
-    .carousel-indicators-clientes .dot.active {
-        background: #333;
-    }
-
-    @keyframes scroll-cinta {
-        0% {
-            transform: translateX(0);
+    @media (min-width: 601px) and (max-width: 1000px) and (orientation: landscape) {
+        html, body {
+            overflow-x: hidden;
+            width: 100vw;
         }
-        100% {
-            transform: translateX(-100%);
+
+        .container, .carrusel-clientes, #servicios, #clientes {
+            max-width: 100vw;
+            box-sizing: border-box;
         }
-    }
-}
 
-@media (min-width: 700px) and (max-width: 1800px) and (orientation: portrait){
-    .carrusel-clientes {
-        -webkit-overflow-scrolling: touch;
-        max-width: 100%;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .cinta {
-        margin-bottom: 50px;
-        display: flex;
-        white-space: nowrap;
-        animation: scroll-cinta 15s linear infinite;
-    }
-
-    @keyframes scroll-cinta {
-        0% {
-            transform: translateX(0);
+        .carrusel-clientes {
+            max-width: 100%;
+            overflow-x: auto;
+            overflow-y: hidden;
+            position: relative;
+            margin: 0 auto 14px;
+            padding: 10px 0;
+            -webkit-overflow-scrolling: touch;
+            scroll-snap-type: x mandatory;
+            display: flex;
         }
-        100% {
-            transform: translateX(-100%);
+
+        .cinta {
+            display: flex;
+            flex-direction: row;
+            gap: 15px;
+            white-space: nowrap;
+            animation: none !important;
+            width: auto;
+            margin-bottom: 0;
+            scroll-snap-align: start;
         }
-    }
-}
 
-/* tablets grandes horizontal o notebooks chicos */
-@media (min-width: 1001px) and (max-width: 1600px) and (orientation: landscape)  {
-    .carrusel-clientes {
-        -webkit-overflow-scrolling: touch;
-        max-width: 80%;
-        overflow: hidden;
-        position: relative;
-    }
-
-    .cinta {
-        margin-bottom: 50px;
-        display: flex;
-        white-space: nowrap;
-        animation: scroll-cinta 12s linear infinite;
-    }
-
-    @keyframes scroll-cinta {
-        0% {
-            transform: translateX(0);
+        .cinta img {
+            height: 50px;
+            margin: 0 15px;
+            flex-shrink: 0;
+            min-width: 60px;
+            object-fit: contain;
+            scroll-snap-align: start;
         }
-        100% {
-            transform: translateX(-100%);
+
+        .carousel-indicators-clientes {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+            gap: 8px;
+        }
+
+        .carousel-indicators-clientes .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #ccc;
+            transition: background 0.3s;
+        }
+
+        .carousel-indicators-clientes .dot.active {
+            background: #333;
+        }
+
+        @keyframes scroll-cinta {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
         }
     }
-}
+
+    @media (min-width: 700px) and (max-width: 1800px) and (orientation: portrait) {
+        .carrusel-clientes {
+            -webkit-overflow-scrolling: touch;
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cinta {
+            margin-bottom: 50px;
+            display: flex;
+            white-space: nowrap;
+            animation: scroll-cinta 15s linear infinite;
+        }
+
+        @keyframes scroll-cinta {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    }
+
+    /* tablets grandes horizontal o notebooks chicos */
+    @media (min-width: 1001px) and (max-width: 1600px) and (orientation: landscape) {
+        .carrusel-clientes {
+            -webkit-overflow-scrolling: touch;
+            max-width: 80%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .cinta {
+            margin-bottom: 50px;
+            display: flex;
+            white-space: nowrap;
+            animation: scroll-cinta 12s linear infinite;
+        }
+
+        @keyframes scroll-cinta {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+    }
 
 
-/* Fix for when Windows scaling is applied */
-@media screen and (max-width: 768px), screen and (min-resolution: 120dpi) {
-    #servicios {
-        margin-top: 50px;
-        margin-bottom: 50px;
-        padding: 30px 0;
+    /* Fix for when Windows scaling is applied */
+    @media screen and (max-width: 768px), screen and (min-resolution: 120dpi) {
+        #servicios {
+            margin-top: 50px;
+            margin-bottom: 50px;
+            padding: 30px 0;
+        }
+
     }
 }
