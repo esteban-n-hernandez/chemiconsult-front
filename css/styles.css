@@ -1227,7 +1227,7 @@ Telefonos
 @media (min-width: 1001px) and (max-width: 1600px) and (orientation: landscape)  {
     .carrusel-clientes {
         -webkit-overflow-scrolling: touch;
-        max-width: 100%;
+        max-width: 80%;
         overflow: hidden;
         position: relative;
     }
