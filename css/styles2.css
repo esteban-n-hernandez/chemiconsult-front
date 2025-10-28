@@ -153,6 +153,16 @@ ul {
     opacity: 0.9;
 }
 
+#section-servicios h3 {
+    color: #000;            /* Asegura texto visible en fondo claro */
+    font-weight: 700;
+    font-size: 1.4rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    text-align: left;       /* o center si preferís */
+}
+
 /* ======================================================
    WHATSAPP BUTTON
 ====================================================== */
