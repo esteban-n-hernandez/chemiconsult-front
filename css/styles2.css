@@ -166,11 +166,11 @@ ul {
 #section-servicios h3 {
     color: #fff; /* Texto blanco */
     font-weight: 700;
-    font-size: 1.4rem;
+    font-size: 3rem;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
     text-transform: uppercase;
-    text-align: left;
+    text-align: center;
     position: relative;
     z-index: 3;
 }
