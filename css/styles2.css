@@ -240,3 +240,25 @@ body {
     height: 350px;
     object-fit: cover;
 }
+
+#section-clientes {
+    background-color: #fff; /* Fondo blanco limpio */
+}
+
+#section-clientes img {
+    max-height: 80px;
+    object-fit: contain;
+    transition: transform 0.5s ease, filter 0.5s ease;
+    filter: grayscale(0%); /* Color natural */
+}Add boostrap
+
+#section-clientes img:hover {
+    transform: scale(1.08);
+    filter: grayscale(0%);
+}
+
+@media (max-width: 768px) {
+    #section-clientes img {
+        max-height: 60px;
+    }
+}
