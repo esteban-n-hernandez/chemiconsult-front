@@ -163,6 +163,11 @@ ul {
     text-align: left;       /* o center si preferís */
 }
 
+#section-servicios h3 {
+    color: #fff; 
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+}
+
 /* ======================================================
    WHATSAPP BUTTON
 ====================================================== */
