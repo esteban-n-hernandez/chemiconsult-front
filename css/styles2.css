@@ -141,23 +141,7 @@
 /* =========================
    WhatsApp
    ========================= */
-.whatsapp-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    left: 85%;
-    height: 50px;
-    z-index: 1000;
-    display: none;
-}
-
-.whatsapp-icon img {
-    width: 100%;
-    height: auto;
-    animation: bounce 1.5s infinite;
-}
-
+ 
 .overlay-text-servicios {
     position: absolute;
     top: 50%;
