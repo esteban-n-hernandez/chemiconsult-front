@@ -284,6 +284,11 @@
 /* Responsive */
 @media (max-width: 768px) {
 
+    #carousel-farma-div, #carousel-ambiental-div, #carousel-qa-div, #carousel-seguridad-alimentaria-div, #carousel-seguridadhigiene-div {
+        display: none;
+    }
+
+
     .logo-navbar {
         max-height: 60px;
         height: auto;
