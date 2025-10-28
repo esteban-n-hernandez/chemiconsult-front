@@ -32,10 +32,12 @@ html, body {
     max-width: 100%;
 }
 
+/* ✅ Restauramos los bullets por defecto */
 ul {
     margin: 0;
-    padding: 0;
-    list-style: none;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+    list-style-position: outside;
 }
 
 /* ======================================================
@@ -153,52 +155,38 @@ ul {
     opacity: 0.9;
 }
 
+/* ======================================================
+   SECCIÓN SERVICIOS
+====================================================== */
+#section-servicios {
+    position: relative;
+    z-index: 1;
+}
+
 #section-servicios h3 {
-    color: #000;            /* Asegura texto visible en fondo claro */
+    color: #fff; /* Texto blanco */
     font-weight: 700;
     font-size: 1.4rem;
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
     text-transform: uppercase;
-    text-align: left;       /* o center si preferís */
+    text-align: left;
+    position: relative;
+    z-index: 3;
 }
 
-#section-servicios h3 {
-    color: #fff; 
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+#section-servicios ul,
+#section-servicios p {
+    position: relative;
+    z-index: 2;
 }
 
-/* ======================================================
-   WHATSAPP BUTTON
-====================================================== */
-.whatsapp-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    z-index: 1000;
-}
-
-.whatsapp-icon img {
-    width: 100%;
-    height: auto;
-    animation: bounce 1.5s infinite;
-}
-
-/* ======================================================
-   SECCIONES Y SERVICIOS
-====================================================== */
-.overlay-text-servicios {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
-    font-size: 2.5rem;
-    font-weight: 700;
-    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
-    letter-spacing: 2px;
+.servicio-banner,
+.carousel,
+.carousel-inner,
+.carousel-item {
+    position: relative;
+    z-index: 5;
 }
 
 .servicio-banner {
@@ -214,16 +202,26 @@ ul {
     filter: brightness(60%);
 }
 
+.banner-overlay {
+    position: absolute; /* Para aparecer encima de la imagen */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+}
+
+/* ✅ Bullets visibles y verdes */
 #section-servicios ul {
-    padding-left: 1.5rem;           /* espacio para los bullets */
+    padding-left: 1.5rem;
     margin: 1rem 0;
     line-height: 1.6;
     font-size: 1rem;
     color: #333;
-    list-style-type: disc;          /* muestra bullets clásicos */
-    list-style-position: outside;   /* bullets fuera del texto */
+    list-style-type: disc;
+    list-style-position: outside;
 }
-
 
 #section-servicios li {
     color: #2d2d2d;
@@ -278,50 +276,66 @@ ul {
 /* ======================================================
    FOOTER
 ====================================================== */
- .footer {
+.footer {
     border-top: 2px solid var(--color-green-hover);
     background-color: #fff;
-    color: #000; /* texto principal en negro */
+    color: #000;
 }
 
 .footer a {
-    color: #000; /* enlaces negros */
+    color: #000;
     transition: color 0.3s ease;
 }
 
 .footer a:hover {
-    color: var(--color-green-hover); /* verde al pasar el mouse */
+    color: var(--color-green-hover);
 }
 
 .footer h5 {
     font-size: 1.1rem;
     margin-bottom: 0.5rem;
-    color: #000; /* títulos negros */
+    color: #000;
 }
 
 .footer ul li {
-    color: #000; /* texto de lista en negro */
+    color: #000;
 }
 
+/* ======================================================
+   WHATSAPP BUTTON
+====================================================== */
+.whatsapp-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    z-index: 1000;
+}
+
+.whatsapp-icon img {
+    width: 100%;
+    height: auto;
+    animation: bounce 1.5s infinite;
+}
 
 /* ======================================================
    RESPONSIVE
 ====================================================== */
 @media (max-width: 992px) {
     .overlay-logo {
-        width: 100px;
+        width: 200px;
         height: auto;
     }
 }
 
 @media (max-width: 768px) {
 
-    /* Ocultar carruseles pesados */
-    #carousel-farma-div,
     #carousel-ambiental-div,
+    #carousel-seguridad-div,
     #carousel-qa-div,
-    #carousel-seguridad-alimentaria-div,
-    #carousel-seguridadhigiene-div {
+    #carousel-farma-div,
+    #carousel-seguridad-alimentaria-div {
         display: none;
     }
 
@@ -329,6 +343,25 @@ ul {
         text-align: center;
     }
 
+
+    .footer .container {
+        flex-direction: column; /* Apila los divs verticalmente */
+        align-items: center;    /* Centra los elementos */
+        gap: 2rem;              /* Espacio entre secciones */
+        text-align: center;     /* Centra textos y listas */
+    }
+
+    .footer .footer-logo,
+    .footer .datos-contacto,
+    .footer .footer-social,
+    .footer .footer-horarios {
+        width: 100%;            /* Ocupa todo el ancho disponible */
+    }
+
+    .footer .datos-contacto ul,
+    .footer .footer-horarios ul {
+        padding-left: 0;        /* Ajusta el padding de las listas */
+    }
     .overlay-logo {
         width: 150px;
     }
