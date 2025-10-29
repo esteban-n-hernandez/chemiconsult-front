@@ -161,7 +161,7 @@
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Anterior</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselSeguridad"
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselAmbientales"
                                 data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Siguiente</span>
@@ -332,7 +332,7 @@
 
                 <!-- Columna derecha: carrusel -->
                 <div id="carousel-farma-div" class="col-lg-6">
-                    <div id="carouselFarme" class="carousel slide" data-bs-ride="carousel">
+                    <div id="carouselFarma" class="carousel slide" data-bs-ride="carousel">
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/farma/farma1.png" class="d-block w-100"
@@ -343,12 +343,12 @@
                                      alt="Servicio Higiene 2">
                             </div>
                         </div>
-                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselFarme"
+                        <button class="carousel-control-prev" type="button" data-bs-target="#carouselFarma"
                                 data-bs-slide="prev">
                             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Anterior</span>
                         </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#carouselFarme"
+                        <button class="carousel-control-next" type="button" data-bs-target="#carouselFarma"
                                 data-bs-slide="next">
                             <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             <span class="visually-hidden">Siguiente</span>
@@ -568,16 +568,38 @@
                 <button type="submit" class="btn-grad">Enviar consulta</button>
             </div>
 
-            <!-- Opcional para formsubmit.co -->
-            <input type="hidden" name="_next" value="https://tu-dominio.com/gracias.html">
-            <input type="hidden" name="_captcha" value="false">
         </form>
     </div>
 </section>
 
 <br>
 
-<script src="js/main.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const whatsappIcon = document.querySelector('.whatsapp-icon');
+        const contactoSection = document.querySelector('#section-contacto');
+
+        function toggleWhatsAppIcon() {
+            const rect = contactoSection.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+            if (rect.top < windowHeight && rect.bottom > 0) {
+                // El usuario está viendo parte de la sección contacto
+                whatsappIcon.style.display = 'block';
+            } else {
+                // Ocultar fuera de la sección
+                whatsappIcon.style.display = 'none';
+            }
+        }
+
+        // Detectar scroll y cambios de tamaño
+        window.addEventListener('scroll', toggleWhatsAppIcon);
+        window.addEventListener('resize', toggleWhatsAppIcon);
+
+        // Ejecutar al cargar
+        toggleWhatsAppIcon();
+    });
+</script>
 
 <!-- Sección de logos legales -->
 <section class="logos-contacto py-4">

@@ -319,6 +319,25 @@ ul {
     animation: bounce 1.5s infinite;
 }
 
+.carousel-control-prev,
+.carousel-control-next {
+    z-index: 10 !important; /* por encima de overlays e imágenes */
+    width: 5%;              /* ancho visible sin cubrir todo el borde */
+    opacity: 0.8;           /* un poco translúcido */
+    transition: opacity 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+}
+
+/* Asegurar que los íconos sean visibles sobre fondos claros */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1) drop-shadow(0 0 3px rgba(0, 0, 0, 0.6));
+}
+
 /* ======================================================
    RESPONSIVE
 ====================================================== */
@@ -396,4 +415,20 @@ ul {
 
 [id^="section-"] {
     scroll-margin-top: 90px; /* ajusta según la altura real de tu navbar */
+}
+/* Ícono de WhatsApp oculto por defecto */
+.whatsapp-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    z-index: 1000;
+    display: none; /* 👈 Oculto por defecto */
+}
+
+.whatsapp-icon img {
+    width: 100%;
+    height: auto;
+    animation: bounce 1.5s infinite;
 }
