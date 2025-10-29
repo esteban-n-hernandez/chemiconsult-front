@@ -393,3 +393,7 @@ ul {
         max-height: 55px;
     }
 }
+
+[id^="section-"] {
+    scroll-margin-top: 90px; /* ajusta según la altura real de tu navbar */
+}
