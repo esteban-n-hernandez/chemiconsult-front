@@ -432,3 +432,7 @@ ul {
     height: auto;
     animation: bounce 1.5s infinite;
 }
+
+.dropdown-menu{
+    min-width: 15rem;
+}

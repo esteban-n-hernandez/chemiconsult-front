@@ -50,7 +50,19 @@
 
                 <li class="nav-item"><a class="nav-link " href="#">Inicio</a></li>
                 <li class="nav-item"><a class="nav-link" href="#section-quienes-somos">¿Quiénes somos?</a></li>
-                <li class="nav-item"><a class="nav-link" href="#section-servicios">Servicios</a></li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                       aria-expanded="false">
+                        Servicios
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#section-ambientales">Ambientales</a></li>
+                        <li><a class="dropdown-item" href="#section-higiene-seguridad">Higiene y Seguridad Laboral</a></li>
+                        <li><a class="dropdown-item" href="#section-qa">Control de calidad</a></li>
+                        <li><a class="dropdown-item" href="#section-farma">Farma</a></li>
+                        <li><a class="dropdown-item" href="#section-seguridad-alimentaria">Seguridad alimentaria</a></li>
+                    </ul>
+                </li>
                 <li class="nav-item"><a class="nav-link" href="#section-clientes">Clientes</a></li>
                 <li class="nav-item"><a class="nav-link" href="#section-contacto">Contacto</a></li>
             </ul>
@@ -102,7 +114,7 @@
 
 
     <!-- ===== SERVICIO: AMBIENTALES ===== -->
-    <section class="servicio-banner position-relative text-center text-white">
+    <section id="section-ambientales" class="servicio-banner position-relative text-center text-white">
         <img src="img/servicios/01%20ambientales%20sin%20letra.jpg" alt="Imagen 1"
              class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
@@ -174,7 +186,7 @@
     </section>
 
     <!-- ===== SERVICIO: HIGIENE Y SEGURIDAD LABORAL ===== -->
-    <section class="servicio-banner position-relative text-center text-white">
+    <section id="section-higiene-seguridad" class="servicio-banner position-relative text-center text-white">
         <img src="img/servicios/seguridad%20e%20higiene%20.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -241,7 +253,7 @@
 
 
     <!-- ===== SERVICIO: CONTROL DE CALIDAD ===== -->
-    <section class="servicio-banner position-relative text-center text-white">
+    <section  id="section-qa" class="servicio-banner position-relative text-center text-white">
         <img src="img/servicios/03%20control%20calidad%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -306,7 +318,7 @@
 
 
     <!-- ===== SERVICIO: FARMA ===== -->
-    <section class="servicio-banner position-relative text-center text-white">
+    <section id="section-farma" class="servicio-banner position-relative text-center text-white">
         <img src="img/servicios/04%20farma%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -362,7 +374,7 @@
 
 
     <!-- ===== SERVICIO: SEGURIDAD ALIMENTARIA ===== -->
-    <section class="servicio-banner position-relative text-center text-white">
+    <section id="section-seguridad-alimentaria" class="servicio-banner position-relative text-center text-white">
         <img src="img/servicios/05%20alimentos%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -575,7 +587,7 @@
 <br>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
+    document.addEventListener("DOMContentLoaded", function () {
         const whatsappIcon = document.querySelector('.whatsapp-icon');
         const contactoSection = document.querySelector('#section-contacto');
 
