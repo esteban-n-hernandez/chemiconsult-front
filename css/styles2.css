@@ -277,7 +277,7 @@ ul {
    FOOTER
 ====================================================== */
 .footer {
-    border-top: 2px solid var(--color-green-hover);
+    border-top: 3px solid var(--color-green-hover);
     background-color: #fff;
     color: #000;
 }
