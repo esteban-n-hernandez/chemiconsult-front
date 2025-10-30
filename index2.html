@@ -73,7 +73,7 @@
 <br/>
 <br/>
 
-<section id="section-quienes-somos" class="py-xxl-4  text-center">
+<section id="section-quienes-somos" class="py-xxl-4  text-center scroll-effect">
     <div class="container">
         <h2 class="custom-underline-border">¿Quiénes somos?</h2>
         <p class="mt-4">
@@ -90,7 +90,7 @@
 </section>
 
 
-<section class="row py-5  text-center" id="section-mision-vision">
+<section class="row py-5  text-center" id="section-mision-vision scroll-effect">
     <div class="col">
         <h2 class="custom-underline-border">Misión</h2>
         <p>Brindar servicios de análisis químicos y ambientales confiables y con los más altos estándares de calidad,
@@ -114,7 +114,7 @@
 
 
     <!-- ===== SERVICIO: AMBIENTALES ===== -->
-    <section id="section-ambientales" class="servicio-banner position-relative text-center text-white">
+    <section id="section-ambientales" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/01%20ambientales%20sin%20letra.jpg" alt="Imagen 1"
              class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
@@ -186,7 +186,7 @@
     </section>
 
     <!-- ===== SERVICIO: HIGIENE Y SEGURIDAD LABORAL ===== -->
-    <section id="section-higiene-seguridad" class="servicio-banner position-relative text-center text-white">
+    <section id="section-higiene-seguridad" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/seguridad%20e%20higiene%20.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -253,7 +253,7 @@
 
 
     <!-- ===== SERVICIO: CONTROL DE CALIDAD ===== -->
-    <section  id="section-qa" class="servicio-banner position-relative text-center text-white">
+    <section  id="section-qa" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/03%20control%20calidad%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -318,7 +318,7 @@
 
 
     <!-- ===== SERVICIO: FARMA ===== -->
-    <section id="section-farma" class="servicio-banner position-relative text-center text-white">
+    <section id="section-farma" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/04%20farma%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -374,7 +374,7 @@
 
 
     <!-- ===== SERVICIO: SEGURIDAD ALIMENTARIA ===== -->
-    <section id="section-seguridad-alimentaria" class="servicio-banner position-relative text-center text-white">
+    <section id="section-seguridad-alimentariaz" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/05%20alimentos%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -443,7 +443,7 @@
 </section>
 
 
-<section class="py-5 text-center" id="section-clientes">
+<section class="scroll-effect py-5 text-center" id="section-clientes">
     <div class="container">
         <h2 class="custom-underline-border mb-4">Clientes</h2>
         <p class="texto-centrado texto-destacado mb-5">
@@ -540,7 +540,7 @@
     </div>
 </section>
 
-<section class="py-5  text-center" id="section-contacto">
+<section class="py-5  text-center scroll-effect" id="section-contacto">
     <div class="container">
         <h2 class="custom-underline-border mb-4">Contacto</h2>
         <p class="texto-centrado mb-5">
@@ -584,37 +584,8 @@
     </div>
 </section>
 
-<br>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const whatsappIcon = document.querySelector('.whatsapp-icon');
-        const contactoSection = document.querySelector('#section-contacto');
-
-        function toggleWhatsAppIcon() {
-            const rect = contactoSection.getBoundingClientRect();
-            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-
-            if (rect.top < windowHeight && rect.bottom > 0) {
-                // El usuario está viendo parte de la sección contacto
-                whatsappIcon.style.display = 'block';
-            } else {
-                // Ocultar fuera de la sección
-                whatsappIcon.style.display = 'none';
-            }
-        }
-
-        // Detectar scroll y cambios de tamaño
-        window.addEventListener('scroll', toggleWhatsAppIcon);
-        window.addEventListener('resize', toggleWhatsAppIcon);
-
-        // Ejecutar al cargar
-        toggleWhatsAppIcon();
-    });
-</script>
-
 <!-- Sección de logos legales -->
-<section class="logos-contacto py-4">
+<section class="logos-contacto py-4 scroll-effect">
     <div class="container d-flex flex-wrap justify-content-center align-items-center gap-4">
         <div class="logo-item text-center">
             <img src="img/legales/cofilab.png" alt="COFILAB">
@@ -686,6 +657,48 @@
     </div>
 </footer>
 
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const whatsappIcon = document.querySelector('.whatsapp-icon');
+        const contactoSection = document.querySelector('#section-contacto');
+
+        function toggleWhatsAppIcon() {
+            const rect = contactoSection.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+            if (rect.top < windowHeight && rect.bottom > 0) {
+                // El usuario está viendo parte de la sección contacto
+                whatsappIcon.style.display = 'block';
+            } else {
+                // Ocultar fuera de la sección
+                whatsappIcon.style.display = 'none';
+            }
+        }
+
+        // Detectar scroll y cambios de tamaño
+        window.addEventListener('scroll', toggleWhatsAppIcon);
+        window.addEventListener('resize', toggleWhatsAppIcon);
+
+        // Ejecutar al cargar
+        toggleWhatsAppIcon();
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const elements = document.querySelectorAll('.scroll-effect');
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target); // opcional: evita volver a animar
+                }
+            });
+        }, { threshold: 0.2 }); // activa cuando el 20% del elemento es visible
+
+        elements.forEach(el => observer.observe(el));
+    });
+</script>
 
 </body>
 </html>
