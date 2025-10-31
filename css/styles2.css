@@ -32,7 +32,6 @@ html, body {
     max-width: 100%;
 }
 
-/* ✅ Restauramos los bullets por defecto */
 ul {
     margin: 0;
     padding-left: 1.5rem;
@@ -437,14 +436,12 @@ ul {
     min-width: 15rem;
 }
 
-/* Estado inicial: invisible y desplazado */
 .scroll-effect {
     opacity: 0;
     transform: translateY(30px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-/* Cuando se activa al hacer scroll */
 .scroll-effect.visible {
     opacity: 1;
     transform: translateY(0);

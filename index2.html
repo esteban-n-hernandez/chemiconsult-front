@@ -18,7 +18,7 @@
 
 <div class="header-bg">
     <img src="img/Laboratorio-acreditado-scaled.jpeg" alt="Laboratorio CHEMICONSULT" class="bg-img">
-    <div class="dark-overlay"></div> <!-- Capa oscura -->
+    <div class="dark-overlay"></div>
     <div class="header-overlay" role="group" aria-label="Header logo and slogan">
         <img src="img/Logo transparente.png" alt="CHEMICONSULT logo" class="overlay-logo">
         <p class="overlay-text">SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA</p>
@@ -668,19 +668,15 @@
             const windowHeight = window.innerHeight || document.documentElement.clientHeight;
 
             if (rect.top < windowHeight && rect.bottom > 0) {
-                // El usuario está viendo parte de la sección contacto
                 whatsappIcon.style.display = 'block';
             } else {
-                // Ocultar fuera de la sección
                 whatsappIcon.style.display = 'none';
             }
         }
 
-        // Detectar scroll y cambios de tamaño
         window.addEventListener('scroll', toggleWhatsAppIcon);
         window.addEventListener('resize', toggleWhatsAppIcon);
 
-        // Ejecutar al cargar
         toggleWhatsAppIcon();
     });
 
@@ -691,10 +687,10 @@
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
-                    observer.unobserve(entry.target); // opcional: evita volver a animar
+                    observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.2 }); // activa cuando el 20% del elemento es visible
+        }, { threshold: 0.2 });
 
         elements.forEach(el => observer.observe(el));
     });
