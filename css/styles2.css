@@ -342,7 +342,7 @@ ul {
 ====================================================== */
 @media (max-width: 992px) {
     .overlay-logo {
-        width: 300px;
+        width: 400px;
         height: auto;
     }
 }
@@ -381,7 +381,7 @@ ul {
         padding-left: 0;        /* Ajusta el padding de las listas */
     }
     .overlay-logo {
-        width: 300px;
+        width: 350px;
     }
 
     .overlay-text {
