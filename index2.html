@@ -540,21 +540,23 @@
     </div>
 </section>
 
-<section class="py-5  text-center scroll-effect" id="section-contacto">
+<section class="py-5 text-center scroll-effect" id="section-contacto">
     <div class="container">
         <h2 class="custom-underline-border mb-4">Contacto</h2>
         <p class="texto-centrado mb-5">
             ¿Querés que te ayudemos con tu consulta? Completá el siguiente formulario y nos comunicaremos a la brevedad.
         </p>
 
-        <a href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información" target="_blank"
-           class="whatsapp-icon">
-            <img src="https://img.icons8.com/?size=100&id=BkugfgmBwtEI&format=png&color=000000" alt="WhatsApp"
-                 style="width:60px; height:60px;">
+        <!-- Ícono de WhatsApp -->
+        <a href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información"
+           target="_blank" class="whatsapp-icon">
+            <img src="https://img.icons8.com/?size=100&id=BkugfgmBwtEI&format=png&color=000000"
+                 alt="WhatsApp" style="width:60px; height:60px;">
         </a>
 
-        <form action="https://formsubmit.co/info@chemiconsult.com.ar" method="POST" class="mx-auto text-start"
-              style="max-width: 600px;">
+        <!-- FORMULARIO -->
+        <form action="sendmail.php" method="POST" class="mx-auto text-start" style="max-width: 600px;">
+
             <div class="mb-3">
                 <label for="inputName" class="form-label">Nombre</label>
                 <input type="text" name="nombre" class="form-control" id="inputName" required>
@@ -571,15 +573,18 @@
             </div>
 
             <div class="form-floating mb-4">
-                <textarea class="form-control" name="consulta" placeholder="Escribí tu consulta" id="floatingTextarea"
-                          style="height: 120px;"></textarea>
+                <textarea class="form-control" name="sugerencia" placeholder="Escribí tu consulta"
+                          id="floatingTextarea" style="height: 120px;" required></textarea>
                 <label for="floatingTextarea">Consulta...</label>
             </div>
+
+            <input type="hidden" name="subject" value="Consultas - ChemiConsult">
+            <input type="hidden" name="errorOcurred" value="error.html">
+            <input type="hidden" name="successfully" value="gracias.html">
 
             <div class="text-center">
                 <button type="submit" class="btn-grad">Enviar consulta</button>
             </div>
-
         </form>
     </div>
 </section>

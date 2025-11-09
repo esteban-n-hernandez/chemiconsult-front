@@ -331,6 +331,53 @@ ul {
     opacity: 1;
 }
 
+/* ======================================================
+   CAPTCHA STYLING
+====================================================== */
+.captcha-box {
+    background-color: rgba(161, 213, 82, 0.05); /* leve tono verde translúcido */
+    border: 1px solid var(--color-green-main);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.captcha-img {
+    border: 1px solid var(--color-gray-medium);
+    border-radius: 6px;
+    padding: 4px;
+    background-color: var(--color-white);
+    width: 180px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.btn-refresh {
+    background: none;
+    border: none;
+    color: var(--color-green-hover);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-refresh:hover {
+    color: var(--color-black);
+    transform: scale(1.1);
+}
+
+.contact-form .form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+.contact-form .form-control:focus {
+    border-color: var(--color-green-hover);
+    box-shadow: 0 0 0 0.15rem rgba(185, 153, 225, 0.25);
+}
+
+
 /* Asegurar que los íconos sean visibles sobre fondos claros */
 .carousel-control-prev-icon,
 .carousel-control-next-icon {

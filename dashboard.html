@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f8f9fa;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 250px;
+            background-color: #5EA504;
+            color: white;
+            padding: 1.5rem 1rem;
+            display: flex;
+            flex-direction: column;
+            transition: width 0.3s;
+        }
+
+        .sidebar h2 {
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: background 0.3s;
+        }
+
+        .sidebar a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* CONTENIDO PRINCIPAL */
+        .content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: auto;
+        }
+
+        .dashboard-header {
+            color: #5EA504;
+            margin-bottom: 1rem;
+        }
+
+        .welcome-message {
+            font-size: 1.1rem;
+            color: #333;
+            text-align: right;
+            margin-bottom: 1.5rem;
+        }
+
+        .table-container {
+            background: white;
+            padding: 1rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .table th {
+            background-color: #5EA504;
+            color: white;
+        }
+
+        /* MODO MOBILE */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                flex-direction: row;
+                justify-content: space-around;
+            }
+
+            .sidebar h2 {
+                display: none;
+            }
+
+            .welcome-message {
+                text-align: center;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+    <h2>CHEMICONSULT</h2>
+    <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Estudios</a>
+    <a href="#"><i class="bi bi-person-circle"></i> Perfil</a>
+    <a href="#" id="logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+</div>
+
+<!-- Contenido principal -->
+<div class="content">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1 class="dashboard-header">Dashboard de CHEMICONSULT</h1>
+        <div class="welcome-message" id="welcome-message"></div>
+    </div>
+
+    <div class="table-container">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>1</td>
+                <td>Juan Pérez</td>
+                <td>juan.perez@gmail.com</td>
+                <td>Cliente</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>María Gómez</td>
+                <td>maria.gomez@gmail.com</td>
+                <td>Cliente</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>Carlos Rodríguez</td>
+                <td>carlos.rodriguez@gmail.com</td>
+                <td>Cliente</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="content">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Alta de Estudio</h2>
+        </div>
+
+        <form id="formEstudio" class="border p-4 rounded bg-white shadow-sm">
+            <div class="mb-3">
+                <label for="tipoAnalisis" class="form-label">Tipo de Análisis</label>
+                <input type="text" class="form-control" id="tipoAnalisis" required>
+            </div>
+            <div class="mb-3">
+                <label for="estado" class="form-label">Estado</label>
+                <select class="form-control" id="estado" required>
+                    <option value="PENDIENTE">Pendiente</option>
+                    <option value="EN_PROCESO">En proceso</option>
+                    <option value="COMPLETADO">Completado</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="userId" class="form-label">ID de Usuario</label>
+                <input type="number" class="form-control" id="userId" required>
+            </div>
+            <div class="mb-3">
+                <label for="userMail" class="form-label">Email del Usuario</label>
+                <input type="email" class="form-control" id="userMail" required>
+            </div>
+            <div class="mb-3">
+                <label for="archivoPdf" class="form-label">Archivo PDF</label>
+                <input type="file" class="form-control" id="archivoPdf" accept="application/pdf" required>
+            </div>
+            <button type="submit" class="btn btn-success">Guardar Estudio</button>
+        </form>
+    </div>
+
+
+</div>
+
+<script>
+    // 🔒 Protección: si no hay token, redirigir al login
+    const token = localStorage.getItem("token");
+    if (!token) {
+        window.location.href = "login.html";
+    }
+
+    // 👋 Mostrar mensaje de bienvenida
+    const userEmail = localStorage.getItem("userEmail"); // guardalo en el login
+    const welcomeElement = document.getElementById("welcome-message");
+
+    if (userEmail) {
+        welcomeElement.textContent = `👋 Bienvenido, ${userEmail}`;
+    } else {
+        welcomeElement.textContent = "👋 Bienvenido";
+    }
+
+    // 🚪 Cerrar sesión
+    document.getElementById("logout-btn").addEventListener("click", () => {
+        localStorage.removeItem("token");
+        localStorage.removeItem("userEmail");
+        window.location.href = "login.html";
+    });
+    document.getElementById("formEstudio").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const tipo = document.getElementById("tipoAnalisis").value.trim();
+        const estado = document.getElementById("estado").value;
+        const userId = document.getElementById("userId").value.trim();
+        const userMail = document.getElementById("userMail").value.trim();
+        const archivo = document.getElementById("archivoPdf").files[0];
+
+        if (!archivo) {
+            alert("Por favor seleccioná un archivo PDF.");
+            return;
+        }
+
+        // Convertir PDF a Base64
+        const base64 = await convertirArchivoABase64(archivo);
+
+        // Armar JSON
+        const payload = {
+            tipo: tipo,
+            estado: estado,
+            archivo: base64.split(",")[1], // quitamos "data:application/pdf;base64,"
+            userId: parseInt(userId),
+            userMail: userMail
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/estudios", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer " + token
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (response.ok) {
+                alert("Estudio guardado correctamente ✅");
+                document.getElementById("formEstudio").reset();
+                cargarEstudios(); // refresca la tabla
+            } else {
+                const errorText = await response.text();
+                alert("Error al guardar el estudio:\n" + errorText);
+            }
+        } catch (error) {
+            console.error("Error:", error);
+            alert("Hubo un problema al enviar los datos.");
+        }
+    });
+
+    function convertirArchivoABase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = (error) => reject(error);
+            reader.readAsDataURL(file);
+        });
+    }
+
+
+</script>
+
+</body>
+</html>
