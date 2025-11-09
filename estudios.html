@@ -148,7 +148,7 @@
         }
 
         estudios.forEach(estudio => {
-            const botonVer = estudio.estado?.toLowerCase() === "completado"
+            const botonVer = estudio.estado?.toLowerCase() === "completado" || estudio.estado?.toLowerCase() === "completo"
                 ? `<button class="btn-icon" onclick="verDetalle(${estudio.id})"><i class="bi bi-search"></i></button>`
                 : `<span class="text-muted">—</span>`;
 

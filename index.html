@@ -57,10 +57,12 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item" href="#section-ambientales">Ambientales</a></li>
-                        <li><a class="dropdown-item" href="#section-higiene-seguridad">Higiene y Seguridad Laboral</a></li>
+                        <li><a class="dropdown-item" href="#section-higiene-seguridad">Higiene y Seguridad Laboral</a>
+                        </li>
                         <li><a class="dropdown-item" href="#section-qa">Control de calidad</a></li>
                         <li><a class="dropdown-item" href="#section-farma">Farma</a></li>
-                        <li><a class="dropdown-item" href="#section-seguridad-alimentaria">Seguridad alimentaria</a></li>
+                        <li><a class="dropdown-item" href="#section-seguridad-alimentaria">Seguridad alimentaria</a>
+                        </li>
                     </ul>
                 </li>
                 <li class="nav-item"><a class="nav-link" href="#section-clientes">Clientes</a></li>
@@ -186,7 +188,8 @@
     </section>
 
     <!-- ===== SERVICIO: HIGIENE Y SEGURIDAD LABORAL ===== -->
-    <section id="section-higiene-seguridad" class="scroll-effect servicio-banner position-relative text-center text-white">
+    <section id="section-higiene-seguridad"
+             class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/seguridad%20e%20higiene%20.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -253,7 +256,7 @@
 
 
     <!-- ===== SERVICIO: CONTROL DE CALIDAD ===== -->
-    <section  id="section-qa" class="scroll-effect servicio-banner position-relative text-center text-white">
+    <section id="section-qa" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/03%20control%20calidad%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -374,7 +377,8 @@
 
 
     <!-- ===== SERVICIO: SEGURIDAD ALIMENTARIA ===== -->
-    <section id="section-seguridad-alimentaria" class="scroll-effect servicio-banner position-relative text-center text-white">
+    <section id="section-seguridad-alimentaria"
+             class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/05%20alimentos%20sin%20letra.jpg"
              alt="Higiene y Seguridad Laboral"
              class="img-fluid w-100 banner-img">
@@ -540,6 +544,7 @@
     </div>
 </section>
 
+
 <section class="py-5 text-center scroll-effect" id="section-contacto">
     <div class="container">
         <h2 class="custom-underline-border mb-4">Contacto</h2>
@@ -573,8 +578,8 @@
             </div>
 
             <div class="form-floating mb-4">
-        <textarea class="form-control" name="sugerencia" placeholder="Escribí tu consulta"
-                  id="floatingTextarea" style="height: 120px;" required></textarea>
+                <textarea class="form-control" name="sugerencia" placeholder="Escribí tu consulta"
+                          id="floatingTextarea" style="height: 120px;" required></textarea>
                 <label for="floatingTextarea">Consulta...</label>
             </div>
 
@@ -582,12 +587,19 @@
             <input type="hidden" name="errorOcurred" value="error.html">
             <input type="hidden" name="successfully" value="gracias.html">
 
+            <!-- Honeypot oculto -->
+            <div style="display:none;">
+                <label for="nospam">Si ves este campo, no lo completes</label>
+                <input type="text" name="nospam" id="nospam" value="">
+            </div>
+
             <!-- CAPTCHA -->
             <div class="form-group text-center mt-4 captcha-box">
                 <label for="captcha" class="form-label d-block mb-2">Verificación de seguridad</label>
                 <div class="d-flex flex-column align-items-center">
                     <img src="captcha.php" alt="Captcha" id="captcha-img" class="captcha-img mb-2">
-                    <button type="button" class="btn-refresh" onclick="document.getElementById('captcha-img').src='captcha.php?'+Math.random();">
+                    <button type="button" class="btn-refresh"
+                            onclick="document.getElementById('captcha-img').src='captcha.php?'+Math.random();">
                         ↻ Actualizar imagen
                     </button>
                 </div>
@@ -602,8 +614,6 @@
         </form>
     </div>
 </section>
-
-
 
 
 <!-- Sección de logos legales -->
@@ -712,7 +722,7 @@
                     observer.unobserve(entry.target);
                 }
             });
-        }, { threshold: 0.2 });
+        }, {threshold: 0.2});
 
         elements.forEach(el => observer.observe(el));
     });
