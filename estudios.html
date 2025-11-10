@@ -117,7 +117,7 @@
 
     async function cargarEstudios() {
         try {
-            const response = await fetch("http://localhost:8080/api/estudios", {
+            const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -169,7 +169,7 @@
         if (!id) return cargarEstudios();
 
         try {
-            const response = await fetch(`http://localhost:8080/api/estudios/${id}`, {
+            const response = await fetch(`https://chemiconsult.onrender.com/api/estudios/${id}`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + token
@@ -190,7 +190,7 @@
 
     async function verDetalle(id) {
         try {
-            const response = await fetch(`http://localhost:8080/api/estudios/${id}/resultado`, {
+            const response = await fetch(`https://chemiconsult.onrender.com/api/estudios/${id}/resultado`, {
                 method: "GET",
                 headers: {
                     "Authorization": "Bearer " + token
