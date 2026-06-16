@@ -668,3 +668,10 @@ ul {
     opacity: 1;
     transform: translateY(0);
 }
+
+.pricing-card-img {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
