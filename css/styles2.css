@@ -444,10 +444,10 @@ ul {
 .btn-pricing-modal {
     background: transparent;
     border: 1.5px solid #5EA504;
-    color: #5EA504;
+    color: black;
     border-radius: 8px;
     padding: 8px 16px;
-    font-size: 13px;
+    font-size: 15px;
     font-weight: 500;
     width: 100%;
     cursor: pointer;
