@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns="http://www.w3.org/1999/html">
 
 <head>
     <meta charset="UTF-8">
@@ -26,55 +26,53 @@
         <p class="overlay-text">SOLUCIONES PERSONALIZADAS A LA MEDIDA DE SU EMPRESA</p>
     </div>
 </div>
-
+<!-- MENÚ COLAPSABLE -->
 <nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top" style="border-bottom: 3px solid #5EA504;">
-    <div class="container-fluid justify-content-center">
 
-        <a class="navbar-brand d-lg-none" href="#">
-            <img src="img/Logo%20navbar.png" alt="CHEMICONSULT" class="logo-navbar">
-        </a>
+    <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+        <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
 
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+            <li class="nav-item d-none px-5 d-lg-block">
+                <a class="navbar-brand" href="#">
+                    <img src="img/Logo%20navbar.png" alt="CHEMICONSULT" class="logo-navbar">
+                </a>
+            </li>
 
-        <!-- MENÚ COLAPSABLE -->
-        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
-            <ul class="navbar-nav mb-2 mb-lg-0 align-items-center">
+            <li class="nav-item"><a class="nav-link " href="#">Inicio</a></li>
+            <li class="nav-item"><a class="nav-link" href="#section-quienes-somos">Quiénes somos</a></li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                   aria-expanded="false">
+                    Servicios
+                </a>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#section-ambientales">Ambientales</a></li>
+                    <li><a class="dropdown-item" href="#section-higiene-seguridad">Higiene y Seguridad
+                        Laboral</a>
+                    </li>
+                    <li><a class="dropdown-item" href="#section-qa">Control de calidad</a></li>
+                    <li><a class="dropdown-item" href="#section-farma">Farma</a></li>
+                    <li><a class="dropdown-item" href="#section-seguridad-alimentaria">Seguridad alimentaria</a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item"><a class="nav-link" href="#section-clientes">Clientes</a></li>
+            <li class="nav-item"><a class="nav-link" href="#section-contacto">Contacto</a></li>
 
-                <li class="nav-item d-none px-5 d-lg-block">
-                    <a class="navbar-brand" href="#">
-                        <img src="img/Logo%20navbar.png" alt="CHEMICONSULT" class="logo-navbar">
-                    </a>
-                </li>
+            <!-- Precios, con el mismo padding que el logo para que quede "separado" visualmente -->
+            <li class="nav-item d-none px-5 d-lg-block">
+                <a class="navbar-brand" href="#section-pricing" style="color:#5EA504;">Analisis de Agua</a>
+            </li>
 
-                <li class="nav-item"><a class="nav-link " href="#">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="#section-quienes-somos">Quiénes somos</a></li>
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                       aria-expanded="false">
-                        Servicios
-                    </a>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="#section-ambientales">Ambientales</a></li>
-                        <li><a class="dropdown-item" href="#section-higiene-seguridad">Higiene y Seguridad
-                            Laboral</a>
-                        </li>
-                        <li><a class="dropdown-item" href="#section-qa">Control de calidad</a></li>
-                        <li><a class="dropdown-item" href="#section-farma">Farma</a></li>
-                        <li><a class="dropdown-item" href="#section-seguridad-alimentaria">Seguridad alimentaria</a>
-                        </li>
-                    </ul>
-                </li>
-                <li class="nav-item"><a class="nav-link" href="#section-pricing">Precios</a></li>
-                <li class="nav-item"><a class="nav-link" href="#section-clientes">Clientes</a></li>
-                <li class="nav-item"><a class="nav-link" href="#section-contacto">Contacto</a></li>
-            </ul>
-        </div>
+            <!-- Versión mobile -->
+            <li class="nav-item d-lg-none">
+                <a class="nav-link fw-bold" href="#section-pricing" style="color:#5EA504;">Analisis de Agua</a>
+            </li>
+
+        </ul>
     </div>
 </nav>
+
 
 <br/>
 <br/>
@@ -453,31 +451,25 @@
 <!-- ===== SECCIÓN PRICING ===== -->
 <section class="scroll-effect py-5 text-center" id="section-pricing">
     <div class="container">
-        <h2 class="custom-underline-border mb-3">Nuestros servicios</h2>
-        <p class="texto-centrado mb-5">
-            Seleccioná un servicio para ver la descripción y solicitar un presupuesto personalizado.
+        <h2 class="custom-underline-border mb-3">Analisis de Aguas</h2>
+        <p class="texto-centrado mb-4">
+            Ofrecemos soluciones analíticas de alta precisión para garantizar la calidad del agua,
+            el cumplimiento normativo y la seguridad ambiental.
         </p>
 
-        <!-- Cards de servicios -->
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 justify-content-center" data-aos="fade-up">
+        <div class="como-comprar mb-5 mx-auto text-start" style="max-width: 600px;">
+            <h4 class="mb-3 text-center">¿Cómo comprar?</h4>
+            <ol class="text-start">
+                <li>Seleccioná el análisis que mejor se adapte a tus necesidades.</li>
+                <li>Comprá a través del link o WhatsApp.</li>
+                <li>Te enviamos las instrucciones para la toma de muestra <a href="LINK_DE_YOUTUBE" target="_blank">(ver
+                    video)</a>.
+                </li>
+                <li>Traé la muestra al laboratorio (si no tenés envases, podés retirar tu kit sin costo).</li>
+            </ol>
+        </div>
 
-            <!-- Analisis de Agua -->
-            <div class="col">
-                <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/analisis agua pileta.png" alt="Ambientales" class="pricing-card-img">
-                    <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
-                            data-titulo="Analisis de Agua"
-                            data-descripcion="Control y seguridad para natatorios particulares, públicos o de consorcios."
-                            data-items="
-                            Recuento de bacterias aerobias mesófilas
-                            |Investigación de Coliformes totales
-                            |Investigación de E coli
-                            |Investigación de pseudomonas aeruginosas"
-                            data-nota="Precio según tipo y cantidad de muestras. Cobertura nacional.">
-                        ANÁLISIS AGUA DE PILETA
-                    </button>
-                </div>
-            </div>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 justify-content-center" data-aos="fade-up">
 
             <!-- Analisis Bacteriologico -->
             <div class="col">
@@ -486,9 +478,8 @@
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="Analisis Bacteriologico"
                             data-descripcion="Evaluación fundamental para determinar la aptitud microbiológica del agua de consumo."
-                            data-items="Análisis bacteriológico: Recuento de bacterias aerobias mesófilas, Investigación de Coliformes totales, Investigación de E coli e Investigación de pseudomonas aeruginosas.
-                            |Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos."
-                            data-nota="Precio según tipo y cantidad de muestras. Cobertura nacional.">
+                            data-items="Recuento de bacterias aerobias mesófilas|Investigación de Coliformes totales|Investigación de E coli|Investigación de pseudomonas aeruginosas"
+                            data-nota=" Precio según tipo y cantidad de muestras. Cobertura nacional.                    ">
                         ANÁLISIS BACTERIOLÓGICO
                     </button>
                 </div>
@@ -503,9 +494,10 @@
                             data-titulo="Analisis Potabilidad Basico"
                             data-descripcion="El combo estándar indispensable para verificar la calidad del agua. Recomendable para aguas de red"
                             data-items="Análisis bacteriológico: Recuento de bacterias aerobias mesófilas, Investigación de Coliformes totales, Investigación de E coli e Investigación de pseudomonas aeruginosas.
-|
-Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos."
-                            data-nota="Precio según tipo y cantidad de muestras. Cobertura nacional.">
+
+|Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos."
+                            data-nota=" Precio según tipo y cantidad de muestras. Cobertura nacional.
+                    ">
                         ANÁLISIS POTABILIDAD BÁSICO
                     </button>
                 </div>
@@ -520,9 +512,10 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
                             data-titulo="Analisis Potabilidad Arsenico"
                             data-descripcion="El combo estándar indispensable para verificar la calidad del agua de pozo."
                             data-items="Análisis bacteriológico: Recuento de bacterias aerobias mesófilas, Investigación de Coliformes totales, Investigación de E coli e Investigación de pseudomonas aeruginosas.
-|
-Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos y arsénico."
-                            data-nota="Precio según tipo y cantidad de muestras. Cobertura nacional.">
+
+|Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos y arsénico."
+                            data-nota=" Precio según tipo y cantidad de muestras. Cobertura nacional.
+                    ">
                         ANÁLISIS POTABILIDAD C/ ARSÉNICO
                     </button>
                 </div>
@@ -541,6 +534,25 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
 Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos, plomo, hierro, manganeso y arsénico."
                             data-nota="Precio según tipo y cantidad de muestras. Cobertura nacional.">
                         ANÁLISIS POTABILIDAD + METALES
+                    </button>
+                </div>
+            </div>
+
+            <!-- Analisis de Agua -->
+            <div class="col">
+                <div class="pricing-card h-100 d-flex flex-column align-items-center">
+                    <img src="img/icons/pricing/analisis agua pileta.png" alt="Ambientales" class="pricing-card-img">
+                    <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
+                            data-titulo="Analisis de Agua"
+                            data-descripcion="Evaluá la calidad del agua de tu pileta y verifica el cumplimiento de lo recomendado en el Decreto 3181/07 (Prov. Bs. As.) y Disposición N° 329."
+                            data-items="
+                      Análisis bacteriológico: Recuento de bacterias aerobias mesófilas, Investigación de Coliformes totales, Investigación de E coli e Investigación de pseudomonas aeruginosas.
+
+|Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruros, dureza, amonio, sulfatos, nitratos, nitritos, plomo, hierro, manganeso y arsénico."
+
+
+                            data-nota=" Precio según tipo y cantidad de muestras. Cobertura nacional.">
+                        ANÁLISIS AGUA DE PILETA
                     </button>
                 </div>
             </div>

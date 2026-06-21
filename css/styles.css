@@ -53,6 +53,13 @@ li::marker {
     max-width: 700px;
 }
 
+.texto-centrado ol{
+    text-align: center;
+    margin: 0 auto;
+    color: red;
+    max-width: 700px;
+}
+
 .texto-destacado {
     font-size: 1.2em;
     margin-bottom: 20px;
