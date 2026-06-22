@@ -75,3 +75,51 @@ document.addEventListener("DOMContentLoaded", function () {
         if (wppBtn) wppBtn.href = "https://wa.me/5491158692422?text=" + wppMsg;
     });
 });
+
+// ======================================================
+// PRICING: cargar precios desde Google Sheet
+// ======================================================
+document.addEventListener("DOMContentLoaded", function () {
+
+    const URL_SHEET = "PEGAR_ACA_URL_CSV";
+
+    fetch(URL_SHEET)
+        .then(response => response.text())
+        .then(csv => {
+
+            const filas = csv.split("\n");
+
+            filas.slice(1).forEach(fila => {
+
+                if (!fila.trim()) return;
+
+                const columnas = fila.split(",");
+
+                const servicio = columnas[0]?.trim();
+                const precio = columnas[1]?.trim();
+
+                const tarjetas = document.querySelectorAll("[data-titulo]");
+
+                tarjetas.forEach(tarjeta => {
+
+                    const titulo = tarjeta.getAttribute("data-titulo");
+
+                    if (titulo === servicio) {
+
+                        tarjeta.setAttribute(
+                            "data-nota",
+                            "Precio: " + precio
+                        );
+
+                    }
+
+                });
+
+            });
+
+        })
+        .catch(error => {
+            console.error("Error cargando precios:", error);
+        });
+
+});
