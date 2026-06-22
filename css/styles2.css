@@ -683,3 +683,20 @@ ul {
     font-size: 1rem;
     color: red;
 }
+
+.btn-nav-pricing {
+    display: inline-block;
+    background-color: #5EA504;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-nav-pricing:hover {
+    background-color: #4a8403;
+    transform: scale(1.04);
+    color: #ffffff !important;
+}

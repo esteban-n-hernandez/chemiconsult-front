@@ -76,12 +76,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+
+
 // ======================================================
 // PRICING: cargar precios desde Google Sheet
 // ======================================================
 document.addEventListener("DOMContentLoaded", function () {
 
-    const URL_SHEET = "PEGAR_ACA_URL_CSV";
+    const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRuKGVMeUjKHUEwzBzRfq6hg91g9HNb4eCziJCVRCxUQGt6jaP3_AroTD8PfRoxZNorDcoiITPck8X/pub?output=csv";
 
     fetch(URL_SHEET)
         .then(response => response.text())
@@ -105,12 +107,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     const titulo = tarjeta.getAttribute("data-titulo");
 
                     if (titulo === servicio) {
-
-                        tarjeta.setAttribute(
-                            "data-nota",
-                            "Precio: " + precio
-                        );
-
+                        // Guardamos el precio en su propio atributo,
+                        // sin pisar la nota explicativa de cada servicio
+                        tarjeta.setAttribute("data-precio", precio);
                     }
 
                 });
@@ -122,4 +121,41 @@ document.addEventListener("DOMContentLoaded", function () {
             console.error("Error cargando precios:", error);
         });
 
+});
+
+// ======================================================
+// PRICING MODAL: popular con datos del servicio clickeado
+// ======================================================
+document.addEventListener("DOMContentLoaded", function () {
+    var pricingModal = document.getElementById("pricingModal");
+    if (!pricingModal) return;
+
+    pricingModal.addEventListener("show.bs.modal", function (event) {
+        var button = event.relatedTarget;
+        if (!button) return;
+
+        var titulo      = button.getAttribute("data-titulo");
+        var descripcion = button.getAttribute("data-descripcion");
+        var items       = (button.getAttribute("data-items") || "").split("|");
+        var nota        = button.getAttribute("data-nota");
+        var precio      = button.getAttribute("data-precio");
+
+        pricingModal.querySelector("#pricingModalLabel").textContent = titulo;
+        pricingModal.querySelector("#pricingModalDesc").textContent  = descripcion;
+        pricingModal.querySelector("#pricingModalNota").textContent  = nota;
+        pricingModal.querySelector("#pricingModalPrecio").textContent = precio || "A consultar";
+
+        var lista = pricingModal.querySelector("#pricingModalItems");
+        lista.innerHTML = "";
+        items.forEach(function (item) {
+            if (!item.trim()) return;
+            var li = document.createElement("li");
+            li.textContent = item;
+            lista.appendChild(li);
+        });
+
+        var wppMsg = encodeURIComponent("Hola, quisiera consultar un presupuesto para el servicio de " + titulo);
+        var wppBtn = pricingModal.querySelector("#pricingModalWhatsapp");
+        if (wppBtn) wppBtn.href = "https://wa.me/5491158692422?text=" + wppMsg;
+    });
 });
