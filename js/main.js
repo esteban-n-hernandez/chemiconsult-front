@@ -158,4 +158,14 @@ document.addEventListener("DOMContentLoaded", function () {
         var wppBtn = pricingModal.querySelector("#pricingModalWhatsapp");
         if (wppBtn) wppBtn.href = "https://wa.me/5491158692422?text=" + wppMsg;
     });
+
+
+    var pricingModalWhatsapp = document.querySelector("#pricingModalWhatsapp");
+    if (pricingModalWhatsapp) {
+        pricingModalWhatsapp.addEventListener("click", function () {
+            var modalInstance = bootstrap.Modal.getInstance(pricingModal);
+            if (modalInstance) modalInstance.hide();
+        });
+    }
+
 });
