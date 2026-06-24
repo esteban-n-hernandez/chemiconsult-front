@@ -90,7 +90,13 @@
                 localStorage.setItem("userEmail", email);
                 localStorage.setItem("userRole", data.role.toUpperCase());
 
-                window.location.href = "dashboard.html";
+                const rol = data.role.toUpperCase();
+
+                if (rol === "ROLE_CLIENTE") {
+                    window.location.href = "dashboard-cliente.html";
+                } else {
+                    window.location.href = "dashboard-empleado.html";
+                }
             } else {
                 document.getElementById("error-message").style.display = "block";
             }
