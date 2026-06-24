@@ -903,10 +903,6 @@ if (!localStorage.getItem("token")) {
     localStorage.setItem("userEmail", "ana@chemiconsult.com");
 }
 
-// ── Protección ──
-const token = localStorage.getItem("token");
-if (!token) window.location.href = "login.html";
-    
     // ── Protección ──
     const token = localStorage.getItem("token");
     if (!token) window.location.href = "login.html";
