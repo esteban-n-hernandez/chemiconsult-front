@@ -69,7 +69,6 @@
 
         .sidebar a:hover,
         .sidebar a.active { background: rgba(255,255,255,0.2); }
-
         .sidebar a i { font-size: 18px; }
 
         .sidebar-divider {
@@ -224,6 +223,8 @@
             align-items: center;
             padding: 1rem 1.25rem;
             border-bottom: 1px solid var(--borde);
+            flex-wrap: wrap;
+            gap: 0.75rem;
         }
 
         .panel-header h5 {
@@ -235,7 +236,41 @@
 
         .panel-body { padding: 1rem 1.25rem; }
 
-        /* ── Tabla muestras ── */
+        /* ── Buscador ── */
+        .search-wrapper {
+            position: relative;
+            min-width: 240px;
+        }
+
+        .search-wrapper i {
+            position: absolute;
+            left: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gris);
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 6px 12px 6px 32px;
+            border: 1px solid var(--borde);
+            border-radius: 8px;
+            font-size: 13px;
+            outline: none;
+            transition: border-color 0.2s;
+            color: #1a1a2e;
+        }
+
+        .search-input:focus {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 3px rgba(94,165,4,0.1);
+        }
+
+        .search-input::placeholder { color: #adb5bd; }
+
+        /* ── Tabla ── */
         .tabla-muestras {
             width: 100%;
             font-size: 13px;
@@ -274,6 +309,7 @@
             padding: 2px 7px;
             border-radius: 4px;
             color: #495057;
+            letter-spacing: 0.3px;
         }
 
         .badge-estado {
@@ -284,10 +320,8 @@
             white-space: nowrap;
         }
 
-        .badge-pendiente { background: #fff3cd; color: #856404; }
-        .badge-proceso   { background: #cfe2ff; color: #0d6efd; }
-        .badge-informe   { background: #d1e7dd; color: #146c43; }
-        .badge-demorada  { background: #f8d7da; color: #842029; }
+        .badge-proceso  { background: #cfe2ff; color: #0d6efd; }
+        .badge-informe  { background: #d1e7dd; color: #146c43; }
 
         /* ── Botón descargar ── */
         .btn-descargar {
@@ -316,73 +350,69 @@
             pointer-events: none;
         }
 
-        /* ── Timeline de estado ── */
-        .timeline {
+        /* ── Sin resultados ── */
+        .sin-resultados {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--gris);
+            font-size: 14px;
+            display: none;
+        }
+
+        .sin-resultados i {
+            font-size: 2rem;
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #adb5bd;
+        }
+
+        /* ── Paginación ── */
+        .paginacion-wrapper {
             display: flex;
-            align-items: center;
             justify-content: space-between;
-            padding: 1rem 0;
-            position: relative;
-        }
-
-        .timeline::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            right: 5%;
-            height: 2px;
-            background: var(--borde);
-            transform: translateY(-50%);
-            z-index: 0;
-        }
-
-        .tl-step {
-            display: flex;
-            flex-direction: column;
             align-items: center;
-            gap: 6px;
-            z-index: 1;
-            flex: 1;
+            padding: 0.75rem 1.25rem;
+            border-top: 1px solid var(--borde);
+            font-size: 13px;
+            color: var(--gris);
         }
 
-        .tl-dot {
+        .paginacion-btns {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pag-btn {
             width: 32px;
             height: 32px;
-            border-radius: 50%;
+            border-radius: 6px;
+            border: 1px solid var(--borde);
+            background: white;
+            font-size: 13px;
+            cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 14px;
-            border: 2px solid var(--borde);
-            background: white;
+            color: #495057;
+            transition: all 0.2s;
         }
 
-        .tl-dot.done    { background: var(--verde);   border-color: var(--verde);   color: white; }
-        .tl-dot.current { background: #0d6efd;        border-color: #0d6efd;        color: white; }
-        .tl-dot.pending { background: white;           border-color: var(--borde);   color: #adb5bd; }
-
-        .tl-label {
-            font-size: 11px;
-            color: var(--gris);
-            text-align: center;
+        .pag-btn:hover:not(:disabled) {
+            background: var(--verde-light);
+            border-color: var(--verde);
+            color: var(--verde);
         }
 
-        .tl-label.done    { color: var(--verde); font-weight: 600; }
-        .tl-label.current { color: #0d6efd;      font-weight: 600; }
+        .pag-btn.active {
+            background: var(--verde);
+            border-color: var(--verde);
+            color: white;
+            font-weight: 600;
+        }
 
-        /* ── Aviso info ── */
-        .aviso-info {
-            background: #eaf5d3;
-            border-left: 4px solid var(--verde);
-            border-radius: 8px;
-            padding: 0.85rem 1rem;
-            font-size: 13px;
-            color: #3a6b02;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-top: 1rem;
+        .pag-btn:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
         }
 
         /* ── Responsive ── */
@@ -402,6 +432,7 @@
             .content { padding: 1rem; }
             .kpi-grid { grid-template-columns: 1fr 1fr; }
             .bienvenida-icon { display: none; }
+            .search-wrapper { min-width: 100%; }
         }
     </style>
 </head>
@@ -460,22 +491,22 @@
         <div class="kpi-card verde">
             <div class="kpi-icon verde"><i class="bi bi-flask"></i></div>
             <div class="kpi-data">
-                <h3>3</h3>
-                <p>Muestras activas</p>
+                <h3 id="kpi-total">0</h3>
+                <p>Muestras totales</p>
             </div>
         </div>
         <div class="kpi-card azul">
-            <div class="kpi-icon azul"><i class="bi bi-file-earmark-check"></i></div>
+            <div class="kpi-icon azul"><i class="bi bi-hourglass-split"></i></div>
             <div class="kpi-data">
-                <h3>1</h3>
-                <p>Informe disponible</p>
+                <h3 id="kpi-proceso">0</h3>
+                <p>En proceso</p>
             </div>
         </div>
         <div class="kpi-card naranja">
-            <div class="kpi-icon naranja"><i class="bi bi-hourglass-split"></i></div>
+            <div class="kpi-icon naranja"><i class="bi bi-file-earmark-check"></i></div>
             <div class="kpi-data">
-                <h3>2</h3>
-                <p>En proceso</p>
+                <h3 id="kpi-listos">0</h3>
+                <p>Informes disponibles</p>
             </div>
         </div>
     </div>
@@ -483,92 +514,48 @@
     <!-- Tabla de muestras -->
     <div class="panel">
         <div class="panel-header">
-            <h5><i class="bi bi-list-check me-2" style="color:var(--verde);"></i>Mis muestras</h5>
+            <h5><i class="bi bi-list-check me-2" style="color:var(--verde);"></i>Mis análisis</h5>
+
+            <!-- Buscador por ID protocolo -->
+            <div class="search-wrapper">
+                <i class="bi bi-search"></i>
+                <input
+                        type="text"
+                        class="search-input"
+                        id="buscadorProtocolo"
+                        placeholder="Buscar por N° protocolo..."
+                        autocomplete="off"
+                >
+            </div>
         </div>
-        <div class="panel-body">
-            <table class="tabla-muestras">
+
+        <div class="panel-body" style="padding:0;">
+            <table class="tabla-muestras" id="tablaMuestras">
                 <thead>
                 <tr>
-                    <th>Código</th>
+                    <th>N° Protocolo</th>
                     <th>Tipo de análisis</th>
                     <th>Fecha ingreso</th>
                     <th>Estado</th>
                     <th>Informe</th>
                 </tr>
                 </thead>
-                <tbody>
-                <tr>
-                    <td><span class="cod-badge">CHQ-2026-011</span></td>
-                    <td>Agua de pozo</td>
-                    <td>05 jun 2026</td>
-                    <td><span class="badge-estado badge-informe">✅ Informe listo</span></td>
-                    <td>
-                        <button class="btn-descargar">
-                            <i class="bi bi-download"></i> Descargar
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span class="cod-badge">CHQ-2026-013</span></td>
-                    <td>Efluente industrial</td>
-                    <td>08 jun 2026</td>
-                    <td><span class="badge-estado badge-proceso">🔬 En análisis</span></td>
-                    <td>
-                        <button class="btn-descargar disabled">
-                            <i class="bi bi-clock"></i> Pendiente
-                        </button>
-                    </td>
-                </tr>
-                <tr>
-                    <td><span class="cod-badge">CHQ-2026-015</span></td>
-                    <td>Agua residual</td>
-                    <td>10 jun 2026</td>
-                    <td><span class="badge-estado badge-pendiente">⏳ Pendiente</span></td>
-                    <td>
-                        <button class="btn-descargar disabled">
-                            <i class="bi bi-clock"></i> Pendiente
-                        </button>
-                    </td>
-                </tr>
+                <tbody id="tablaBody">
+                <!-- Filas generadas por JS -->
                 </tbody>
             </table>
-        </div>
-    </div>
 
-    <!-- Seguimiento de muestra activa -->
-    <div class="panel">
-        <div class="panel-header">
-            <h5><i class="bi bi-geo-alt me-2" style="color:#0d6efd;"></i>Seguimiento — CHQ-2026-013</h5>
-            <span style="font-size:12px;color:var(--gris);">Efluente industrial</span>
+            <!-- Sin resultados -->
+            <div class="sin-resultados" id="sinResultados">
+                <i class="bi bi-search"></i>
+                No se encontraron resultados para ese número de protocolo.
+            </div>
         </div>
-        <div class="panel-body">
-            <div class="timeline">
-                <div class="tl-step">
-                    <div class="tl-dot done"><i class="bi bi-check-lg"></i></div>
-                    <span class="tl-label done">Recepción</span>
-                </div>
-                <div class="tl-step">
-                    <div class="tl-dot done"><i class="bi bi-check-lg"></i></div>
-                    <span class="tl-label done">Ingreso al lab</span>
-                </div>
-                <div class="tl-step">
-                    <div class="tl-dot current"><i class="bi bi-flask"></i></div>
-                    <span class="tl-label current">En análisis</span>
-                </div>
-                <div class="tl-step">
-                    <div class="tl-dot pending"><i class="bi bi-file-earmark-text"></i></div>
-                    <span class="tl-label pending">Informe</span>
-                </div>
-                <div class="tl-step">
-                    <div class="tl-dot pending"><i class="bi bi-send"></i></div>
-                    <span class="tl-label pending">Entrega</span>
-                </div>
-            </div>
 
-            <div class="aviso-info">
-                <i class="bi bi-info-circle-fill" style="font-size:18px;flex-shrink:0;"></i>
-                Tu muestra está siendo analizada. Estimamos tener el informe listo el <strong>15 de junio</strong>.
-            </div>
+        <!-- Paginación -->
+        <div class="paginacion-wrapper">
+            <span id="pag-info">Mostrando 0 de 0 registros</span>
+            <div class="paginacion-btns" id="paginacion-btns"></div>
         </div>
     </div>
 
@@ -587,7 +574,6 @@
     const nombre    = userName || userEmail || "Cliente";
     const iniciales = nombre.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase();
 
-    // ── Header ──
     document.getElementById("header-nombre").textContent  = nombre;
     document.getElementById("header-avatar").textContent  = iniciales;
     document.getElementById("cliente-nombre").textContent = nombre;
@@ -603,6 +589,126 @@
         ["token", "userEmail", "userRole", "userName"].forEach(k => localStorage.removeItem(k));
         window.location.href = "login.html";
     });
+
+    // ────────────────────────────────────────────
+    // DATOS — reemplazar con fetch real al backend
+    // ────────────────────────────────────────────
+    const muestras = [
+        { codigo: "CHQ-2026-001", tipo: "Agua potable",        fecha: "01 ene 2026", estado: "EN_PROCESO", informe: false },
+        { codigo: "CHQ-2026-003", tipo: "Efluente industrial",  fecha: "15 ene 2026", estado: "INFORME",    informe: true  },
+        { codigo: "CHQ-2026-005", tipo: "Agua de pozo",         fecha: "02 feb 2026", estado: "EN_PROCESO", informe: false },
+        { codigo: "CHQ-2026-007", tipo: "Suelo agrícola",       fecha: "18 feb 2026", estado: "INFORME",    informe: true  },
+        { codigo: "CHQ-2026-009", tipo: "Efluente cloacal",     fecha: "05 mar 2026", estado: "EN_PROCESO", informe: false },
+        { codigo: "CHQ-2026-011", tipo: "Agua residual",        fecha: "20 mar 2026", estado: "INFORME",    informe: true  },
+        { codigo: "CHQ-2026-013", tipo: "Agua potable",         fecha: "01 abr 2026", estado: "EN_PROCESO", informe: false },
+        { codigo: "CHQ-2026-015", tipo: "Efluente industrial",  fecha: "14 abr 2026", estado: "INFORME",    informe: true  },
+        { codigo: "CHQ-2026-017", tipo: "Agua de pozo",         fecha: "28 abr 2026", estado: "EN_PROCESO", informe: false },
+        { codigo: "CHQ-2026-019", tipo: "Suelo agrícola",       fecha: "10 may 2026", estado: "INFORME",    informe: true  },
+        { codigo: "CHQ-2026-021", tipo: "Agua potable",         fecha: "22 may 2026", estado: "EN_PROCESO", informe: false },
+        { codigo: "CHQ-2026-023", tipo: "Efluente cloacal",     fecha: "05 jun 2026", estado: "INFORME",    informe: true  },
+    ];
+
+    // ── KPIs ──
+    document.getElementById("kpi-total").textContent   = muestras.length;
+    document.getElementById("kpi-proceso").textContent = muestras.filter(m => m.estado === "EN_PROCESO").length;
+    document.getElementById("kpi-listos").textContent  = muestras.filter(m => m.estado === "INFORME").length;
+
+    // ────────────────────────────────────────────
+    // TABLA + BÚSQUEDA + PAGINACIÓN
+    // ────────────────────────────────────────────
+    const POR_PAGINA = 10;
+    let paginaActual = 1;
+    let datosFiltrados = [...muestras];
+
+    function badgeHTML(estado) {
+        if (estado === "EN_PROCESO") return `<span class="badge-estado badge-proceso">🔬 En análisis</span>`;
+        if (estado === "INFORME")    return `<span class="badge-estado badge-informe">✅ Informe listo</span>`;
+        return "";
+    }
+
+    function btnInformeHTML(disponible) {
+        if (disponible) {
+            return `<button class="btn-descargar"><i class="bi bi-download"></i> Descargar</button>`;
+        }
+        return `<button class="btn-descargar disabled"><i class="bi bi-clock"></i> En proceso</button>`;
+    }
+
+    function renderTabla() {
+        const tbody       = document.getElementById("tablaBody");
+        const sinRes      = document.getElementById("sinResultados");
+        const pagInfo     = document.getElementById("pag-info");
+        const pagBtns     = document.getElementById("paginacion-btns");
+
+        const total       = datosFiltrados.length;
+        const totalPags   = Math.ceil(total / POR_PAGINA);
+        const inicio      = (paginaActual - 1) * POR_PAGINA;
+        const fin         = Math.min(inicio + POR_PAGINA, total);
+        const slice       = datosFiltrados.slice(inicio, fin);
+
+        // Sin resultados
+        if (total === 0) {
+            tbody.innerHTML = "";
+            sinRes.style.display = "block";
+            pagInfo.textContent  = "Sin resultados";
+            pagBtns.innerHTML    = "";
+            return;
+        }
+
+        sinRes.style.display = "none";
+
+        // Filas
+        tbody.innerHTML = slice.map(m => `
+            <tr>
+                <td><span class="cod-badge">${m.codigo}</span></td>
+                <td>${m.tipo}</td>
+                <td>${m.fecha}</td>
+                <td>${badgeHTML(m.estado)}</td>
+                <td>${btnInformeHTML(m.informe)}</td>
+            </tr>
+        `).join("");
+
+        // Info
+        pagInfo.textContent = `Mostrando ${inicio + 1}–${fin} de ${total} registro${total !== 1 ? "s" : ""}`;
+
+        // Botones de paginación
+        pagBtns.innerHTML = "";
+
+        // Anterior
+        const btnPrev = document.createElement("button");
+        btnPrev.className = "pag-btn";
+        btnPrev.innerHTML = `<i class="bi bi-chevron-left"></i>`;
+        btnPrev.disabled  = paginaActual === 1;
+        btnPrev.onclick   = () => { paginaActual--; renderTabla(); };
+        pagBtns.appendChild(btnPrev);
+
+        // Números
+        for (let i = 1; i <= totalPags; i++) {
+            const btn = document.createElement("button");
+            btn.className = "pag-btn" + (i === paginaActual ? " active" : "");
+            btn.textContent = i;
+            btn.onclick = () => { paginaActual = i; renderTabla(); };
+            pagBtns.appendChild(btn);
+        }
+
+        // Siguiente
+        const btnNext = document.createElement("button");
+        btnNext.className = "pag-btn";
+        btnNext.innerHTML = `<i class="bi bi-chevron-right"></i>`;
+        btnNext.disabled  = paginaActual === totalPags;
+        btnNext.onclick   = () => { paginaActual++; renderTabla(); };
+        pagBtns.appendChild(btnNext);
+    }
+
+    // ── Buscador ──
+    document.getElementById("buscadorProtocolo").addEventListener("input", function () {
+        const texto = this.value.trim().toLowerCase();
+        datosFiltrados = muestras.filter(m => m.codigo.toLowerCase().includes(texto));
+        paginaActual   = 1;
+        renderTabla();
+    });
+
+    // ── Render inicial ──
+    renderTabla();
 </script>
 
 </body>
