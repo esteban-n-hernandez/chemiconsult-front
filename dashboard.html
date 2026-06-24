@@ -893,6 +893,20 @@
 </div>
 
 <script>
+
+    // ── Bypass DEV: setea valores por defecto si no hay token ──
+// ⚠️ Borrar este bloque antes de producción
+if (!localStorage.getItem("token")) {
+    localStorage.setItem("token",     "dev-token");
+    localStorage.setItem("userRole",  "EMPLEADO");
+    localStorage.setItem("userName",  "Ana López");
+    localStorage.setItem("userEmail", "ana@chemiconsult.com");
+}
+
+// ── Protección ──
+const token = localStorage.getItem("token");
+if (!token) window.location.href = "login.html";
+    
     // ── Protección ──
     const token = localStorage.getItem("token");
     if (!token) window.location.href = "login.html";
