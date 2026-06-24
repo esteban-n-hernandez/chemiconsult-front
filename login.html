@@ -81,17 +81,16 @@
                 body: formBody
             });
 
-           if (response.ok) {
-    const data = await response.json();
+            if (response.ok) {
+                const data = await response.json();
 
-    console.log("✅ Respuesta completa:", data);
+                console.log("✅ Respuesta completa:", data);
 
-    localStorage.setItem("token",     data.token);
-    localStorage.setItem("userEmail", email);
-    localStorage.setItem("userRole",  data.role.toUpperCase());  
+                localStorage.setItem("token", data.token);
+                localStorage.setItem("userEmail", email);
+                localStorage.setItem("userRole", data.role.toUpperCase());
 
-    window.location.href = "dashboard.html";
-}
+                window.location.href = "dashboard.html";
             } else {
                 document.getElementById("error-message").style.display = "block";
             }
