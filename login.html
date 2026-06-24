@@ -81,21 +81,17 @@
                 body: formBody
             });
 
-            if (response.ok) {
-                // 🔍 Leer el cuerpo como JSON
-                const data = await response.json();
+           if (response.ok) {
+    const data = await response.json();
 
-console.log("✅ Respuesta completa:", data);
-                
-                //  Mostrar el token en consola (solo para pruebas)
-                console.log("✅ Token recibido:", data.token);
+    console.log("✅ Respuesta completa:", data);
 
-                // Guardar token y email en localStorage
-                localStorage.setItem("token", data.token);
-                localStorage.setItem("userEmail", email);
+    localStorage.setItem("token",     data.token);
+    localStorage.setItem("userEmail", email);
+    localStorage.setItem("userRole",  data.role.toUpperCase());  
 
-                // 👉 Redirigir al dashboard
-                window.location.href = "dashboard.html";
+    window.location.href = "dashboard.html";
+}
             } else {
                 document.getElementById("error-message").style.display = "block";
             }
