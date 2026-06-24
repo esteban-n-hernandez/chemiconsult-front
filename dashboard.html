@@ -6,11 +6,9 @@
     <title>Dashboard - CHEMICONSULT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-    <!-- Tabler Icons (para ti-download) -->
     <link href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" rel="stylesheet">
 
     <style>
-        /* ── Variables de color ── */
         :root {
             --color-text-secondary:     #6c757d;
             --color-text-tertiary:      #adb5bd;
@@ -36,7 +34,7 @@
             overflow: hidden;
         }
 
-        /* SIDEBAR */
+        /* ── SIDEBAR ── */
         .sidebar {
             width: 250px;
             background-color: #5EA504;
@@ -68,7 +66,7 @@
             background: rgba(255, 255, 255, 0.2);
         }
 
-        /* CONTENIDO PRINCIPAL */
+        /* ── CONTENIDO ── */
         .content {
             flex: 1;
             padding: 2rem;
@@ -99,7 +97,7 @@
             color: white;
         }
 
-        /* ── Sección de estado de estudios ── */
+        /* ── Panel estudios/facturas ── */
         .estudios-panel {
             background: white;
             border-radius: 15px;
@@ -123,11 +121,14 @@
             background: #4a8403;
         }
 
-        /* MODO MOBILE */
+        /* ── Alta de estudio ── */
+        .alta-estudio-section {
+            margin-top: 2rem;
+        }
+
+        /* ── MOBILE ── */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
+            body { flex-direction: column; }
 
             .sidebar {
                 width: 100%;
@@ -135,32 +136,38 @@
                 justify-content: space-around;
             }
 
-            .sidebar h2 {
-                display: none;
-            }
+            .sidebar h2 { display: none; }
 
-            .welcome-message {
-                text-align: center;
-            }
+            .welcome-message { text-align: center; }
 
-            .content {
-                padding: 1rem;
-            }
+            .content { padding: 1rem; }
         }
     </style>
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- ══════════════════════
+     SIDEBAR
+     ══════════════════════ -->
 <div class="sidebar">
     <h2>CHEMICONSULT</h2>
+
+    <!-- Ítems visibles para TODOS -->
     <a href="#"><i class="bi bi-speedometer2"></i> Dashboard</a>
-    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Estudios</a>
     <a href="#"><i class="bi bi-person-circle"></i> Perfil</a>
-    <a href="#" id="logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+
+    <!-- Solo EMPLEADOS -->
+    <a href="estudios.html" class="solo-empleado"><i class="bi bi-file-earmark-medical"></i> Estudios</a>
+
+    <!-- Siempre al final -->
+    <a href="#" id="logout-btn" style="margin-top:auto;">
+        <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+    </a>
 </div>
 
-<!-- Contenido principal -->
+<!-- ══════════════════════
+     CONTENIDO PRINCIPAL
+     ══════════════════════ -->
 <div class="content">
 
     <!-- Encabezado -->
@@ -169,252 +176,299 @@
         <div class="welcome-message" id="welcome-message"></div>
     </div>
 
-    <!-- Tabla de usuarios -->
-    <div class="table-container">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Email</th>
-                <th>Rol</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>Juan Pérez</td>
-                <td>juan.perez@gmail.com</td>
-                <td>Cliente</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>María Gómez</td>
-                <td>maria.gomez@gmail.com</td>
-                <td>Cliente</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Carlos Rodríguez</td>
-                <td>carlos.rodriguez@gmail.com</td>
-                <td>Cliente</td>
-            </tr>
-            </tbody>
-        </table>
+    <!-- ─────────────────────────────────────────
+         VISTA EMPLEADO
+    ──────────────────────────────────────────── -->
+    <div id="vista-empleado" style="display:none;">
+
+        <!-- Tabla de usuarios -->
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Juan Pérez</td>
+                    <td>juan.perez@gmail.com</td>
+                    <td>Cliente</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>María Gómez</td>
+                    <td>maria.gomez@gmail.com</td>
+                    <td>Cliente</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Carlos Rodríguez</td>
+                    <td>carlos.rodriguez@gmail.com</td>
+                    <td>Cliente</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Alta de Estudio -->
+        <div class="alta-estudio-section">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2>Alta de Estudio</h2>
+            </div>
+
+            <form id="formEstudio" class="border p-4 rounded bg-white shadow-sm">
+                <div class="mb-3">
+                    <label for="tipoAnalisis" class="form-label">Tipo de Análisis</label>
+                    <input type="text" class="form-control" id="tipoAnalisis" required>
+                </div>
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado</label>
+                    <select class="form-control" id="estado" required>
+                        <option value="PENDIENTE">Pendiente</option>
+                        <option value="EN_PROCESO">En proceso</option>
+                        <option value="COMPLETADO">Completado</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="userId" class="form-label">ID de Usuario</label>
+                    <input type="number" class="form-control" id="userId" required>
+                </div>
+                <div class="mb-3">
+                    <label for="userMail" class="form-label">Email del Usuario</label>
+                    <input type="email" class="form-control" id="userMail" required>
+                </div>
+                <div class="mb-3">
+                    <label for="archivoPdf" class="form-label">Archivo PDF</label>
+                    <input type="file" class="form-control" id="archivoPdf" accept="application/pdf" required>
+                </div>
+                <button type="submit" class="btn btn-success">Guardar Estudio</button>
+            </form>
+        </div>
+
     </div>
+    <!-- FIN vista empleado -->
 
-    <!-- ══════════════════════════════════════
-         SECCIÓN: Estado de estudios y facturas
-         ══════════════════════════════════════ -->
-    <div class="estudios-panel">
 
-        <h2 class="sr-only">Mockup del dashboard de cliente de Chemiconsult, mostrando sus estudios con estado de progreso y sus facturas</h2>
+    <!-- ─────────────────────────────────────────
+         VISTA CLIENTE
+    ──────────────────────────────────────────── -->
+    <div id="vista-cliente" style="display:none;">
 
-        <!-- Bienvenida con avatar -->
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
-            <div>
-                <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Bienvenido</p>
-                <p style="font-size:18px;font-weight:500;margin:0;">Juan Pérez</p>
+        <div class="estudios-panel">
+
+            <h2 class="sr-only">Dashboard de cliente de Chemiconsult — estudios y facturas</h2>
+
+            <!-- Bienvenida con avatar -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;">
+                <div>
+                    <p style="font-size:13px;color:var(--color-text-secondary);margin:0;">Bienvenido</p>
+                    <p style="font-size:18px;font-weight:500;margin:0;" id="cliente-nombre">—</p>
+                </div>
+                <div id="cliente-avatar"
+                     style="width:40px;height:40px;border-radius:50%;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;color:var(--color-text-info);">
+                    --
+                </div>
             </div>
-            <div style="width:40px;height:40px;border-radius:50%;background:var(--color-background-info);display:flex;align-items:center;justify-content:center;font-weight:500;font-size:13px;color:var(--color-text-info);">
-                JP
+
+            <!-- Mis estudios -->
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-secondary);margin:0 0 8px;">Mis estudios</p>
+
+            <!-- Estudio 1 — En análisis -->
+            <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1rem 1.25rem;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                    <div>
+                        <p style="font-weight:500;font-size:15px;margin:0;">Agua potable — pozo norte</p>
+                        <p style="font-size:13px;color:var(--color-text-secondary);margin:2px 0 0;">Recibida 12 jun 2026 · cod. CHQ-2026-0014</p>
+                    </div>
+                    <span style="background:var(--color-background-info);color:var(--color-text-info);font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);white-space:nowrap;">En análisis</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;">
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-info);"></div>
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-info);"></div>
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-border-tertiary);"></div>
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-border-tertiary);"></div>
+                </div>
+                <div style="display:flex;justify-content:space-between;margin-top:6px;">
+                    <span style="font-size:11px;color:var(--color-text-tertiary);">Recibida</span>
+                    <span style="font-size:11px;color:var(--color-text-tertiary);">Resultados</span>
+                    <span style="font-size:11px;color:var(--color-text-tertiary);">Informe</span>
+                    <span style="font-size:11px;color:var(--color-text-tertiary);">Entregada</span>
+                </div>
+            </div>
+
+            <!-- Estudio 2 — Informe emitido -->
+            <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1rem 1.25rem;margin-bottom:12px;">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
+                    <div>
+                        <p style="font-weight:500;font-size:15px;margin:0;">Agua residual — planta sur</p>
+                        <p style="font-size:13px;color:var(--color-text-secondary);margin:2px 0 0;">Recibida 2 jun 2026 · cod. CHQ-2026-0011</p>
+                    </div>
+                    <span style="background:var(--color-background-success);color:var(--color-text-success);font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);white-space:nowrap;">Informe emitido</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:4px;margin-bottom:10px;">
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-success);"></div>
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-success);"></div>
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-success);"></div>
+                    <div style="flex:1;height:4px;border-radius:2px;background:var(--color-border-tertiary);"></div>
+                </div>
+                <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;">
+                    <i class="ti ti-download" style="font-size:16px;" aria-hidden="true"></i>
+                    Descargar informe PDF
+                </button>
+            </div>
+
+            <!-- Mis facturas -->
+            <p style="font-size:14px;font-weight:500;color:var(--color-text-secondary);margin:24px 0 8px;">Mis facturas</p>
+
+            <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;">
+
+                <!-- Factura 1 — Pendiente -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);">
+                    <div>
+                        <p style="font-size:14px;font-weight:500;margin:0;">0001-00000231</p>
+                        <p style="font-size:12px;color:var(--color-text-secondary);margin:2px 0 0;">Emitida 3 jun 2026</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:14px;">ARS 48.500</span>
+                        <span style="background:var(--color-background-warning);color:var(--color-text-warning);font-size:12px;padding:3px 9px;border-radius:var(--border-radius-md);">Pendiente</span>
+                        <i class="ti ti-download" style="font-size:18px;color:var(--color-text-secondary);cursor:pointer;" aria-hidden="true" title="Descargar factura"></i>
+                    </div>
+                </div>
+
+                <!-- Factura 2 — Pagada -->
+                <div style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;">
+                    <div>
+                        <p style="font-size:14px;font-weight:500;margin:0;">0001-00000219</p>
+                        <p style="font-size:12px;color:var(--color-text-secondary);margin:2px 0 0;">Emitida 14 may 2026</p>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <span style="font-size:14px;">ARS 32.000</span>
+                        <span style="background:var(--color-background-success);color:var(--color-text-success);font-size:12px;padding:3px 9px;border-radius:var(--border-radius-md);">Pagada</span>
+                        <i class="ti ti-download" style="font-size:18px;color:var(--color-text-secondary);cursor:pointer;" aria-hidden="true" title="Descargar factura"></i>
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- Título sección estudios -->
-        <p style="font-size:14px;font-weight:500;color:var(--color-text-secondary);margin:0 0 8px;">Mis estudios</p>
-
-        <!-- Estudio 1 — En análisis -->
-        <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1rem 1.25rem;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
-                <div>
-                    <p style="font-weight:500;font-size:15px;margin:0;">Agua potable — pozo norte</p>
-                    <p style="font-size:13px;color:var(--color-text-secondary);margin:2px 0 0;">Recibida 12 jun 2026 · cod. CHQ-2026-0014</p>
-                </div>
-                <span style="background:var(--color-background-info);color:var(--color-text-info);font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);white-space:nowrap;">En análisis</span>
-            </div>
-            <!-- Barra de progreso (2 de 4 pasos) -->
-            <div style="display:flex;align-items:center;gap:4px;">
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-info);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-info);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-border-tertiary);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-border-tertiary);"></div>
-            </div>
-            <div style="display:flex;justify-content:space-between;margin-top:6px;">
-                <span style="font-size:11px;color:var(--color-text-tertiary);">Recibida</span>
-                <span style="font-size:11px;color:var(--color-text-tertiary);">Resultados</span>
-                <span style="font-size:11px;color:var(--color-text-tertiary);">Informe</span>
-                <span style="font-size:11px;color:var(--color-text-tertiary);">Entregada</span>
-            </div>
-        </div>
-
-        <!-- Estudio 2 — Informe emitido -->
-        <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1rem 1.25rem;margin-bottom:12px;">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;">
-                <div>
-                    <p style="font-weight:500;font-size:15px;margin:0;">Agua residual — planta sur</p>
-                    <p style="font-size:13px;color:var(--color-text-secondary);margin:2px 0 0;">Recibida 2 jun 2026 · cod. CHQ-2026-0011</p>
-                </div>
-                <span style="background:var(--color-background-success);color:var(--color-text-success);font-size:12px;padding:4px 10px;border-radius:var(--border-radius-md);white-space:nowrap;">Informe emitido</span>
-            </div>
-            <!-- Barra de progreso (3 de 4 pasos) -->
-            <div style="display:flex;align-items:center;gap:4px;margin-bottom:10px;">
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-success);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-success);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-background-success);"></div>
-                <div style="flex:1;height:4px;border-radius:2px;background:var(--color-border-tertiary);"></div>
-            </div>
-            <button style="width:100%;display:flex;align-items:center;justify-content:center;gap:6px;">
-                <i class="ti ti-download" style="font-size:16px;" aria-hidden="true"></i>
-                Descargar informe PDF
-            </button>
-        </div>
-
-        <!-- Título sección facturas -->
-        <p style="font-size:14px;font-weight:500;color:var(--color-text-secondary);margin:24px 0 8px;">Mis facturas</p>
-
-        <!-- Lista de facturas -->
-        <div style="background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);overflow:hidden;">
-
-            <!-- Factura 1 — Pendiente -->
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;border-bottom:0.5px solid var(--color-border-tertiary);">
-                <div>
-                    <p style="font-size:14px;font-weight:500;margin:0;">0001-00000231</p>
-                    <p style="font-size:12px;color:var(--color-text-secondary);margin:2px 0 0;">Emitida 3 jun 2026</p>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <span style="font-size:14px;">ARS 48.500</span>
-                    <span style="background:var(--color-background-warning);color:var(--color-text-warning);font-size:12px;padding:3px 9px;border-radius:var(--border-radius-md);">Pendiente</span>
-                    <i class="ti ti-download" style="font-size:18px;color:var(--color-text-secondary);cursor:pointer;" aria-hidden="true" title="Descargar factura"></i>
-                </div>
-            </div>
-
-            <!-- Factura 2 — Pagada -->
-            <div style="display:flex;align-items:center;justify-content:space-between;padding:0.875rem 1.25rem;">
-                <div>
-                    <p style="font-size:14px;font-weight:500;margin:0;">0001-00000219</p>
-                    <p style="font-size:12px;color:var(--color-text-secondary);margin:2px 0 0;">Emitida 14 may 2026</p>
-                </div>
-                <div style="display:flex;align-items:center;gap:10px;">
-                    <span style="font-size:14px;">ARS 32.000</span>
-                    <span style="background:var(--color-background-success);color:var(--color-text-success);font-size:12px;padding:3px 9px;border-radius:var(--border-radius-md);">Pagada</span>
-                    <i class="ti ti-download" style="font-size:18px;color:var(--color-text-secondary);cursor:pointer;" aria-hidden="true" title="Descargar factura"></i>
-                </div>
-            </div>
-
-        </div>
     </div>
-    <!-- FIN sección estudios y facturas -->
-
-    <!-- Alta de Estudio -->
-    <div class="content">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2>Alta de Estudio</h2>
-        </div>
-
-        <form id="formEstudio" class="border p-4 rounded bg-white shadow-sm">
-            <div class="mb-3">
-                <label for="tipoAnalisis" class="form-label">Tipo de Análisis</label>
-                <input type="text" class="form-control" id="tipoAnalisis" required>
-            </div>
-            <div class="mb-3">
-                <label for="estado" class="form-label">Estado</label>
-                <select class="form-control" id="estado" required>
-                    <option value="PENDIENTE">Pendiente</option>
-                    <option value="EN_PROCESO">En proceso</option>
-                    <option value="COMPLETADO">Completado</option>
-                </select>
-            </div>
-            <div class="mb-3">
-                <label for="userId" class="form-label">ID de Usuario</label>
-                <input type="number" class="form-control" id="userId" required>
-            </div>
-            <div class="mb-3">
-                <label for="userMail" class="form-label">Email del Usuario</label>
-                <input type="email" class="form-control" id="userMail" required>
-            </div>
-            <div class="mb-3">
-                <label for="archivoPdf" class="form-label">Archivo PDF</label>
-                <input type="file" class="form-control" id="archivoPdf" accept="application/pdf" required>
-            </div>
-            <button type="submit" class="btn btn-success">Guardar Estudio</button>
-        </form>
-    </div>
+    <!-- FIN vista cliente -->
 
 </div>
 
 <script>
-    // 🔒 Protección: si no hay token, redirigir al login
+    // ── Protección: si no hay token, redirigir ──
     const token = localStorage.getItem("token");
     if (!token) {
         window.location.href = "login.html";
     }
 
-    // 👋 Mostrar mensaje de bienvenida
+    // ── Leer datos del usuario ──
     const userEmail = localStorage.getItem("userEmail");
-    const welcomeElement = document.getElementById("welcome-message");
+    const userRole  = localStorage.getItem("userRole");   // "CLIENTE" o "EMPLEADO"
+    const userName  = localStorage.getItem("userName");   // nombre completo (opcional)
 
-    if (userEmail) {
-        welcomeElement.textContent = `👋 Bienvenido, ${userEmail}`;
+    // ── Mensaje de bienvenida en header ──
+    const welcomeElement = document.getElementById("welcome-message");
+    welcomeElement.textContent = userEmail
+        ? `👋 Bienvenido, ${userEmail}`
+        : "👋 Bienvenido";
+
+    // ── Lógica de roles ──
+    const esCliente  = userRole === "CLIENTE";
+    const esEmpleado = userRole === "EMPLEADO";
+
+    // Sidebar: ocultar "Estudios" a clientes
+    document.querySelectorAll(".solo-empleado").forEach(el => {
+        el.style.display = esEmpleado ? "flex" : "none";
+    });
+
+    // Mostrar la vista correspondiente
+    if (esCliente) {
+        document.getElementById("vista-cliente").style.display = "block";
+
+        // Rellenar nombre y avatar dinámicamente
+        const nombre = userName || userEmail || "Cliente";
+        document.getElementById("cliente-nombre").textContent = nombre;
+
+        // Iniciales para el avatar (ej: "Juan Pérez" → "JP")
+        const iniciales = nombre
+            .split(" ")
+            .map(p => p[0])
+            .join("")
+            .substring(0, 2)
+            .toUpperCase();
+        document.getElementById("cliente-avatar").textContent = iniciales;
+
     } else {
-        welcomeElement.textContent = "👋 Bienvenido";
+        // Empleado (o cualquier rol no reconocido → vista empleado por defecto)
+        document.getElementById("vista-empleado").style.display = "block";
     }
 
-    // 🚪 Cerrar sesión
+    // ── Cerrar sesión ──
     document.getElementById("logout-btn").addEventListener("click", () => {
         localStorage.removeItem("token");
         localStorage.removeItem("userEmail");
+        localStorage.removeItem("userRole");
+        localStorage.removeItem("userName");
         window.location.href = "login.html";
     });
 
-    // 📋 Alta de estudio
-    document.getElementById("formEstudio").addEventListener("submit", async (e) => {
-        e.preventDefault();
+    // ── Alta de estudio (solo empleados) ──
+    const formEstudio = document.getElementById("formEstudio");
+    if (formEstudio) {
+        formEstudio.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-        const tipo    = document.getElementById("tipoAnalisis").value.trim();
-        const estado  = document.getElementById("estado").value;
-        const userId  = document.getElementById("userId").value.trim();
-        const userMail = document.getElementById("userMail").value.trim();
-        const archivo = document.getElementById("archivoPdf").files[0];
+            const tipo     = document.getElementById("tipoAnalisis").value.trim();
+            const estado   = document.getElementById("estado").value;
+            const userId   = document.getElementById("userId").value.trim();
+            const userMail = document.getElementById("userMail").value.trim();
+            const archivo  = document.getElementById("archivoPdf").files[0];
 
-        if (!archivo) {
-            alert("Por favor seleccioná un archivo PDF.");
-            return;
-        }
-
-        const base64 = await convertirArchivoABase64(archivo);
-
-        const payload = {
-            tipo:     tipo,
-            estado:   estado,
-            archivo:  base64.split(",")[1],
-            userId:   parseInt(userId),
-            userMail: userMail
-        };
-
-        try {
-            const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
-                method: "POST",
-                headers: {
-                    "Content-Type":  "application/json",
-                    "Authorization": "Bearer " + token
-                },
-                body: JSON.stringify(payload)
-            });
-
-            if (response.ok) {
-                alert("Estudio guardado correctamente ✅");
-                document.getElementById("formEstudio").reset();
-                cargarEstudios();
-            } else {
-                const errorText = await response.text();
-                alert("Error al guardar el estudio:\n" + errorText);
+            if (!archivo) {
+                alert("Por favor seleccioná un archivo PDF.");
+                return;
             }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("Hubo un problema al enviar los datos.");
-        }
-    });
+
+            const base64 = await convertirArchivoABase64(archivo);
+
+            const payload = {
+                tipo:     tipo,
+                estado:   estado,
+                archivo:  base64.split(",")[1],
+                userId:   parseInt(userId),
+                userMail: userMail
+            };
+
+            try {
+                const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":  "application/json",
+                        "Authorization": "Bearer " + token
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    alert("Estudio guardado correctamente ✅");
+                    formEstudio.reset();
+                } else {
+                    const errorText = await response.text();
+                    alert("Error al guardar el estudio:\n" + errorText);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Hubo un problema al enviar los datos.");
+            }
+        });
+    }
 
     function convertirArchivoABase64(file) {
         return new Promise((resolve, reject) => {
