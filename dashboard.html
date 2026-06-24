@@ -895,13 +895,13 @@
 <script>
 
     // ── Bypass DEV: setea valores por defecto si no hay token ──
-// ⚠️ Borrar este bloque antes de producción
-if (!localStorage.getItem("token")) {
-    localStorage.setItem("token",     "dev-token");
-    localStorage.setItem("userRole",  "EMPLEADO");
-    localStorage.setItem("userName",  "Ana López");
-    localStorage.setItem("userEmail", "ana@chemiconsult.com");
-}
+    // ⚠️ Borrar este bloque antes de producción
+    if (!localStorage.getItem("token")) {
+        localStorage.setItem("token",     "dev-token");
+        localStorage.setItem("userRole",  "ROLE_IT");
+        localStorage.setItem("userName",  "Ana López");
+        localStorage.setItem("userEmail", "ana@chemiconsult.com");
+    }
 
     // ── Protección ──
     const token = localStorage.getItem("token");
@@ -909,7 +909,7 @@ if (!localStorage.getItem("token")) {
 
     // ── Datos del usuario ──
     const userEmail = localStorage.getItem("userEmail");
-    const userRole  = localStorage.getItem("userRole");   // "CLIENTE" o "EMPLEADO"
+    const userRole  = localStorage.getItem("userRole");
     const userName  = localStorage.getItem("userName");
 
     // ── Fecha en el header ──
@@ -922,43 +922,51 @@ if (!localStorage.getItem("token")) {
     }
 
     // ── Avatar y nombre en header ──
-    const nombre = userName || userEmail || "Usuario";
+    const nombre   = userName || userEmail || "Usuario";
     const iniciales = nombre.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase();
 
     document.getElementById("header-nombre").textContent = nombre;
-    document.getElementById("header-rol").textContent    = userRole === "CLIENTE" ? "Cliente" : "Empleado";
     document.getElementById("header-avatar").textContent = iniciales;
 
     // ── Lógica de roles ──
-    const esCliente  = userRole === "CLIENTE";
-    const esEmpleado = !esCliente;
+    const rolNorm    = (userRole || "").toUpperCase();
+    const esCliente  = rolNorm === "ROLE_CLIENTE";
+    const esEmpleado = rolNorm === "ROLE_EMPLEADO" || rolNorm === "ROLE_IT";
 
+    // Header: rol legible
+    document.getElementById("header-rol").textContent =
+        esCliente            ? "Cliente"  :
+        rolNorm === "ROLE_IT" ? "IT"      : "Empleado";
+
+    // Sidebar: ocultar items de gestión a clientes
     document.querySelectorAll(".solo-empleado").forEach(el => {
         el.style.display = esEmpleado ? "flex" : "none";
     });
 
+    // Mostrar vista correspondiente
     if (esCliente) {
-        document.getElementById("vista-cliente").style.display = "block";
+        document.getElementById("vista-cliente").style.display  = "block";
         document.getElementById("cliente-nombre").textContent   = nombre;
         document.getElementById("cliente-avatar").textContent   = iniciales;
-    } else {
+    } else if (esEmpleado) {
         document.getElementById("vista-empleado").style.display = "block";
         inicializarGrafico();
+    } else {
+        // Rol no reconocido → redirigir por seguridad
+        window.location.href = "login.html";
     }
 
     // ── Cerrar sesión ──
     document.getElementById("logout-btn").addEventListener("click", () => {
-        ["token","userEmail","userRole","userName"].forEach(k => localStorage.removeItem(k));
+        ["token", "userEmail", "userRole", "userName"].forEach(k => localStorage.removeItem(k));
         window.location.href = "login.html";
     });
 
     // ── Filtro de tabla ──
     function filtrarTabla(estado, btn) {
-        // Botones activos
         document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
         btn.classList.add("active");
 
-        // Filas
         document.querySelectorAll("#tablaMuestras tbody tr").forEach(row => {
             const rowEstado = row.dataset.estado;
             row.style.display = (estado === "todos" || rowEstado === estado) ? "" : "none";
@@ -997,7 +1005,9 @@ if (!localStorage.getItem("token")) {
             }
         });
     }
+
 </script>
+
 
 <!-- ⚠️ SOLO DESARROLLO — borrar antes de producción -->
 <div id="dev-panel" style="
