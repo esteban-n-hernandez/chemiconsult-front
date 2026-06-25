@@ -6,435 +6,7 @@
     <title>Mi Portal - CHEMICONSULT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --verde:       #5EA504;
-            --verde-light: #eaf5d3;
-            --gris:        #6c757d;
-            --borde:       #dee2e6;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            background: #f0f2f5;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        /* ── Sidebar ── */
-        .sidebar {
-            width: 240px;
-            background: linear-gradient(180deg, #5EA504 0%, #4a8403 100%);
-            color: white;
-            padding: 1.5rem 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .sidebar-logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-logo h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 1px;
-        }
-
-        .sidebar-logo p {
-            font-size: 11px;
-            opacity: 0.75;
-            margin: 2px 0 0;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 0.65rem 1rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active { background: rgba(255,255,255,0.2); }
-        .sidebar a i { font-size: 18px; }
-
-        .sidebar-divider {
-            border: none;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            margin: 0.75rem 0;
-        }
-
-        .sidebar-bottom { margin-top: auto; }
-
-        /* ── Contenido ── */
-        .content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        /* ── Header ── */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.75rem;
-        }
-
-        .page-header h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin: 0;
-        }
-
-        .page-header p {
-            font-size: 13px;
-            color: var(--gris);
-            margin: 2px 0 0;
-        }
-
-        .avatar-circle {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: #cfe2ff;
-            color: #0d6efd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        /* ── Bienvenida ── */
-        .bienvenida-card {
-            background: linear-gradient(135deg, #5EA504 0%, #7cd832 100%);
-            color: white;
-            border-radius: 16px;
-            padding: 1.5rem 2rem;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: 0 4px 15px rgba(94,165,4,0.3);
-        }
-
-        .bienvenida-card h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0 0 4px;
-        }
-
-        .bienvenida-card p {
-            font-size: 13px;
-            opacity: 0.9;
-            margin: 0;
-        }
-
-        .bienvenida-icon {
-            font-size: 3rem;
-            opacity: 0.8;
-        }
-
-        /* ── KPI Cards ── */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .kpi-card {
-            background: white;
-            border-radius: 14px;
-            padding: 1.25rem 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border-left: 4px solid transparent;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-        }
-
-        .kpi-card.verde  { border-left-color: #5EA504; }
-        .kpi-card.azul   { border-left-color: #0d6efd; }
-        .kpi-card.naranja{ border-left-color: #fd7e14; }
-
-        .kpi-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .kpi-icon.verde  { background: #eaf5d3; color: #5EA504; }
-        .kpi-icon.azul   { background: #dbeafe; color: #0d6efd; }
-        .kpi-icon.naranja{ background: #fff0e0; color: #fd7e14; }
-
-        .kpi-data h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1;
-            color: #1a1a2e;
-        }
-
-        .kpi-data p {
-            font-size: 12px;
-            color: var(--gris);
-            margin: 4px 0 0;
-        }
-
-        /* ── Panel ── */
-        .panel {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--borde);
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-
-        .panel-header h5 {
-            font-size: 15px;
-            font-weight: 600;
-            margin: 0;
-            color: #1a1a2e;
-        }
-
-        .panel-body { padding: 1rem 1.25rem; }
-
-        /* ── Buscador ── */
-        .search-wrapper {
-            position: relative;
-            min-width: 240px;
-        }
-
-        .search-wrapper i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--gris);
-            font-size: 14px;
-            pointer-events: none;
-        }
-
-        .search-input {
-            width: 100%;
-            padding: 6px 12px 6px 32px;
-            border: 1px solid var(--borde);
-            border-radius: 8px;
-            font-size: 13px;
-            outline: none;
-            transition: border-color 0.2s;
-            color: #1a1a2e;
-        }
-
-        .search-input:focus {
-            border-color: var(--verde);
-            box-shadow: 0 0 0 3px rgba(94,165,4,0.1);
-        }
-
-        .search-input::placeholder { color: #adb5bd; }
-
-        /* ── Tabla ── */
-        .tabla-muestras {
-            width: 100%;
-            font-size: 13px;
-            border-collapse: collapse;
-        }
-
-        .tabla-muestras thead th {
-            background: #f8f9fa;
-            color: var(--gris);
-            font-weight: 600;
-            padding: 8px 12px;
-            text-align: left;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--borde);
-        }
-
-        .tabla-muestras tbody tr {
-            border-bottom: 1px solid #f1f3f5;
-            transition: background 0.15s;
-        }
-
-        .tabla-muestras tbody tr:hover { background: #f8f9fa; }
-        .tabla-muestras tbody tr:last-child { border-bottom: none; }
-
-        .tabla-muestras td {
-            padding: 10px 12px;
-            vertical-align: middle;
-        }
-
-        .cod-badge {
-            font-family: monospace;
-            font-size: 12px;
-            background: #f0f2f5;
-            padding: 2px 7px;
-            border-radius: 4px;
-            color: #495057;
-            letter-spacing: 0.3px;
-        }
-
-        .badge-estado {
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .badge-proceso  { background: #cfe2ff; color: #0d6efd; }
-        .badge-informe  { background: #d1e7dd; color: #146c43; }
-
-        /* ── Botón descargar ── */
-        .btn-descargar {
-            background: none;
-            border: 1px solid var(--borde);
-            border-radius: 6px;
-            padding: 3px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            color: var(--gris);
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .btn-descargar:hover {
-            background: var(--verde);
-            color: white;
-            border-color: var(--verde);
-        }
-
-        .btn-descargar.disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            pointer-events: none;
-        }
-
-        /* ── Sin resultados ── */
-        .sin-resultados {
-            text-align: center;
-            padding: 2.5rem 1rem;
-            color: var(--gris);
-            font-size: 14px;
-            display: none;
-        }
-
-        .sin-resultados i {
-            font-size: 2rem;
-            display: block;
-            margin-bottom: 0.5rem;
-            color: #adb5bd;
-        }
-
-        /* ── Paginación ── */
-        .paginacion-wrapper {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 1.25rem;
-            border-top: 1px solid var(--borde);
-            font-size: 13px;
-            color: var(--gris);
-        }
-
-        .paginacion-btns {
-            display: flex;
-            gap: 4px;
-        }
-
-        .pag-btn {
-            width: 32px;
-            height: 32px;
-            border-radius: 6px;
-            border: 1px solid var(--borde);
-            background: white;
-            font-size: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #495057;
-            transition: all 0.2s;
-        }
-
-        .pag-btn:hover:not(:disabled) {
-            background: var(--verde-light);
-            border-color: var(--verde);
-            color: var(--verde);
-        }
-
-        .pag-btn.active {
-            background: var(--verde);
-            border-color: var(--verde);
-            color: white;
-            font-weight: 600;
-        }
-
-        .pag-btn:disabled {
-            opacity: 0.35;
-            cursor: not-allowed;
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 900px) {
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; overflow: auto; }
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                padding: 0.75rem 1rem;
-                justify-content: space-around;
-            }
-            .sidebar-logo, .sidebar-divider { display: none; }
-            .content { padding: 1rem; }
-            .kpi-grid { grid-template-columns: 1fr 1fr; }
-            .bienvenida-icon { display: none; }
-            .search-wrapper { min-width: 100%; }
-        }
-    </style>
+    <link rel="stylesheet" href="css/dashboard/dashboard-clientes.css">
 </head>
 <body>
 
@@ -570,12 +142,12 @@
 
     // ── Datos del usuario ──
     const userEmail = localStorage.getItem("userEmail");
-    const userName  = localStorage.getItem("userName");
-    const nombre    = userName || userEmail || "Cliente";
+    const userName = localStorage.getItem("userName");
+    const nombre = userName || userEmail || "Cliente";
     const iniciales = nombre.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase();
 
-    document.getElementById("header-nombre").textContent  = nombre;
-    document.getElementById("header-avatar").textContent  = iniciales;
+    document.getElementById("header-nombre").textContent = nombre;
+    document.getElementById("header-avatar").textContent = iniciales;
     document.getElementById("cliente-nombre").textContent = nombre;
 
     // ── Fecha ──
@@ -594,24 +166,24 @@
     // DATOS — reemplazar con fetch real al backend
     // ────────────────────────────────────────────
     const muestras = [
-        { codigo: "CHQ-2026-001", tipo: "Agua potable",        fecha: "01 ene 2026", estado: "EN_PROCESO", informe: false },
-        { codigo: "CHQ-2026-003", tipo: "Efluente industrial",  fecha: "15 ene 2026", estado: "INFORME",    informe: true  },
-        { codigo: "CHQ-2026-005", tipo: "Agua de pozo",         fecha: "02 feb 2026", estado: "EN_PROCESO", informe: false },
-        { codigo: "CHQ-2026-007", tipo: "Suelo agrícola",       fecha: "18 feb 2026", estado: "INFORME",    informe: true  },
-        { codigo: "CHQ-2026-009", tipo: "Efluente cloacal",     fecha: "05 mar 2026", estado: "EN_PROCESO", informe: false },
-        { codigo: "CHQ-2026-011", tipo: "Agua residual",        fecha: "20 mar 2026", estado: "INFORME",    informe: true  },
-        { codigo: "CHQ-2026-013", tipo: "Agua potable",         fecha: "01 abr 2026", estado: "EN_PROCESO", informe: false },
-        { codigo: "CHQ-2026-015", tipo: "Efluente industrial",  fecha: "14 abr 2026", estado: "INFORME",    informe: true  },
-        { codigo: "CHQ-2026-017", tipo: "Agua de pozo",         fecha: "28 abr 2026", estado: "EN_PROCESO", informe: false },
-        { codigo: "CHQ-2026-019", tipo: "Suelo agrícola",       fecha: "10 may 2026", estado: "INFORME",    informe: true  },
-        { codigo: "CHQ-2026-021", tipo: "Agua potable",         fecha: "22 may 2026", estado: "EN_PROCESO", informe: false },
-        { codigo: "CHQ-2026-023", tipo: "Efluente cloacal",     fecha: "05 jun 2026", estado: "INFORME",    informe: true  },
+        {codigo: "CHQ-2026-001", tipo: "Agua potable", fecha: "01 ene 2026", estado: "EN_PROCESO", informe: false},
+        {codigo: "CHQ-2026-003", tipo: "Efluente industrial", fecha: "15 ene 2026", estado: "INFORME", informe: true},
+        {codigo: "CHQ-2026-005", tipo: "Agua de pozo", fecha: "02 feb 2026", estado: "EN_PROCESO", informe: false},
+        {codigo: "CHQ-2026-007", tipo: "Suelo agrícola", fecha: "18 feb 2026", estado: "INFORME", informe: true},
+        {codigo: "CHQ-2026-009", tipo: "Efluente cloacal", fecha: "05 mar 2026", estado: "EN_PROCESO", informe: false},
+        {codigo: "CHQ-2026-011", tipo: "Agua residual", fecha: "20 mar 2026", estado: "INFORME", informe: true},
+        {codigo: "CHQ-2026-013", tipo: "Agua potable", fecha: "01 abr 2026", estado: "EN_PROCESO", informe: false},
+        {codigo: "CHQ-2026-015", tipo: "Efluente industrial", fecha: "14 abr 2026", estado: "INFORME", informe: true},
+        {codigo: "CHQ-2026-017", tipo: "Agua de pozo", fecha: "28 abr 2026", estado: "EN_PROCESO", informe: false},
+        {codigo: "CHQ-2026-019", tipo: "Suelo agrícola", fecha: "10 may 2026", estado: "INFORME", informe: true},
+        {codigo: "CHQ-2026-021", tipo: "Agua potable", fecha: "22 may 2026", estado: "EN_PROCESO", informe: false},
+        {codigo: "CHQ-2026-023", tipo: "Efluente cloacal", fecha: "05 jun 2026", estado: "INFORME", informe: true},
     ];
 
     // ── KPIs ──
-    document.getElementById("kpi-total").textContent   = muestras.length;
+    document.getElementById("kpi-total").textContent = muestras.length;
     document.getElementById("kpi-proceso").textContent = muestras.filter(m => m.estado === "EN_PROCESO").length;
-    document.getElementById("kpi-listos").textContent  = muestras.filter(m => m.estado === "INFORME").length;
+    document.getElementById("kpi-listos").textContent = muestras.filter(m => m.estado === "INFORME").length;
 
     // ────────────────────────────────────────────
     // TABLA + BÚSQUEDA + PAGINACIÓN
@@ -622,7 +194,7 @@
 
     function badgeHTML(estado) {
         if (estado === "EN_PROCESO") return `<span class="badge-estado badge-proceso">🔬 En análisis</span>`;
-        if (estado === "INFORME")    return `<span class="badge-estado badge-informe">✅ Informe listo</span>`;
+        if (estado === "INFORME") return `<span class="badge-estado badge-informe">✅ Informe listo</span>`;
         return "";
     }
 
@@ -634,23 +206,23 @@
     }
 
     function renderTabla() {
-        const tbody       = document.getElementById("tablaBody");
-        const sinRes      = document.getElementById("sinResultados");
-        const pagInfo     = document.getElementById("pag-info");
-        const pagBtns     = document.getElementById("paginacion-btns");
+        const tbody = document.getElementById("tablaBody");
+        const sinRes = document.getElementById("sinResultados");
+        const pagInfo = document.getElementById("pag-info");
+        const pagBtns = document.getElementById("paginacion-btns");
 
-        const total       = datosFiltrados.length;
-        const totalPags   = Math.ceil(total / POR_PAGINA);
-        const inicio      = (paginaActual - 1) * POR_PAGINA;
-        const fin         = Math.min(inicio + POR_PAGINA, total);
-        const slice       = datosFiltrados.slice(inicio, fin);
+        const total = datosFiltrados.length;
+        const totalPags = Math.ceil(total / POR_PAGINA);
+        const inicio = (paginaActual - 1) * POR_PAGINA;
+        const fin = Math.min(inicio + POR_PAGINA, total);
+        const slice = datosFiltrados.slice(inicio, fin);
 
         // Sin resultados
         if (total === 0) {
             tbody.innerHTML = "";
             sinRes.style.display = "block";
-            pagInfo.textContent  = "Sin resultados";
-            pagBtns.innerHTML    = "";
+            pagInfo.textContent = "Sin resultados";
+            pagBtns.innerHTML = "";
             return;
         }
 
@@ -677,8 +249,11 @@
         const btnPrev = document.createElement("button");
         btnPrev.className = "pag-btn";
         btnPrev.innerHTML = `<i class="bi bi-chevron-left"></i>`;
-        btnPrev.disabled  = paginaActual === 1;
-        btnPrev.onclick   = () => { paginaActual--; renderTabla(); };
+        btnPrev.disabled = paginaActual === 1;
+        btnPrev.onclick = () => {
+            paginaActual--;
+            renderTabla();
+        };
         pagBtns.appendChild(btnPrev);
 
         // Números
@@ -686,7 +261,10 @@
             const btn = document.createElement("button");
             btn.className = "pag-btn" + (i === paginaActual ? " active" : "");
             btn.textContent = i;
-            btn.onclick = () => { paginaActual = i; renderTabla(); };
+            btn.onclick = () => {
+                paginaActual = i;
+                renderTabla();
+            };
             pagBtns.appendChild(btn);
         }
 
@@ -694,8 +272,11 @@
         const btnNext = document.createElement("button");
         btnNext.className = "pag-btn";
         btnNext.innerHTML = `<i class="bi bi-chevron-right"></i>`;
-        btnNext.disabled  = paginaActual === totalPags;
-        btnNext.onclick   = () => { paginaActual++; renderTabla(); };
+        btnNext.disabled = paginaActual === totalPags;
+        btnNext.onclick = () => {
+            paginaActual++;
+            renderTabla();
+        };
         pagBtns.appendChild(btnNext);
     }
 
@@ -703,7 +284,7 @@
     document.getElementById("buscadorProtocolo").addEventListener("input", function () {
         const texto = this.value.trim().toLowerCase();
         datosFiltrados = muestras.filter(m => m.codigo.toLowerCase().includes(texto));
-        paginaActual   = 1;
+        paginaActual = 1;
         renderTabla();
     });
 

@@ -7,418 +7,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-    <style>
-        :root {
-            --verde:                    #5EA504;
-            --verde-oscuro:             #4a8403;
-            --color-text-secondary:     #6c757d;
-            --color-text-tertiary:      #adb5bd;
-            --color-text-info:          #0d6efd;
-            --color-text-success:       #146c43;
-            --color-text-warning:       #856404;
-            --color-text-danger:        #842029;
-            --color-background-info:    #cfe2ff;
-            --color-background-success: #d1e7dd;
-            --color-background-warning: #fff3cd;
-            --color-background-danger:  #f8d7da;
-            --color-border-tertiary:    #dee2e6;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            background: #f0f2f5;
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-            font-family: 'Segoe UI', sans-serif;
-        }
-
-        /* ── Sidebar ── */
-        .sidebar {
-            width: 240px;
-            background: linear-gradient(180deg, #5EA504 0%, #4a8403 100%);
-            color: white;
-            padding: 1.5rem 1rem;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            flex-shrink: 0;
-        }
-
-        .sidebar-logo {
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .sidebar-logo h2 {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 0;
-            letter-spacing: 1px;
-        }
-
-        .sidebar-logo p {
-            font-size: 11px;
-            opacity: 0.75;
-            margin: 2px 0 0;
-        }
-
-        .sidebar a {
-            color: white;
-            text-decoration: none;
-            padding: 0.65rem 1rem;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-            transition: background 0.2s;
-        }
-
-        .sidebar a:hover,
-        .sidebar a.active { background: rgba(255,255,255,0.2); }
-
-        .sidebar a i { font-size: 18px; }
-
-        .sidebar-divider {
-            border: none;
-            border-top: 1px solid rgba(255,255,255,0.2);
-            margin: 0.75rem 0;
-        }
-
-        .sidebar-bottom { margin-top: auto; }
-
-        /* ── Contenido ── */
-        .content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: auto;
-        }
-
-        /* ── Header ── */
-        .page-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.75rem;
-        }
-
-        .page-header h1 {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1a1a2e;
-            margin: 0;
-        }
-
-        .page-header p {
-            font-size: 13px;
-            color: var(--color-text-secondary);
-            margin: 2px 0 0;
-        }
-
-        .avatar-circle {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            background: var(--color-background-info);
-            color: var(--color-text-info);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            font-size: 13px;
-        }
-
-        /* ── KPI Cards ── */
-        .kpi-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .kpi-card {
-            background: white;
-            border-radius: 14px;
-            padding: 1.25rem 1.5rem;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            border-left: 4px solid transparent;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .kpi-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
-        }
-
-        .kpi-card.verde  { border-left-color: #5EA504; }
-        .kpi-card.azul   { border-left-color: #0d6efd; }
-        .kpi-card.naranja{ border-left-color: #fd7e14; }
-        .kpi-card.rojo   { border-left-color: #dc3545; }
-
-        .kpi-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 22px;
-            flex-shrink: 0;
-        }
-
-        .kpi-icon.verde  { background: #eaf5d3; color: #5EA504; }
-        .kpi-icon.azul   { background: #dbeafe; color: #0d6efd; }
-        .kpi-icon.naranja{ background: #fff0e0; color: #fd7e14; }
-        .kpi-icon.rojo   { background: #fde8ea; color: #dc3545; }
-
-        .kpi-data h3 {
-            font-size: 1.8rem;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1;
-            color: #1a1a2e;
-        }
-
-        .kpi-data p {
-            font-size: 12px;
-            color: var(--color-text-secondary);
-            margin: 4px 0 0;
-        }
-
-        /* ── Fila central ── */
-        .main-row {
-            display: grid;
-            grid-template-columns: 1fr 300px;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .panel {
-            background: white;
-            border-radius: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-            overflow: hidden;
-        }
-
-        .panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid var(--color-border-tertiary);
-        }
-
-        .panel-header h5 {
-            font-size: 15px;
-            font-weight: 600;
-            margin: 0;
-            color: #1a1a2e;
-        }
-
-        .panel-body { padding: 1rem 1.25rem; }
-
-        /* ── Filtros ── */
-        .filtros {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .filtro-btn {
-            padding: 4px 14px;
-            border-radius: 20px;
-            border: 1px solid var(--color-border-tertiary);
-            background: white;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            color: var(--color-text-secondary);
-        }
-
-        .filtro-btn:hover,
-        .filtro-btn.active {
-            background: var(--verde);
-            color: white;
-            border-color: var(--verde);
-        }
-
-        /* ── Tabla ── */
-        .tabla-muestras {
-            width: 100%;
-            font-size: 13px;
-            border-collapse: collapse;
-        }
-
-        .tabla-muestras thead th {
-            background: #f8f9fa;
-            color: var(--color-text-secondary);
-            font-weight: 600;
-            padding: 8px 12px;
-            text-align: left;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-bottom: 1px solid var(--color-border-tertiary);
-        }
-
-        .tabla-muestras tbody tr {
-            border-bottom: 1px solid #f1f3f5;
-            transition: background 0.15s;
-        }
-
-        .tabla-muestras tbody tr:hover { background: #f8f9fa; }
-        .tabla-muestras tbody tr:last-child { border-bottom: none; }
-
-        .tabla-muestras td {
-            padding: 10px 12px;
-            vertical-align: middle;
-        }
-
-        .cod-badge {
-            font-family: monospace;
-            font-size: 12px;
-            background: #f0f2f5;
-            padding: 2px 7px;
-            border-radius: 4px;
-            color: #495057;
-        }
-
-        .badge-estado {
-            font-size: 11px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .badge-pendiente { background: var(--color-background-warning); color: var(--color-text-warning); }
-        .badge-proceso   { background: var(--color-background-info);    color: var(--color-text-info); }
-        .badge-informe   { background: var(--color-background-success);  color: var(--color-text-success); }
-        .badge-demorada  { background: var(--color-background-danger);   color: var(--color-text-danger); }
-
-        .fecha-ok      { color: #495057; }
-        .fecha-warning { color: #fd7e14; font-weight: 600; }
-        .fecha-vencida { color: #dc3545; font-weight: 600; }
-
-        .btn-accion {
-            background: none;
-            border: 1px solid var(--color-border-tertiary);
-            border-radius: 6px;
-            padding: 3px 8px;
-            font-size: 13px;
-            cursor: pointer;
-            color: var(--color-text-secondary);
-            transition: all 0.2s;
-        }
-
-        .btn-accion:hover {
-            background: var(--verde);
-            color: white;
-            border-color: var(--verde);
-        }
-
-        /* ── Alertas ── */
-        .alerta-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 10px 0;
-            border-bottom: 1px solid #f1f3f5;
-            font-size: 13px;
-        }
-
-        .alerta-item:last-child { border-bottom: none; }
-
-        .alerta-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            margin-top: 4px;
-            flex-shrink: 0;
-        }
-
-        .alerta-dot.rojo   { background: #dc3545; }
-        .alerta-dot.naranja{ background: #fd7e14; }
-        .alerta-dot.verde  { background: #5EA504; }
-
-        .alerta-texto p  { margin: 0; color: #1a1a2e; }
-        .alerta-texto span { font-size: 11px; color: var(--color-text-secondary); }
-
-        /* ── Fila inferior ── */
-        .bottom-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .acciones-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-
-        .accion-card {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 1.25rem;
-            border-radius: 12px;
-            border: 2px dashed var(--color-border-tertiary);
-            background: #fafafa;
-            cursor: pointer;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: #495057;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        .accion-card:hover {
-            border-color: var(--verde);
-            background: #eaf5d3;
-            color: var(--verde);
-        }
-
-        .accion-card i { font-size: 24px; }
-
-        .chart-wrapper {
-            position: relative;
-            height: 180px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ── Responsive ── */
-        @media (max-width: 1100px) {
-            .kpi-grid  { grid-template-columns: repeat(2, 1fr); }
-            .main-row  { grid-template-columns: 1fr; }
-            .bottom-row{ grid-template-columns: 1fr; }
-        }
-
-        @media (max-width: 768px) {
-            body { flex-direction: column; overflow: auto; }
-            .sidebar {
-                width: 100%;
-                flex-direction: row;
-                padding: 0.75rem 1rem;
-                justify-content: space-around;
-            }
-            .sidebar-logo, .sidebar-divider { display: none; }
-            .content { padding: 1rem; }
-            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-    </style>
+    <link rel="stylesheet" href="css/dashboard/dashboard-empleados.css">
 </head>
 <body>
 
@@ -431,7 +20,8 @@
 
     <a href="dashboard-empleado.html" class="active"><i class="bi bi-speedometer2"></i> Dashboard</a>
     <a href="#"><i class="bi bi-person-circle"></i> Perfil</a>
-    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Muestras</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i>Parametros</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i>Muestras</a>
     <a href="#"><i class="bi bi-people"></i> Clientes</a>
     <a href="#"><i class="bi bi-receipt"></i> Facturación</a>
 
@@ -500,8 +90,9 @@
         <!-- Tabla de muestras -->
         <div class="panel">
             <div class="panel-header">
-                <h5><i class="bi bi-list-check me-2" style="color:var(--verde);"></i>Cola de trabajo — Muestras activas</h5>
-                <button class="btn btn-sm btn-success" style="font-size:13px;">
+                <h5><i class="bi bi-list-check me-2" style="color:var(--verde);"></i>Cola de trabajo — Muestras activas
+                </h5>
+                <button class="btn btn-sm btn-success btn-nueva-muestra" style="font-size:13px;">
                     <i class="bi bi-plus-lg"></i> Nueva muestra
                 </button>
             </div>
@@ -653,7 +244,7 @@
             </div>
             <div class="panel-body">
                 <div class="acciones-grid">
-                    <a href="#" class="accion-card">
+                    <a class="accion-card btn-nueva-muestra">
                         <i class="bi bi-plus-circle"></i>
                         Nueva muestra
                     </a>
@@ -701,8 +292,146 @@
         </div>
 
     </div>
-
 </div>
+
+
+<!-- MODAL ALTA MUESTRA -->
+<div class="modal-overlay" id="modalAltaMuestra">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h5><i class="bi bi-flask"></i> Alta de muestra</h5>
+            <button class="modal-close" id="modalClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <form id="formAltaMuestra" novalidate>
+            <div class="modal-body">
+
+                <!-- Fila 1: Protocolo + Fecha -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>N° Protocolo <span class="required">*</span></label>
+                        <input
+                                type="text"
+                                id="inputProtocolo"
+                                class="form-control-custom"
+                                placeholder="CHQ-2026-001"
+                                autocomplete="off"
+                        >
+                        <span class="field-error" id="errProtocolo">Campo requerido</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de ingreso <span class="required">*</span></label>
+                        <input
+                                type="date"
+                                id="inputFecha"
+                                class="form-control-custom"
+                        >
+                        <span class="field-error" id="errFecha">Campo requerido</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Fecha de entrega</label>
+                        <input
+                                type="date"
+                                id="inputFechaEntrega"
+                                class="form-control-custom"
+                        >
+                    </div>
+                </div>
+
+                <!-- Fila 2: Cliente + ID Muestra -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Cliente <span class="required">*</span></label>
+                        <input
+                                type="text"
+                                id="inputCliente"
+                                class="form-control-custom"
+                                placeholder="Nombre o razón social"
+                                autocomplete="off"
+                        >
+                        <span class="field-error" id="errCliente">Campo requerido</span>
+                    </div>
+                    <div class="form-group">
+                        <label>ID de muestra <span class="required">*</span></label>
+                        <input
+                                type="text"
+                                id="inputIdMuestra"
+                                class="form-control-custom"
+                                placeholder="Ej: M-001"
+                                autocomplete="off"
+                        >
+                        <span class="field-error" id="errIdMuestra">Campo requerido</span>
+                    </div>
+                </div>
+
+                <!-- Tipo de análisis -->
+                <div class="form-group">
+                    <label>Tipo de análisis <span class="required">*</span></label>
+                    <select id="inputTipo" class="form-control-custom">
+                        <option value="">Seleccioná un tipo...</option>
+                        <option>Agua potable</option>
+                        <option>Agua de pozo</option>
+                        <option>Agua residual</option>
+                        <option>Efluente industrial</option>
+                        <option>Efluente cloacal</option>
+                        <option>Suelo agrícola</option>
+                        <option>Otro</option>
+                    </select>
+                    <span class="field-error" id="errTipo">Seleccioná un tipo</span>
+                </div>
+
+                <!-- Parámetros -->
+                <div class="form-group">
+                    <div class="parametros-header">
+                        <label>Parámetros a analizar</label>
+                        <button type="button" class="btn-add-param" id="btnAddParam">
+                            <i class="bi bi-plus-lg"></i> Agregar
+                        </button>
+                    </div>
+
+                    <div class="parametros-lista" id="parametrosLista"></div>
+
+                    <div class="parametros-vacio" id="parametrosVacio">
+                        <i class="bi bi-list-ul" style="display:block;font-size:1.2rem;margin-bottom:4px;"></i>
+                        Ningún parámetro agregado todavía
+                    </div>
+                </div>
+
+                <!-- Observaciones -->
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea
+                            id="inputObservaciones"
+                            class="form-control-custom"
+                            rows="2"
+                            placeholder="Notas adicionales sobre la muestra..."
+                            style="resize:vertical;"
+                    ></textarea>
+                </div>
+
+            </div><!-- /modal-body -->
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardar">
+                    <i class="bi bi-check-lg"></i> Guardar muestra
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- Toast -->
+<div class="toast-confirm" id="toastConfirm">
+    <i class="bi bi-check-circle-fill"></i>
+    <span id="toastMsg">Muestra registrada correctamente</span>
+</div>
+
 
 <script>
     // ── Guard: solo EMPLEADO e IT ──
@@ -713,13 +442,13 @@
 
     // ── Datos del usuario ──
     const userEmail = localStorage.getItem("userEmail");
-    const userName  = localStorage.getItem("userName");
-    const nombre    = userName || userEmail || "Usuario";
+    const userName = localStorage.getItem("userName");
+    const nombre = userName || userEmail || "Usuario";
     const iniciales = nombre.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase();
 
     // ── Header ──
     document.getElementById("header-nombre").textContent = nombre;
-    document.getElementById("header-rol").textContent    = rol === "ROLE_IT" ? "IT" : "Empleado";
+    document.getElementById("header-rol").textContent = rol === "ROLE_IT" ? "IT" : "Empleado";
     document.getElementById("header-avatar").textContent = iniciales;
 
     // ── Fecha ──
@@ -751,7 +480,7 @@
             datasets: [{
                 data: [4, 6, 3, 2],
                 backgroundColor: ["#fff3cd", "#cfe2ff", "#d1e7dd", "#f8d7da"],
-                borderColor:     ["#856404", "#0d6efd", "#146c43", "#842029"],
+                borderColor: ["#856404", "#0d6efd", "#146c43", "#842029"],
                 borderWidth: 2,
                 hoverOffset: 6
             }]
@@ -761,7 +490,7 @@
             maintainAspectRatio: false,
             cutout: "65%",
             plugins: {
-                legend: { display: false },
+                legend: {display: false},
                 tooltip: {
                     callbacks: {
                         label: ctx => ` ${ctx.label}: ${ctx.parsed} muestras`
@@ -770,6 +499,193 @@
             }
         }
     });
+
+    // ════════════════════════════════
+    //  MODAL ALTA MUESTRA
+    // ════════════════════════════════
+
+    const modalOverlay = document.getElementById("modalAltaMuestra");
+    const formAlta = document.getElementById("formAltaMuestra");
+
+    // ── Abrir / cerrar ──
+    function abrirModal() {
+        // Setear fecha de hoy por defecto
+        document.getElementById("inputFecha").value = new Date().toISOString().split("T")[0];
+        modalOverlay.classList.add("visible");
+        document.getElementById("inputProtocolo").focus();
+    }
+
+    function cerrarModal() {
+        modalOverlay.classList.remove("visible");
+        setTimeout(() => {
+            formAlta.reset();
+            limpiarErrores();
+            limpiarParametros();
+        }, 250);
+    }
+
+    document.getElementById("modalClose").addEventListener("click", cerrarModal);
+    document.getElementById("btnCancelar").addEventListener("click", cerrarModal);
+
+    // Cerrar al click fuera del box
+    modalOverlay.addEventListener("click", e => {
+        if (e.target === modalOverlay) cerrarModal();
+    });
+
+    // Cerrar con Escape
+    document.addEventListener("keydown", e => {
+        if (e.key === "Escape" && modalOverlay.classList.contains("visible")) cerrarModal();
+    });
+
+    // ── Conectar botón "Nueva muestra" del dashboard ──
+    document.querySelectorAll(".btn-nueva-muestra").forEach(btn => {
+        btn.addEventListener("click", abrirModal);
+    });
+
+    // ── Parámetros ──
+    let parametros = [];
+
+    function renderParametros() {
+        const lista = document.getElementById("parametrosLista");
+        const vacio = document.getElementById("parametrosVacio");
+
+        if (parametros.length === 0) {
+            lista.innerHTML = "";
+            vacio.style.display = "block";
+            return;
+        }
+
+        vacio.style.display = "none";
+        lista.innerHTML = parametros.map((p, i) => `
+        <div class="parametro-item" data-index="${i}">
+            <input
+                type="text"
+                class="form-control-custom"
+                value="${p}"
+                placeholder="Ej: pH, Turbidez, Coliformes..."
+                oninput="parametros[${i}] = this.value"
+            >
+            <button type="button" class="btn-remove-param" onclick="eliminarParametro(${i})">
+                <i class="bi bi-trash3"></i>
+            </button>
+        </div>
+    `).join("");
+    }
+
+    function eliminarParametro(index) {
+        parametros.splice(index, 1);
+        renderParametros();
+    }
+
+    function limpiarParametros() {
+        parametros = [];
+        renderParametros();
+    }
+
+    document.getElementById("btnAddParam").addEventListener("click", () => {
+        parametros.push("");
+        renderParametros();
+        // Focus en el último input agregado
+        const inputs = document.querySelectorAll(".parametro-item input");
+        if (inputs.length) inputs[inputs.length - 1].focus();
+    });
+
+    // ── Validación ──
+    function validarCampo(inputId, errorId, condicion) {
+        const input = document.getElementById(inputId);
+        const error = document.getElementById(errorId);
+        if (condicion) {
+            input.classList.add("error");
+            error.classList.add("visible");
+            return false;
+        }
+        input.classList.remove("error");
+        error.classList.remove("visible");
+        return true;
+    }
+
+    function limpiarErrores() {
+        ["inputProtocolo", "inputFecha", "inputCliente", "inputIdMuestra", "inputTipo"].forEach(id => {
+            document.getElementById(id)?.classList.remove("error");
+        });
+        ["errProtocolo", "errFecha", "errCliente", "errIdMuestra", "errTipo"].forEach(id => {
+            document.getElementById(id)?.classList.remove("visible");
+        });
+    }
+
+    // Limpiar error al escribir
+    ["inputProtocolo", "inputFecha", "inputCliente", "inputIdMuestra", "inputTipo"].forEach(id => {
+        document.getElementById(id)?.addEventListener("input", function () {
+            this.classList.remove("error");
+            const errId = "err" + id.replace("input", "");
+            document.getElementById(errId)?.classList.remove("visible");
+        });
+    });
+
+    // ── Submit ──
+    formAlta.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const protocolo = document.getElementById("inputProtocolo").value.trim();
+        const fecha = document.getElementById("inputFecha").value;
+        const cliente = document.getElementById("inputCliente").value.trim();
+        const idMuestra = document.getElementById("inputIdMuestra").value.trim();
+        const tipo = document.getElementById("inputTipo").value;
+        const observaciones = document.getElementById("inputObservaciones").value.trim();
+
+        // Validar
+        const v1 = validarCampo("inputProtocolo", "errProtocolo", !protocolo);
+        const v2 = validarCampo("inputFecha", "errFecha", !fecha);
+        const v3 = validarCampo("inputCliente", "errCliente", !cliente);
+        const v4 = validarCampo("inputIdMuestra", "errIdMuestra", !idMuestra);
+        const v5 = validarCampo("inputTipo", "errTipo", !tipo);
+
+        if (!v1 || !v2 || !v3 || !v4 || !v5) return;
+
+        // Armar payload
+        const payload = {
+            protocolo,
+            fecha,
+            cliente,
+            idMuestra,
+            tipo,
+            parametros: parametros.filter(p => p.trim() !== ""),
+            observaciones
+        };
+
+        console.log("📦 Payload a enviar:", payload);
+
+        // ── Acá va el fetch al backend ──
+        // const res = await fetch("https://chemiconsult.onrender.com/api/muestras", {
+        //     method: "POST",
+        //     headers: {
+        //         "Content-Type": "application/json",
+        //         "Authorization": "Bearer " + localStorage.getItem("token")
+        //     },
+        //     body: JSON.stringify(payload)
+        // });
+
+        // Simular éxito por ahora
+        const btnGuardar = document.getElementById("btnGuardar");
+        btnGuardar.disabled = true;
+        btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
+
+        setTimeout(() => {
+            cerrarModal();
+            btnGuardar.disabled = false;
+            btnGuardar.innerHTML = `<i class="bi bi-check-lg"></i> Guardar muestra`;
+            mostrarToast(`Muestra ${protocolo} registrada correctamente`);
+        }, 800);
+    });
+
+    // ── Toast ──
+    function mostrarToast(msg) {
+        const toast = document.getElementById("toastConfirm");
+        document.getElementById("toastMsg").textContent = msg;
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 3500);
+    }
+
 </script>
 
 </body>
