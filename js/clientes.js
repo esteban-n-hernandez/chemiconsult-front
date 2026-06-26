@@ -6,11 +6,13 @@ let clientesFiltrados = [];
 let paginaActual      = 1;
 const ITEMS_POR_PAGINA = 10;
 
+// ── NUEVO: variable que indica si estamos editando ──
+let clienteEditandoId = null;
+
 // ══════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-    // Guard
     const rol = (localStorage.getItem('userRole') || '').toUpperCase();
     if (!localStorage.getItem('token') || rol === 'ROLE_CLIENTE') {
         window.location.href = 'login.html';
@@ -23,6 +25,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('logout-btn').addEventListener('click', () => {
         ['token', 'userEmail', 'userRole', 'userName'].forEach(k => localStorage.removeItem(k));
         window.location.href = 'login.html';
+    });
+
+    document.getElementById('inputBusqueda')?.addEventListener('keydown', e => {
+        if (e.key === 'Enter') buscarClientes();
     });
 });
 
@@ -45,17 +51,17 @@ async function cargarClientes() {
 }
 
 function renderTabla() {
-    const tbody        = document.getElementById('tablaClientes');
-    const sinResult    = document.getElementById('sinResultados');
-    const inicio       = (paginaActual - 1) * ITEMS_POR_PAGINA;
-    const fin          = inicio + ITEMS_POR_PAGINA;
-    const pagina       = clientesFiltrados.slice(inicio, fin);
+    const tbody     = document.getElementById('tablaClientes');
+    const sinResult = document.getElementById('sinResultados');
+    const inicio    = (paginaActual - 1) * ITEMS_POR_PAGINA;
+    const fin       = inicio + ITEMS_POR_PAGINA;
+    const pagina    = clientesFiltrados.slice(inicio, fin);
 
     if (clientesFiltrados.length === 0) {
         tbody.innerHTML = '';
         sinResult.style.display = 'block';
         document.getElementById('infoPaginacion').textContent = 'Sin resultados';
-        document.getElementById('paginacion').innerHTML      = '';
+        document.getElementById('paginacion').innerHTML       = '';
         return;
     }
 
@@ -95,7 +101,8 @@ function renderTabla() {
                 <td>${usuarioBadge}</td>
                 <td>${estadoBadge}</td>
                 <td style="display:flex;gap:4px;flex-wrap:wrap;">
-                    <button class="btn-accion" title="Editar">
+                    <button class="btn-accion" title="Editar"
+                            onclick="abrirModalEditar(${c.id})">
                         <i class="bi bi-pencil"></i>
                     </button>
                     ${btnAsignar}
@@ -108,7 +115,6 @@ function renderTabla() {
         `;
     }).join('');
 
-    // Info paginación
     document.getElementById('infoPaginacion').textContent =
         `Mostrando ${inicio + 1}–${Math.min(fin, clientesFiltrados.length)} de ${clientesFiltrados.length} clientes`;
 
@@ -164,37 +170,87 @@ function limpiarFiltros() {
     renderTabla();
 }
 
-// Buscar al presionar Enter
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('inputBusqueda')?.addEventListener('keydown', e => {
-        if (e.key === 'Enter') buscarClientes();
-    });
-});
-
 // ══════════════════════════════════════════
 //  MODAL
 // ══════════════════════════════════════════
 function initModal() {
     const overlay = document.getElementById('modalAltaCliente');
 
-    document.getElementById('btnNuevoCliente').addEventListener('click', abrirModal);
+    document.getElementById('btnNuevoCliente').addEventListener('click', abrirModalAlta);
     document.getElementById('modalClose').addEventListener('click', cerrarModal);
     document.getElementById('btnCancelar').addEventListener('click', cerrarModal);
 
-    // Cerrar al click fuera
     overlay.addEventListener('click', e => {
         if (e.target === overlay) cerrarModal();
     });
 
-    // Cerrar con Escape
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && overlay.classList.contains('visible')) cerrarModal();
     });
 }
 
-function abrirModal() {
+// ── NUEVO: abrir en modo ALTA ──
+function abrirModalAlta() {
+    clienteEditandoId = null;
+
+    // Título e ícono
+    document.querySelector('#modalAltaCliente .modal-header h5').innerHTML =
+        `<i class="bi bi-person-plus"></i> Nuevo Cliente`;
+
+    // Habilitar tipo de cliente (en edición se bloquea)
+    document.querySelectorAll('input[name="tipoCliente"]').forEach(r => r.disabled = false);
+    document.getElementById('labelPersona').style.opacity = '1';
+    document.getElementById('labelEmpresa').style.opacity = '1';
+
+    limpiarFormulario();
     document.getElementById('modalAltaCliente').classList.add('visible');
     document.getElementById('nombre').focus();
+}
+
+// ── NUEVO: abrir en modo EDITAR ──
+function abrirModalEditar(id) {
+    const cliente = todosLosClientes.find(c => c.id === id);
+    if (!cliente) return;
+
+    clienteEditandoId = id;
+
+    // Cambiar título
+    document.querySelector('#modalAltaCliente .modal-header h5').innerHTML =
+        `<i class="bi bi-pencil"></i> Editar Cliente`;
+
+    // Limpiar primero
+    limpiarFormulario();
+
+    // Setear tipo (y bloquearlo — no se puede cambiar el tipo en edición)
+    const esPF = cliente.tipoCliente === 'PERSONA_FISICA';
+    document.querySelector(`input[value="${cliente.tipoCliente}"]`).checked = true;
+    document.querySelectorAll('input[name="tipoCliente"]').forEach(r => r.disabled = true);
+    document.getElementById('labelPersona').style.opacity = esPF ? '1' : '0.4';
+    document.getElementById('labelEmpresa').style.opacity = esPF ? '0.4' : '1';
+    toggleTipo();
+
+    // Poblar campos según tipo
+    if (esPF) {
+        document.getElementById('nombre').value    = cliente.nombre    ?? '';
+        document.getElementById('apellido').value  = cliente.apellido  ?? '';
+        document.getElementById('dni').value       = cliente.dni       ?? '';
+        document.getElementById('cuil').value      = cliente.cuil      ?? '';
+        document.getElementById('condicionIVAPersona').value = cliente.condicionIVA ?? '';
+    } else {
+        document.getElementById('razonSocial').value = cliente.razonSocial ?? '';
+        document.getElementById('cuit').value        = cliente.cuit        ?? '';
+        document.getElementById('condicionIVAEmpresa').value = cliente.condicionIVA ?? '';
+    }
+
+    // Campos comunes
+    document.getElementById('email').value     = cliente.email     ?? '';
+    document.getElementById('telefono').value  = cliente.telefono  ?? '';
+    document.getElementById('celular').value   = cliente.celular   ?? '';
+    document.getElementById('direccion').value = cliente.direccion ?? '';
+    document.getElementById('localidad').value = cliente.localidad ?? '';
+    document.getElementById('provincia').value = cliente.provincia ?? '';
+
+    document.getElementById('modalAltaCliente').classList.add('visible');
 }
 
 function cerrarModal() {
@@ -206,77 +262,77 @@ function cerrarModal() {
 //  TOGGLE TIPO CLIENTE
 // ══════════════════════════════════════════
 function toggleTipo() {
-    const tipo         = document.querySelector('input[name="tipoCliente"]:checked').value;
-    const esEmpresa    = tipo === 'EMPRESA';
+    const tipo      = document.querySelector('input[name="tipoCliente"]:checked').value;
+    const esEmpresa = tipo === 'EMPRESA';
 
-    document.getElementById('seccionPersona').style.display = esEmpresa ? 'none' : 'block';
-    document.getElementById('seccionEmpresa').style.display = esEmpresa ? 'block' : 'none';
+    document.getElementById('seccionPersona').style.display        = esEmpresa ? 'none'  : 'block';
+    document.getElementById('seccionEmpresa').style.display        = esEmpresa ? 'block' : 'none';
     document.getElementById('condicionIVAPersonaGroup').style.display = esEmpresa ? 'none' : 'block';
 
-    // Estilo de los radio labels
     document.getElementById('labelPersona').classList.toggle('selected', !esEmpresa);
-    document.getElementById('labelEmpresa').classList.toggle('selected', esEmpresa);
+    document.getElementById('labelEmpresa').classList.toggle('selected',  esEmpresa);
 }
 
 // ══════════════════════════════════════════
-//  FORM — SUBMIT
+//  FORM — SUBMIT (ALTA o EDICIÓN)
 // ══════════════════════════════════════════
 function initForm() {
     document.getElementById('formAltaCliente').addEventListener('submit', async e => {
         e.preventDefault();
-        await submitAltaCliente();
+        await submitCliente();
     });
 }
 
-async function submitAltaCliente() {
+async function submitCliente() {
     const tipo = document.querySelector('input[name="tipoCliente"]:checked').value;
     limpiarErrores();
 
-    // Armar body
     const body = {
         tipoCliente:  tipo,
         email:        document.getElementById('email').value.trim(),
-        telefono:     document.getElementById('telefono').value.trim() || null,
-        celular:      document.getElementById('celular').value.trim()  || null,
-        direccion:    document.getElementById('direccion').value.trim()|| null,
-        localidad:    document.getElementById('localidad').value.trim()|| null,
-        provincia:    document.getElementById('provincia').value       || null,
+        telefono:     document.getElementById('telefono').value.trim()  || null,
+        celular:      document.getElementById('celular').value.trim()   || null,
+        direccion:    document.getElementById('direccion').value.trim() || null,
+        localidad:    document.getElementById('localidad').value.trim() || null,
+        provincia:    document.getElementById('provincia').value        || null,
     };
 
     if (tipo === 'PERSONA_FISICA') {
-        body.nombre      = document.getElementById('nombre').value.trim();
-        body.apellido    = document.getElementById('apellido').value.trim();
-        body.dni         = document.getElementById('dni').value.trim()  || null;
-        body.cuil        = document.getElementById('cuil').value.trim() || null;
-        body.condicionIVA= document.getElementById('condicionIVAPersona').value || null;
+        body.nombre       = document.getElementById('nombre').value.trim();
+        body.apellido     = document.getElementById('apellido').value.trim();
+        body.dni          = document.getElementById('dni').value.trim()   || null;
+        body.cuil         = document.getElementById('cuil').value.trim()  || null;
+        body.condicionIVA = document.getElementById('condicionIVAPersona').value || null;
     } else {
-        body.razonSocial = document.getElementById('razonSocial').value.trim();
-        body.cuit        = document.getElementById('cuit').value.trim();
-        body.condicionIVA= document.getElementById('condicionIVAEmpresa').value || null;
+        body.razonSocial  = document.getElementById('razonSocial').value.trim();
+        body.cuit         = document.getElementById('cuit').value.trim();
+        body.condicionIVA = document.getElementById('condicionIVAEmpresa').value || null;
     }
 
     // Validación
     let valido = true;
-    if (!body.email) {
-        mostrarError('errEmail'); valido = false;
-    }
+    if (!body.email) { mostrarError('errEmail'); valido = false; }
     if (tipo === 'PERSONA_FISICA') {
-        if (!body.nombre)   { mostrarError('errNombre');   valido = false; }
-        if (!body.apellido) { mostrarError('errApellido'); valido = false; }
+        if (!body.nombre)      { mostrarError('errNombre');      valido = false; }
+        if (!body.apellido)    { mostrarError('errApellido');    valido = false; }
     } else {
         if (!body.razonSocial) { mostrarError('errRazonSocial'); valido = false; }
         if (!body.cuit)        { mostrarError('errCuit');        valido = false; }
     }
     if (!valido) return;
 
-    // Enviar
+    // ── NUEVO: decidir si es POST o PUT ──
+    const esEdicion = clienteEditandoId !== null;
+    const url       = esEdicion ? `${API_URL}/${clienteEditandoId}` : API_URL;
+    const method    = esEdicion ? 'PUT' : 'POST';
+
     const btn = document.getElementById('btnGuardar');
-    btn.disabled     = true;
-    btn.innerHTML    = `<i class="bi bi-hourglass-split"></i> Guardando...`;
+    btn.disabled  = true;
+    btn.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
     try {
-        const res = await fetch(API_URL, {
-            method:  'POST',
+        const res = await fetch(url, {
+            method,
             headers: {
                 'Content-Type':  'application/json',
                 'Authorization': `Bearer ${TOKEN()}`
@@ -286,15 +342,18 @@ async function submitAltaCliente() {
 
         if (!res.ok) {
             const err = await res.text();
-            throw new Error(err || 'Error al crear cliente');
+            throw new Error(err || 'Error al guardar cliente');
         }
 
         cerrarModal();
         await cargarClientes();
-        mostrarToast('Cliente creado correctamente ✓', 'success');
+        mostrarToast(
+            esEdicion ? 'Cliente actualizado correctamente ✓' : 'Cliente creado correctamente ✓',
+            'success'
+        );
 
     } catch (err) {
-        mostrarToast(err.message || 'Error al crear cliente', 'danger');
+        mostrarToast(err.message || 'Error al guardar cliente', 'danger');
     } finally {
         btn.disabled  = false;
         btn.innerHTML = `<i class="bi bi-check-lg"></i> Guardar Cliente`;
@@ -306,7 +365,6 @@ async function submitAltaCliente() {
 // ══════════════════════════════════════════
 async function desactivarCliente(id) {
     if (!confirm('¿Desactivar este cliente?')) return;
-
     try {
         const res = await fetch(`${API_URL}/${id}/desactivar`, {
             method:  'PATCH',
@@ -321,7 +379,6 @@ async function desactivarCliente(id) {
 }
 
 async function asignarUsuario(id) {
-    // Por ahora placeholder — después abre un modal dedicado
     mostrarToast('Próximamente: asignación de usuario', 'warning');
 }
 
@@ -330,10 +387,13 @@ async function asignarUsuario(id) {
 // ══════════════════════════════════════════
 function limpiarFormulario() {
     document.getElementById('formAltaCliente').reset();
-    // Volver a persona física
     document.querySelector('input[value="PERSONA_FISICA"]').checked = true;
+    document.querySelectorAll('input[name="tipoCliente"]').forEach(r => r.disabled = false);
+    document.getElementById('labelPersona').style.opacity = '1';
+    document.getElementById('labelEmpresa').style.opacity = '1';
     toggleTipo();
     limpiarErrores();
+    clienteEditandoId = null;
 }
 
 function mostrarError(id) {
@@ -347,10 +407,13 @@ function limpiarErrores() {
 }
 
 function mostrarToast(msg, tipo = 'success') {
-    const iconMap = { success: 'bi-check-circle-fill', danger: 'bi-x-circle-fill', warning: 'bi-exclamation-circle-fill' };
-    const toast   = document.getElementById('toastConfirm');
-    const icon    = document.getElementById('toastIcon');
-
+    const iconMap = {
+        success: 'bi-check-circle-fill',
+        danger:  'bi-x-circle-fill',
+        warning: 'bi-exclamation-circle-fill'
+    };
+    const toast = document.getElementById('toastConfirm');
+    const icon  = document.getElementById('toastIcon');
     icon.className = `bi ${iconMap[tipo] || iconMap.success} ${tipo}`;
     document.getElementById('toastMsg').textContent = msg;
     toast.classList.add('visible');

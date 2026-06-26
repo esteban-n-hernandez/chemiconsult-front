@@ -1,6 +1,8 @@
-/* ══════════════════════════════════════════
-   CLIENTES.CSS — consistente con dashboard
-══════════════════════════════════════════ */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
 
 :root {
     --verde: #5EA504;
@@ -29,13 +31,13 @@ body {
     height: 100vh;
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
-    margin: 0;       /* 👈 esto elimina el espacio blanco */
-    padding: 0;      /* 👈 por las dudas */
+    margin: 0;
+    padding: 0;
 }
 
 .sidebar {
     width: 240px;
-    min-height: 100vh;   /* 👈 esto evita que se achique */
+    min-height: 100vh;
     background: linear-gradient(180deg, #5EA504 0%, #4a8403 100%);
     color: white;
     padding: 1.5rem 1rem;
@@ -126,7 +128,6 @@ body {
     margin: 2px 0 0;
 }
 
-/* ── Botón nuevo cliente ── */
 .btn-nuevo-cliente {
     background: var(--verde);
     color: white;
