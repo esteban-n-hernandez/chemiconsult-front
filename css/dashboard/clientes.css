@@ -776,3 +776,65 @@ body {
         border-radius: 14px;
     }
 }
+
+/* ══════════════════════════════════════════
+   MODAL CONFIRMACIÓN BAJA
+══════════════════════════════════════════ */
+.modal-box-sm {
+    max-width: 420px;
+}
+
+.baja-warning-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--color-background-warning);
+    margin: 0 auto 0.5rem;
+}
+
+.baja-warning-icon i {
+    font-size: 2rem;
+    color: #856404;
+}
+
+.baja-mensaje {
+    font-size: 15px;
+    color: #1a1a2e;
+    text-align: center;
+    margin: 0;
+}
+
+.baja-submensaje {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+    text-align: center;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.btn-desactivar {
+    padding: 8px 22px;
+    background: #dc3545;
+    border: none;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.2s;
+}
+
+.btn-desactivar:hover {
+    background: #b02a37;
+}
+
+.btn-desactivar:disabled {
+    background: #adb5bd;
+    cursor: not-allowed;
+}

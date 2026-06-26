@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     cargarClientes();
+    initModalBaja();
     initModal();
     initForm();
 
@@ -106,10 +107,10 @@ function renderTabla() {
                         <i class="bi bi-pencil"></i>
                     </button>
                     ${btnAsignar}
-                    <button class="btn-accion danger" title="Desactivar"
-                            onclick="desactivarCliente(${c.id})">
-                        <i class="bi bi-trash3"></i>
-                    </button>
+                   <button class="btn-accion danger" title="Desactivar"
+        onclick="abrirModalBaja(${c.id})">   
+    <i class="bi bi-trash3"></i>
+</button>
                 </td>
             </tr>
         `;
@@ -428,4 +429,66 @@ function formatCondicionIVA(val) {
         NO_RESPONSABLE:        'No Responsable'
     };
     return map[val] || '—';
+}
+
+// ══════════════════════════════════════════
+//  MODAL CONFIRMAR BAJA
+// ══════════════════════════════════════════
+
+// ── NUEVO: variable para el id a desactivar ──
+let clienteDesactivandoId = null;
+
+function initModalBaja() {
+    document.getElementById('modalConfirmarClose').addEventListener('click', cerrarModalBaja);
+    document.getElementById('btnCancelarBaja').addEventListener('click', cerrarModalBaja);
+    document.getElementById('btnConfirmarBaja').addEventListener('click', confirmarBaja);
+
+    document.getElementById('modalConfirmarBaja').addEventListener('click', e => {
+        if (e.target === document.getElementById('modalConfirmarBaja')) cerrarModalBaja();
+    });
+}
+
+function abrirModalBaja(id) {
+    const cliente = todosLosClientes.find(c => c.id === id);
+    if (!cliente) return;
+
+    clienteDesactivandoId = id;
+
+    const nombre = cliente.tipoCliente === 'EMPRESA'
+        ? cliente.razonSocial
+        : `${cliente.nombre ?? ''} ${cliente.apellido ?? ''}`.trim();
+
+    document.getElementById('bajaClienteNombre').textContent = nombre;
+    document.getElementById('modalConfirmarBaja').classList.add('visible');
+}
+
+function cerrarModalBaja() {
+    document.getElementById('modalConfirmarBaja').classList.remove('visible');
+    clienteDesactivandoId = null;
+}
+
+async function confirmarBaja() {
+    if (!clienteDesactivandoId) return;
+
+    const btn = document.getElementById('btnConfirmarBaja');
+    btn.disabled  = true;
+    btn.innerHTML = `<i class="bi bi-hourglass-split"></i> Desactivando...`;
+
+    try {
+        const res = await fetch(`${API_URL}/${clienteDesactivandoId}/desactivar`, {
+            method:  'PATCH',
+            headers: { 'Authorization': `Bearer ${TOKEN()}` }
+        });
+        if (!res.ok) throw new Error();
+
+        cerrarModalBaja();
+        await cargarClientes();
+        mostrarToast('Cliente desactivado correctamente', 'success');
+
+    } catch {
+        mostrarToast('Error al desactivar cliente', 'danger');
+    } finally {
+        btn.disabled  = false;
+        btn.innerHTML = `<i class="bi bi-person-dash"></i> Desactivar`;
+    }
 }

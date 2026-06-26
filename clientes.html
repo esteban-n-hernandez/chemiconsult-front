@@ -296,6 +296,44 @@
 </div>
 
 <!-- ══════════════════════════════════════════
+     MODAL — Confirmar Desactivar
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalConfirmarBaja">
+    <div class="modal-box modal-box-sm">
+
+        <div class="modal-header">
+            <h5><i class="bi bi-exclamation-triangle"></i> Desactivar Cliente</h5>
+            <button class="modal-close" id="modalConfirmarClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="modal-body" style="gap:0.75rem;">
+            <div class="baja-warning-icon">
+                <i class="bi bi-person-dash"></i>
+            </div>
+            <p class="baja-mensaje">
+                ¿Estás seguro que querés desactivar a
+                <strong id="bajaClienteNombre">—</strong>?
+            </p>
+            <p class="baja-submensaje">
+                El cliente no podrá acceder al sistema, pero sus datos se conservan
+                y la acción puede revertirse.
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarBaja">Cancelar</button>
+            <button type="button" class="btn-desactivar" id="btnConfirmarBaja">
+                <i class="bi bi-person-dash"></i> Desactivar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
      TOAST
 ══════════════════════════════════════════ -->
 <div class="toast-confirm" id="toastConfirm">
