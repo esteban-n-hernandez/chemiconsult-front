@@ -29,13 +29,13 @@ body {
     height: 100vh;
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
+    margin: 0;       /* 👈 esto elimina el espacio blanco */
+    padding: 0;      /* 👈 por las dudas */
 }
 
-/* ══════════════════════════════════════════
-   SIDEBAR — idéntico al dashboard
-══════════════════════════════════════════ */
 .sidebar {
     width: 240px;
+    min-height: 100vh;   /* 👈 esto evita que se achique */
     background: linear-gradient(180deg, #5EA504 0%, #4a8403 100%);
     color: white;
     padding: 1.5rem 1rem;
@@ -44,6 +44,7 @@ body {
     gap: 4px;
     flex-shrink: 0;
 }
+
 
 .sidebar-logo {
     text-align: center;
@@ -93,6 +94,7 @@ body {
 .sidebar-bottom {
     margin-top: auto;
 }
+
 
 /* ══════════════════════════════════════════
    CONTENIDO PRINCIPAL
