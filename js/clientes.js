@@ -212,14 +212,13 @@ function abrirModalEditar(id) {
     const cliente = todosLosClientes.find(c => c.id === id);
     if (!cliente) return;
 
-    clienteEditandoId = id;
-
     // Cambiar título
     document.querySelector('#modalAltaCliente .modal-header h5').innerHTML =
         `<i class="bi bi-pencil"></i> Editar Cliente`;
 
     // Limpiar primero
     limpiarFormulario();
+    clienteEditandoId = id;
 
     // Setear tipo (y bloquearlo — no se puede cambiar el tipo en edición)
     const esPF = cliente.tipoCliente === 'PERSONA_FISICA';
