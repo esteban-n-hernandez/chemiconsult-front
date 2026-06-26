@@ -3,220 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clientes - ChemiConsult</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <title>Clientes - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard/clientes.css">
 </head>
 <body>
 
-<div class="dashboard-wrapper">
+<!-- ══════════════════════════════════════════
+     SIDEBAR
+══════════════════════════════════════════ -->
+<div class="sidebar">
+    <div class="sidebar-logo">
+        <h2>CHEMICONSULT</h2>
+        <p>Laboratorio de análisis</p>
+    </div>
 
-    <!-- ── Sidebar ── -->
-    <nav class="sidebar">
-        <div class="sidebar-brand">
-            <h5>ChemiConsult</h5>
+    <a href="dashboard-empleado.html"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="#"><i class="bi bi-person-circle"></i> Perfil</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Parámetros</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Muestras</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Metodologías</a>
+    <a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Resoluciones</a>
+    <a href="clientes.html" class="active"><i class="bi bi-people"></i> Clientes</a>
+    <a href="#"><i class="bi bi-receipt"></i> Facturación</a>
+
+    <hr class="sidebar-divider">
+
+    <div class="sidebar-bottom">
+        <a href="#" id="logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     CONTENIDO
+══════════════════════════════════════════ -->
+<div class="content">
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <div>
+            <h1>Clientes</h1>
+            <p>Gestión de clientes del laboratorio</p>
         </div>
-        <ul class="sidebar-menu">
-            <li><a href="dashboard-empleado.html"><i class="bi bi-speedometer2"></i> Dashboard</a></li>
-            <li><a href="#"><i class="bi bi-person-circle"></i> Perfil</a></li>
-            <li><a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Parámetros</a></li>
-            <li><a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Muestras</a></li>
-            <li><a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Metodologías</a></li>
-            <li><a href="estudios.html"><i class="bi bi-file-earmark-medical"></i> Resoluciones</a></li>
-            <li><a href="clientes.html" class="active"><i class="bi bi-people"></i> Clientes</a></li>
-            <li><a href="#"><i class="bi bi-receipt"></i> Facturación</a></li>
-        </ul>
-    </nav>
+        <button class="btn-nuevo-cliente" id="btnNuevoCliente">
+            <i class="bi bi-plus-lg"></i> Nuevo Cliente
+        </button>
+    </div>
 
-    <!-- ── Contenido principal ── -->
-    <main class="main-content">
-
-        <!-- Header -->
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <div>
-                <h4 class="mb-0">Clientes</h4>
-                <small class="text-muted">Gestión de clientes del laboratorio</small>
-            </div>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalAltaCliente">
-                <i class="bi bi-plus-lg"></i> Nuevo Cliente
+    <!-- Filtros -->
+    <div class="card-filtros">
+        <div class="filtros-row">
+            <input
+                    type="text"
+                    id="inputBusqueda"
+                    placeholder="Buscar por nombre, email o CUIT..."
+            >
+            <select id="selectTipo">
+                <option value="">Todos los tipos</option>
+                <option value="PERSONA_FISICA">Persona Física</option>
+                <option value="EMPRESA">Empresa</option>
+            </select>
+            <button class="btn-buscar" onclick="buscarClientes()">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+            <button class="btn-limpiar" onclick="limpiarFiltros()">
+                <i class="bi bi-x-circle"></i> Limpiar
             </button>
         </div>
+    </div>
 
-        <!-- Buscador -->
-        <div class="card mb-3">
-            <div class="card-body py-2">
-                <div class="row g-2 align-items-center">
-                    <div class="col-md-4">
-                        <input type="text" id="inputBusqueda" class="form-control"
-                               placeholder="Buscar por nombre, email o CUIT...">
-                    </div>
-                    <div class="col-md-3">
-                        <select id="selectTipo" class="form-select">
-                            <option value="">Todos los tipos</option>
-                            <option value="PERSONA_FISICA">Persona Física</option>
-                            <option value="EMPRESA">Empresa</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-outline-secondary w-100" onclick="buscarClientes()">
-                            <i class="bi bi-search"></i> Buscar
-                        </button>
-                    </div>
-                    <div class="col-md-2">
-                        <button class="btn btn-outline-danger w-100" onclick="limpiarFiltros()">
-                            <i class="bi bi-x-circle"></i> Limpiar
-                        </button>
-                    </div>
-                </div>
-            </div>
+    <!-- Tabla -->
+    <div class="panel">
+        <table class="tabla-clientes">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Tipo</th>
+                <th>Nombre / Razón Social</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Condición IVA</th>
+                <th>Usuario</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="tablaClientes">
+            <!-- Se carga dinámicamente -->
+            </tbody>
+        </table>
+
+        <!-- Sin resultados -->
+        <div class="sin-resultados" id="sinResultados" style="display:none;">
+            <i class="bi bi-people"></i>
+            <p>No se encontraron clientes</p>
         </div>
 
-        <!-- Tabla -->
-        <div class="card">
-            <div class="card-body p-0">
-                <table class="table table-hover mb-0">
-                    <thead class="table-light">
-                    <tr>
-                        <th>#</th>
-                        <th>Tipo</th>
-                        <th>Nombre / Razón Social</th>
-                        <th>Email</th>
-                        <th>Teléfono</th>
-                        <th>Condición IVA</th>
-                        <th>Usuario</th>
-                        <th>Estado</th>
-                        <th>Acciones</th>
-                    </tr>
-                    </thead>
-                    <tbody id="tablaClientes">
-                    <!-- Se carga dinámicamente -->
-                    </tbody>
-                </table>
-
-                <!-- Sin resultados -->
-                <div id="sinResultados" class="text-center py-5 d-none">
-                    <i class="bi bi-people fs-1 text-muted"></i>
-                    <p class="text-muted mt-2">No se encontraron clientes</p>
-                </div>
-            </div>
-
-            <!-- Paginador -->
-            <div class="card-footer d-flex justify-content-between align-items-center">
-                <small class="text-muted" id="infoPaginacion">Mostrando 0 clientes</small>
-                <nav>
-                    <ul class="pagination pagination-sm mb-0" id="paginacion"></ul>
-                </nav>
-            </div>
+        <!-- Footer con paginación -->
+        <div class="panel-footer">
+            <small id="infoPaginacion">Mostrando 0 clientes</small>
+            <ul class="paginacion" id="paginacion"></ul>
         </div>
+    </div>
 
-    </main>
 </div>
 
 <!-- ══════════════════════════════════════════
      MODAL — Alta Cliente
 ══════════════════════════════════════════ -->
-<div class="modal fade" id="modalAltaCliente" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content">
+<div class="modal-overlay" id="modalAltaCliente">
+    <div class="modal-box">
 
-            <div class="modal-header">
-                <h5 class="modal-title"><i class="bi bi-person-plus"></i> Nuevo Cliente</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
+        <div class="modal-header">
+            <h5><i class="bi bi-person-plus"></i> Nuevo Cliente</h5>
+            <button class="modal-close" id="modalClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
 
+        <form id="formAltaCliente" novalidate>
             <div class="modal-body">
-                <form id="formAltaCliente" novalidate>
 
-                    <!-- Tipo de cliente -->
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Tipo de cliente <span class="text-danger">*</span></label>
-                        <div class="d-flex gap-3">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipoCliente"
-                                       id="tipoPersona" value="PERSONA_FISICA" checked
-                                       onchange="toggleTipoCliente()">
-                                <label class="form-check-label" for="tipoPersona">
-                                    <i class="bi bi-person"></i> Persona Física
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="tipoCliente"
-                                       id="tipoEmpresa" value="EMPRESA"
-                                       onchange="toggleTipoCliente()">
-                                <label class="form-check-label" for="tipoEmpresa">
-                                    <i class="bi bi-building"></i> Empresa
-                                </label>
-                            </div>
+                <!-- Tipo de cliente -->
+                <div>
+                    <p class="seccion-titulo">Tipo de cliente</p>
+                    <div class="tipo-selector">
+                        <label class="tipo-option selected" id="labelPersona">
+                            <input type="radio" name="tipoCliente" value="PERSONA_FISICA"
+                                   checked onchange="toggleTipo()">
+                            <i class="bi bi-person"></i>
+                            Persona Física
+                        </label>
+                        <label class="tipo-option" id="labelEmpresa">
+                            <input type="radio" name="tipoCliente" value="EMPRESA"
+                                   onchange="toggleTipo()">
+                            <i class="bi bi-building"></i>
+                            Empresa
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sección Persona Física -->
+                <div id="seccionPersona">
+                    <p class="seccion-titulo">Datos personales</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Nombre <span class="required">*</span></label>
+                            <input type="text" class="form-control-custom" id="nombre"
+                                   placeholder="Juan">
+                            <span class="field-error" id="errNombre">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Apellido <span class="required">*</span></label>
+                            <input type="text" class="form-control-custom" id="apellido"
+                                   placeholder="Pérez">
+                            <span class="field-error" id="errApellido">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input type="text" class="form-control-custom" id="dni"
+                                   placeholder="12345678">
+                        </div>
+                        <div class="form-group">
+                            <label>CUIL</label>
+                            <input type="text" class="form-control-custom" id="cuil"
+                                   placeholder="20-12345678-9">
                         </div>
                     </div>
+                </div>
 
-                    <hr>
-
-                    <!-- Campos Persona Física -->
-                    <div id="seccionPersona">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label class="form-label">Nombre <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="nombre" placeholder="Juan">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">Apellido <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="apellido" placeholder="Pérez">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">DNI</label>
-                                <input type="text" class="form-control" id="dni" placeholder="12345678">
-                            </div>
-                            <div class="col-md-6">
-                                <label class="form-label">CUIL</label>
-                                <input type="text" class="form-control" id="cuil" placeholder="20-12345678-9">
-                            </div>
+                <!-- Sección Empresa -->
+                <div id="seccionEmpresa" style="display:none;">
+                    <p class="seccion-titulo">Datos de la empresa</p>
+                    <div class="form-row">
+                        <div class="form-group full">
+                            <label>Razón Social <span class="required">*</span></label>
+                            <input type="text" class="form-control-custom" id="razonSocial"
+                                   placeholder="Empresa S.A.">
+                            <span class="field-error" id="errRazonSocial">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label>CUIT <span class="required">*</span></label>
+                            <input type="text" class="form-control-custom" id="cuit"
+                                   placeholder="30-12345678-9">
+                            <span class="field-error" id="errCuit">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Condición IVA</label>
+                            <select class="form-control-custom" id="condicionIVAEmpresa">
+                                <option value="">Seleccionar...</option>
+                                <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                                <option value="MONOTRIBUTISTA">Monotributista</option>
+                                <option value="EXENTO">Exento</option>
+                                <option value="CONSUMIDOR_FINAL">Consumidor Final</option>
+                                <option value="NO_RESPONSABLE">No Responsable</option>
+                            </select>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Campos Empresa -->
-                    <div id="seccionEmpresa" class="d-none">
-                        <div class="row g-3">
-                            <div class="col-md-8">
-                                <label class="form-label">Razón Social <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="razonSocial" placeholder="Empresa S.A.">
-                            </div>
-                            <div class="col-md-4">
-                                <label class="form-label">CUIT <span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" id="cuit" placeholder="30-12345678-9">
-                            </div>
+                <!-- Datos de contacto -->
+                <div>
+                    <p class="seccion-titulo">Datos de contacto</p>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email <span class="required">*</span></label>
+                            <input type="email" class="form-control-custom" id="email"
+                                   placeholder="email@ejemplo.com">
+                            <span class="field-error" id="errEmail">Campo requerido</span>
+                        </div>
+                        <div class="form-group" id="condicionIVAPersonaGroup">
+                            <label>Condición IVA</label>
+                            <select class="form-control-custom" id="condicionIVAPersona">
+                                <option value="">Seleccionar...</option>
+                                <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
+                                <option value="MONOTRIBUTISTA">Monotributista</option>
+                                <option value="EXENTO">Exento</option>
+                                <option value="CONSUMIDOR_FINAL">Consumidor Final</option>
+                                <option value="NO_RESPONSABLE">No Responsable</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono</label>
+                            <input type="text" class="form-control-custom" id="telefono"
+                                   placeholder="0341-123456">
+                        </div>
+                        <div class="form-group">
+                            <label>Celular</label>
+                            <input type="text" class="form-control-custom" id="celular"
+                                   placeholder="341-1234567">
                         </div>
                     </div>
+                </div>
 
-                    <hr>
-
-                    <!-- Datos de contacto -->
-                    <p class="fw-semibold text-muted mb-3">Datos de contacto</p>
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <label class="form-label">Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email" placeholder="email@ejemplo.com">
+                <!-- Ubicación -->
+                <div>
+                    <p class="seccion-titulo">Ubicación</p>
+                    <div class="form-group" style="margin-bottom:1rem;">
+                        <label>Dirección</label>
+                        <input type="text" class="form-control-custom" id="direccion"
+                               placeholder="Calle 123">
+                    </div>
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label>Localidad</label>
+                            <input type="text" class="form-control-custom" id="localidad"
+                                   placeholder="Rosario">
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Teléfono</label>
-                            <input type="text" class="form-control" id="telefono" placeholder="0341-123456">
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label">Celular</label>
-                            <input type="text" class="form-control" id="celular" placeholder="341-1234567">
-                        </div>
-                        <div class="col-12">
-                            <label class="form-label">Dirección</label>
-                            <input type="text" class="form-control" id="direccion" placeholder="Calle 123">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Localidad</label>
-                            <input type="text" class="form-control" id="localidad" placeholder="Rosario">
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Provincia</label>
-                            <select class="form-select" id="provincia">
+                        <div class="form-group">
+                            <label>Provincia</label>
+                            <select class="form-control-custom" id="provincia">
                                 <option value="">Seleccionar...</option>
                                 <option value="BUENOS_AIRES">Buenos Aires</option>
                                 <option value="CIUDAD_AUTONOMA_DE_BUENOS_AIRES">CABA</option>
@@ -244,44 +280,30 @@
                                 <option value="TUCUMAN">Tucumán</option>
                             </select>
                         </div>
-                        <div class="col-md-4">
-                            <label class="form-label">Condición IVA</label>
-                            <select class="form-select" id="condicionIVA">
-                                <option value="">Seleccionar...</option>
-                                <option value="RESPONSABLE_INSCRIPTO">Responsable Inscripto</option>
-                                <option value="MONOTRIBUTISTA">Monotributista</option>
-                                <option value="EXENTO">Exento</option>
-                                <option value="CONSUMIDOR_FINAL">Consumidor Final</option>
-                                <option value="NO_RESPONSABLE">No Responsable</option>
-                            </select>
-                        </div>
                     </div>
+                </div>
 
-                </form>
-            </div>
+            </div><!-- /modal-body -->
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" onclick="submitAltaCliente()">
+                <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardar">
                     <i class="bi bi-check-lg"></i> Guardar Cliente
                 </button>
             </div>
+        </form>
 
-        </div>
     </div>
 </div>
 
-<!-- Toast notificaciones -->
-<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 9999">
-    <div id="toast" class="toast align-items-center text-white border-0" role="alert">
-        <div class="d-flex">
-            <div class="toast-body" id="toastMsg"></div>
-            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-        </div>
-    </div>
+<!-- ══════════════════════════════════════════
+     TOAST
+══════════════════════════════════════════ -->
+<div class="toast-confirm" id="toastConfirm">
+    <i id="toastIcon"></i>
+    <span id="toastMsg">Operación realizada</span>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/clientes.js"></script>
 </body>
 </html>
