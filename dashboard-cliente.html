@@ -7,6 +7,124 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/dashboard/dashboard-clientes.css">
+    <style>
+        /* ── PDF Side Panel ── */
+        .pdf-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+            z-index: 1000;
+        }
+        .pdf-overlay.open { display: block; }
+
+        .pdf-panel {
+            position: fixed;
+            top: 0; right: -100%;
+            width: min(700px, 100vw);
+            height: 100vh;
+            background: #fff;
+            z-index: 1001;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+            transition: right 0.3s ease;
+        }
+        .pdf-panel.open { right: 0; }
+
+        .pdf-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+        .pdf-panel-header h6 {
+            margin: 0;
+            font-size: 15px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+        .pdf-panel-header .btn-close-panel {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #6b7280;
+            line-height: 1;
+        }
+        .pdf-panel-header .btn-close-panel:hover { color: #111; }
+
+        .pdf-panel-actions {
+            display: flex;
+            gap: 8px;
+            padding: 10px 20px;
+            border-bottom: 1px solid #e5e7eb;
+            background: #f9fafb;
+        }
+        .pdf-panel-actions a {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            padding: 6px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .btn-descargar-pdf {
+            background: var(--verde, #16a34a);
+            color: #fff;
+        }
+        .btn-abrir-nueva {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .pdf-frame-wrapper {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+        .pdf-frame-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* ── Loading spinner ── */
+        .pdf-loading {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #fff;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .spinner {
+            width: 36px; height: 36px;
+            border: 3px solid #e5e7eb;
+            border-top-color: var(--verde, #16a34a);
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ── Estado skeleton ── */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.2s infinite;
+            border-radius: 6px;
+            height: 16px;
+        }
+        @keyframes shimmer { to { background-position: -200% 0; } }
+    </style>
 </head>
 <body>
 
@@ -23,7 +141,6 @@
     <a href="#"><i class="bi bi-person-circle"></i> Mi perfil</a>
 
     <hr class="sidebar-divider">
-
     <div class="sidebar-bottom">
         <a href="#" id="logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
     </div>
@@ -63,32 +180,30 @@
         <div class="kpi-card verde">
             <div class="kpi-icon verde"><i class="bi bi-flask"></i></div>
             <div class="kpi-data">
-                <h3 id="kpi-total">0</h3>
+                <h3 id="kpi-total">—</h3>
                 <p>Muestras totales</p>
             </div>
         </div>
         <div class="kpi-card azul">
             <div class="kpi-icon azul"><i class="bi bi-hourglass-split"></i></div>
             <div class="kpi-data">
-                <h3 id="kpi-proceso">0</h3>
+                <h3 id="kpi-proceso">—</h3>
                 <p>En proceso</p>
             </div>
         </div>
         <div class="kpi-card naranja">
             <div class="kpi-icon naranja"><i class="bi bi-file-earmark-check"></i></div>
             <div class="kpi-data">
-                <h3 id="kpi-listos">0</h3>
+                <h3 id="kpi-listos">—</h3>
                 <p>Informes disponibles</p>
             </div>
         </div>
     </div>
 
-    <!-- Tabla de muestras -->
+    <!-- Tabla -->
     <div class="panel">
         <div class="panel-header">
             <h5><i class="bi bi-list-check me-2" style="color:var(--verde);"></i>Mis análisis</h5>
-
-            <!-- Buscador por ID protocolo -->
             <div class="search-wrapper">
                 <i class="bi bi-search"></i>
                 <input
@@ -112,19 +227,21 @@
                     <th>Informe</th>
                 </tr>
                 </thead>
-                <tbody id="tablaBody">
-                <!-- Filas generadas por JS -->
-                </tbody>
+                <tbody id="tablaBody"></tbody>
             </table>
 
-            <!-- Sin resultados -->
-            <div class="sin-resultados" id="sinResultados">
+            <div class="sin-resultados" id="sinResultados" style="display:none;">
                 <i class="bi bi-search"></i>
                 No se encontraron resultados para ese número de protocolo.
             </div>
+
+            <!-- Error state -->
+            <div id="errorState" style="display:none; padding:40px; text-align:center; color:#ef4444;">
+                <i class="bi bi-exclamation-circle" style="font-size:32px;"></i>
+                <p style="margin-top:8px;">No se pudieron cargar los estudios. Intentá recargar la página.</p>
+            </div>
         </div>
 
-        <!-- Paginación -->
         <div class="paginacion-wrapper">
             <span id="pag-info">Mostrando 0 de 0 registros</span>
             <div class="paginacion-btns" id="paginacion-btns"></div>
@@ -133,17 +250,56 @@
 
 </div>
 
+<!-- ══════════════════════════════════
+     PDF SIDE PANEL
+══════════════════════════════════ -->
+<div class="pdf-overlay" id="pdfOverlay"></div>
+
+<div class="pdf-panel" id="pdfPanel">
+    <div class="pdf-panel-header">
+        <h6><i class="bi bi-file-earmark-pdf me-2" style="color:#ef4444;"></i><span id="pdfPanelTitulo">Resultado</span></h6>
+        <button class="btn-close-panel" id="btnCerrarPanel" title="Cerrar">&#x2715;</button>
+    </div>
+    <div class="pdf-panel-actions">
+        <a id="btnDescargarPdf" href="#" download class="btn-descargar-pdf">
+            <i class="bi bi-download"></i> Descargar PDF
+        </a>
+        <a id="btnAbrirNueva" href="#" target="_blank" class="btn-abrir-nueva">
+            <i class="bi bi-box-arrow-up-right"></i> Abrir en nueva pestaña
+        </a>
+    </div>
+    <div class="pdf-frame-wrapper">
+        <div class="pdf-loading" id="pdfLoading">
+            <div class="spinner"></div>
+            <span>Cargando informe...</span>
+        </div>
+        <iframe id="pdfIframe" src="" title="Resultado PDF"></iframe>
+    </div>
+</div>
+
 <script>
-    // ── Guard: solo CLIENTE ──
+    const API_BASE = "http://localhost:8080/api";
+
+    // ── Guard ──
     const rol = (localStorage.getItem("userRole") || "").toUpperCase();
     if (!localStorage.getItem("token") || rol !== "ROLE_CLIENTE") {
         window.location.href = "login.html";
     }
 
+    // ── Decodificar JWT para obtener userId ──
+    function getPayload() {
+        try {
+            const token = localStorage.getItem("token");
+            return JSON.parse(atob(token.split(".")[1]));
+        } catch { return {}; }
+    }
+    const payload = getPayload();
+    const userId  = payload.userId;
+
     // ── Datos del usuario ──
     const userEmail = localStorage.getItem("userEmail");
-    const userName = localStorage.getItem("userName");
-    const nombre = userName || userEmail || "Cliente";
+    const userName  = localStorage.getItem("userName");
+    const nombre    = userName || userEmail || "Cliente";
     const iniciales = nombre.split(" ").map(p => p[0]).join("").substring(0, 2).toUpperCase();
 
     document.getElementById("header-nombre").textContent = nombre;
@@ -156,140 +312,212 @@
     });
     document.getElementById("fecha-hoy").textContent = hoy.charAt(0).toUpperCase() + hoy.slice(1);
 
-    // ── Cerrar sesión ──
+    // ── Logout ──
     document.getElementById("logout-btn").addEventListener("click", () => {
         ["token", "userEmail", "userRole", "userName"].forEach(k => localStorage.removeItem(k));
         window.location.href = "login.html";
     });
 
-    // ────────────────────────────────────────────
-    // DATOS — reemplazar con fetch real al backend
-    // ────────────────────────────────────────────
-    const muestras = [
-        {codigo: "CHQ-2026-001", tipo: "Agua potable", fecha: "01 ene 2026", estado: "EN_PROCESO", informe: false},
-        {codigo: "CHQ-2026-003", tipo: "Efluente industrial", fecha: "15 ene 2026", estado: "INFORME", informe: true},
-        {codigo: "CHQ-2026-005", tipo: "Agua de pozo", fecha: "02 feb 2026", estado: "EN_PROCESO", informe: false},
-        {codigo: "CHQ-2026-007", tipo: "Suelo agrícola", fecha: "18 feb 2026", estado: "INFORME", informe: true},
-        {codigo: "CHQ-2026-009", tipo: "Efluente cloacal", fecha: "05 mar 2026", estado: "EN_PROCESO", informe: false},
-        {codigo: "CHQ-2026-011", tipo: "Agua residual", fecha: "20 mar 2026", estado: "INFORME", informe: true},
-        {codigo: "CHQ-2026-013", tipo: "Agua potable", fecha: "01 abr 2026", estado: "EN_PROCESO", informe: false},
-        {codigo: "CHQ-2026-015", tipo: "Efluente industrial", fecha: "14 abr 2026", estado: "INFORME", informe: true},
-        {codigo: "CHQ-2026-017", tipo: "Agua de pozo", fecha: "28 abr 2026", estado: "EN_PROCESO", informe: false},
-        {codigo: "CHQ-2026-019", tipo: "Suelo agrícola", fecha: "10 may 2026", estado: "INFORME", informe: true},
-        {codigo: "CHQ-2026-021", tipo: "Agua potable", fecha: "22 may 2026", estado: "EN_PROCESO", informe: false},
-        {codigo: "CHQ-2026-023", tipo: "Efluente cloacal", fecha: "05 jun 2026", estado: "INFORME", informe: true},
-    ];
+    // ──────────────────────────────────────────
+    // FETCH ESTUDIOS DESDE EL BACKEND
+    // ──────────────────────────────────────────
+    const token = localStorage.getItem("token");
 
-    // ── KPIs ──
-    document.getElementById("kpi-total").textContent = muestras.length;
-    document.getElementById("kpi-proceso").textContent = muestras.filter(m => m.estado === "EN_PROCESO").length;
-    document.getElementById("kpi-listos").textContent = muestras.filter(m => m.estado === "INFORME").length;
+    let todasLasMuestras = [];
+    let datosFiltrados   = [];
+    let paginaActual     = 1;
+    const POR_PAGINA     = 10;
 
-    // ────────────────────────────────────────────
-    // TABLA + BÚSQUEDA + PAGINACIÓN
-    // ────────────────────────────────────────────
-    const POR_PAGINA = 10;
-    let paginaActual = 1;
-    let datosFiltrados = [...muestras];
+    async function cargarEstudios() {
+        try {
+            const res = await fetch(`${API_BASE}/estudios/user/${userId}`, {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
 
-    function badgeHTML(estado) {
-        if (estado === "EN_PROCESO") return `<span class="badge-estado badge-proceso">🔬 En análisis</span>`;
-        if (estado === "INFORME") return `<span class="badge-estado badge-informe">✅ Informe listo</span>`;
-        return "";
+            if (!res.ok) throw new Error("Error al obtener estudios");
+
+            const data = await res.json();
+
+            // Mapear respuesta al formato interno
+            todasLasMuestras = data.map(e => ({
+                id:       e.id,
+                codigo:   e.numeroProtocolo || `ID-${e.id}`,
+                tipo:     e.tipo || "—",
+                fecha:    e.createdDate
+                    ? new Date(e.createdDate).toLocaleDateString("es-AR", { day:"2-digit", month:"short", year:"numeric" })
+                    : "—",
+                estado:   e.estado || "—",
+                informe:  e.estado === "INFORME" // tiene PDF disponible
+            }));
+
+            // KPIs
+            document.getElementById("kpi-total").textContent   = todasLasMuestras.length;
+            document.getElementById("kpi-proceso").textContent = todasLasMuestras.filter(m => m.estado === "EN_PROCESO").length;
+            document.getElementById("kpi-listos").textContent  = todasLasMuestras.filter(m => m.informe).length;
+
+            datosFiltrados = [...todasLasMuestras];
+            renderTabla();
+
+        } catch (err) {
+            console.error(err);
+            document.getElementById("tablaBody").innerHTML = "";
+            document.getElementById("errorState").style.display = "block";
+        }
     }
 
-    function btnInformeHTML(disponible) {
-        if (disponible) {
-            return `<button class="btn-descargar"><i class="bi bi-download"></i> Descargar</button>`;
+    // ──────────────────────────────────────────
+    // RENDER TABLA
+    // ──────────────────────────────────────────
+    function badgeHTML(estado) {
+        const map = {
+            "EN_PROCESO": `<span class="badge-estado badge-proceso">🔬 En análisis</span>`,
+            "INFORME":    `<span class="badge-estado badge-informe">✅ Informe listo</span>`,
+            "PENDIENTE":  `<span class="badge-estado badge-pendiente">⏳ Pendiente</span>`,
+        };
+        return map[estado] || `<span class="badge-estado">${estado}</span>`;
+    }
+
+    function btnInformeHTML(muestra) {
+        if (muestra.informe) {
+            return `<button class="btn-descargar" onclick="abrirPDF(${muestra.id}, '${muestra.codigo}')">
+                    <i class="bi bi-eye"></i> Ver informe
+                </button>`;
         }
-        return `<button class="btn-descargar disabled"><i class="bi bi-clock"></i> En proceso</button>`;
+        return `<button class="btn-descargar disabled" disabled>
+                <i class="bi bi-clock"></i> En proceso
+            </button>`;
     }
 
     function renderTabla() {
-        const tbody = document.getElementById("tablaBody");
-        const sinRes = document.getElementById("sinResultados");
+        const tbody   = document.getElementById("tablaBody");
+        const sinRes  = document.getElementById("sinResultados");
         const pagInfo = document.getElementById("pag-info");
         const pagBtns = document.getElementById("paginacion-btns");
 
-        const total = datosFiltrados.length;
+        const total     = datosFiltrados.length;
         const totalPags = Math.ceil(total / POR_PAGINA);
-        const inicio = (paginaActual - 1) * POR_PAGINA;
-        const fin = Math.min(inicio + POR_PAGINA, total);
-        const slice = datosFiltrados.slice(inicio, fin);
+        const inicio    = (paginaActual - 1) * POR_PAGINA;
+        const fin       = Math.min(inicio + POR_PAGINA, total);
+        const slice     = datosFiltrados.slice(inicio, fin);
 
-        // Sin resultados
         if (total === 0) {
             tbody.innerHTML = "";
             sinRes.style.display = "block";
-            pagInfo.textContent = "Sin resultados";
-            pagBtns.innerHTML = "";
+            pagInfo.textContent  = "Sin resultados";
+            pagBtns.innerHTML    = "";
             return;
         }
 
         sinRes.style.display = "none";
 
-        // Filas
         tbody.innerHTML = slice.map(m => `
-            <tr>
-                <td><span class="cod-badge">${m.codigo}</span></td>
-                <td>${m.tipo}</td>
-                <td>${m.fecha}</td>
-                <td>${badgeHTML(m.estado)}</td>
-                <td>${btnInformeHTML(m.informe)}</td>
-            </tr>
-        `).join("");
+        <tr>
+            <td><span class="cod-badge">${m.codigo}</span></td>
+            <td>${m.tipo}</td>
+            <td>${m.fecha}</td>
+            <td>${badgeHTML(m.estado)}</td>
+            <td>${btnInformeHTML(m)}</td>
+        </tr>
+    `).join("");
 
-        // Info
         pagInfo.textContent = `Mostrando ${inicio + 1}–${fin} de ${total} registro${total !== 1 ? "s" : ""}`;
 
-        // Botones de paginación
+        // Paginación
         pagBtns.innerHTML = "";
 
-        // Anterior
         const btnPrev = document.createElement("button");
         btnPrev.className = "pag-btn";
         btnPrev.innerHTML = `<i class="bi bi-chevron-left"></i>`;
-        btnPrev.disabled = paginaActual === 1;
-        btnPrev.onclick = () => {
-            paginaActual--;
-            renderTabla();
-        };
+        btnPrev.disabled  = paginaActual === 1;
+        btnPrev.onclick   = () => { paginaActual--; renderTabla(); };
         pagBtns.appendChild(btnPrev);
 
-        // Números
         for (let i = 1; i <= totalPags; i++) {
             const btn = document.createElement("button");
             btn.className = "pag-btn" + (i === paginaActual ? " active" : "");
             btn.textContent = i;
-            btn.onclick = () => {
-                paginaActual = i;
-                renderTabla();
-            };
+            btn.onclick = () => { paginaActual = i; renderTabla(); };
             pagBtns.appendChild(btn);
         }
 
-        // Siguiente
         const btnNext = document.createElement("button");
         btnNext.className = "pag-btn";
         btnNext.innerHTML = `<i class="bi bi-chevron-right"></i>`;
-        btnNext.disabled = paginaActual === totalPags;
-        btnNext.onclick = () => {
-            paginaActual++;
-            renderTabla();
-        };
+        btnNext.disabled  = paginaActual === totalPags;
+        btnNext.onclick   = () => { paginaActual++; renderTabla(); };
         pagBtns.appendChild(btnNext);
     }
+
+    // ──────────────────────────────────────────
+    // PDF SIDE PANEL
+    // ──────────────────────────────────────────
+    const pdfPanel   = document.getElementById("pdfPanel");
+    const pdfOverlay = document.getElementById("pdfOverlay");
+    const pdfIframe  = document.getElementById("pdfIframe");
+    const pdfLoading = document.getElementById("pdfLoading");
+
+    function abrirPDF(estudioId, protocolo) {
+        const url = `${API_BASE}/estudios/${estudioId}/resultado`;
+
+        // Actualizar título y links
+        document.getElementById("pdfPanelTitulo").textContent = `Informe ${protocolo}`;
+        document.getElementById("btnDescargarPdf").href = url;
+        document.getElementById("btnDescargarPdf").download = `resultado_${protocolo}.pdf`;
+        document.getElementById("btnAbrirNueva").href = url;
+
+        // Mostrar loading
+        pdfLoading.style.display  = "flex";
+        pdfIframe.style.display   = "none";
+        pdfIframe.src             = "";
+
+        // Abrir panel
+        pdfPanel.classList.add("open");
+        pdfOverlay.classList.add("open");
+        document.body.style.overflow = "hidden";
+
+        // Cargar iframe con token en header no es posible directo,
+        // usamos blob URL para evitar problemas de auth
+        fetch(url, { headers: { "Authorization": `Bearer ${token}` } })
+            .then(res => {
+                if (!res.ok) throw new Error("No se pudo cargar el PDF");
+                return res.blob();
+            })
+            .then(blob => {
+                const blobUrl        = URL.createObjectURL(blob);
+                pdfIframe.src        = blobUrl;
+                pdfIframe.style.display = "block";
+                pdfLoading.style.display = "none";
+
+                // Actualizar links con blob para descarga directa
+                document.getElementById("btnDescargarPdf").href = blobUrl;
+                document.getElementById("btnAbrirNueva").href   = blobUrl;
+            })
+            .catch(() => {
+                pdfLoading.innerHTML = `<i class="bi bi-exclamation-circle" style="font-size:32px;color:#ef4444;"></i>
+                                    <span style="color:#ef4444;">No se pudo cargar el informe.</span>`;
+            });
+    }
+
+    function cerrarPanel() {
+        pdfPanel.classList.remove("open");
+        pdfOverlay.classList.remove("open");
+        document.body.style.overflow = "";
+        setTimeout(() => { pdfIframe.src = ""; }, 300);
+    }
+
+    document.getElementById("btnCerrarPanel").addEventListener("click", cerrarPanel);
+    pdfOverlay.addEventListener("click", cerrarPanel);
 
     // ── Buscador ──
     document.getElementById("buscadorProtocolo").addEventListener("input", function () {
         const texto = this.value.trim().toLowerCase();
-        datosFiltrados = muestras.filter(m => m.codigo.toLowerCase().includes(texto));
+        datosFiltrados = todasLasMuestras.filter(m => m.codigo.toLowerCase().includes(texto));
         paginaActual = 1;
         renderTabla();
     });
 
-    // ── Render inicial ──
-    renderTabla();
+    // ── Init ──
+    cargarEstudios();
 </script>
 
 </body>
