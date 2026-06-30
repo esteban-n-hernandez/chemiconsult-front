@@ -169,3 +169,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 });
+
+  // Actualizar el link de Empretienda en el modal según la opción seleccionada
+    document.querySelectorAll('.btn-pricing-modal').forEach(button => {
+        button.addEventListener('click', function() {
+            const empretiendaUrl = this.getAttribute('data-empretienda');
+            const empretiendaLink = document.getElementById('pricingModalEmpretienda');
+            
+            if (empretiendaUrl) {
+                empretiendaLink.href = empretiendaUrl;
+            }
+        });
+    });
