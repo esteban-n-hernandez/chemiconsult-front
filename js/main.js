@@ -1,14 +1,10 @@
-// ======================================================
 // WHATSAPP: mostrar ícono fijo siempre (no depende de sección)
-// ======================================================
 document.addEventListener("DOMContentLoaded", function () {
     const icono = document.querySelector(".whatsapp-icon");
     if (icono) icono.style.display = "block";
 });
 
-// ======================================================
 // SCROLL EFFECT: aparición suave de secciones
-// ======================================================
 document.addEventListener("DOMContentLoaded", function () {
     const sections = document.querySelectorAll(".scroll-effect");
 
@@ -21,15 +17,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
         },
-        { threshold: 0.1 }
+        {threshold: 0.1}
     );
 
     sections.forEach(section => observer.observe(section));
 });
 
-// ======================================================
 // NAVBAR: cerrar menú mobile al hacer click en un link
-// ======================================================
 document.addEventListener("DOMContentLoaded", function () {
     const navLinks = document.querySelectorAll(".navbar-nav .nav-link, .navbar-nav .dropdown-item");
     const navbarCollapse = document.getElementById("navbarSupportedContent");
@@ -44,23 +38,21 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// ======================================================
 // PRICING MODAL: popular con datos del servicio clickeado
-// ======================================================
 document.addEventListener("DOMContentLoaded", function () {
     var pricingModal = document.getElementById("pricingModal");
     if (!pricingModal) return;
 
     pricingModal.addEventListener("show.bs.modal", function (event) {
         var button = event.relatedTarget;
-        var titulo     = button.getAttribute("data-titulo");
+        var titulo = button.getAttribute("data-titulo");
         var descripcion = button.getAttribute("data-descripcion");
-        var items      = button.getAttribute("data-items").split("|");
-        var nota       = button.getAttribute("data-nota");
+        var items = button.getAttribute("data-items").split("|");
+        var nota = button.getAttribute("data-nota");
 
         pricingModal.querySelector("#pricingModalLabel").textContent = titulo;
-        pricingModal.querySelector("#pricingModalDesc").textContent  = descripcion;
-        pricingModal.querySelector("#pricingModalNota").textContent  = nota;
+        pricingModal.querySelector("#pricingModalDesc").textContent = descripcion;
+        pricingModal.querySelector("#pricingModalNota").textContent = nota;
 
         var lista = pricingModal.querySelector("#pricingModalItems");
         lista.innerHTML = "";
@@ -77,10 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-
-// ======================================================
 // PRICING: cargar precios desde Google Sheet
-// ======================================================
 document.addEventListener("DOMContentLoaded", function () {
 
     const URL_SHEET = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRRuKGVMeUjKHUEwzBzRfq6hg91g9HNb4eCziJCVRCxUQGt6jaP3_AroTD8PfRoxZNorDcoiITPck8X/pub?output=csv";
@@ -123,9 +112,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-// ======================================================
 // PRICING MODAL: popular con datos del servicio clickeado
-// ======================================================
 document.addEventListener("DOMContentLoaded", function () {
     var pricingModal = document.getElementById("pricingModal");
     if (!pricingModal) return;
@@ -134,15 +121,15 @@ document.addEventListener("DOMContentLoaded", function () {
         var button = event.relatedTarget;
         if (!button) return;
 
-        var titulo      = button.getAttribute("data-titulo");
+        var titulo = button.getAttribute("data-titulo");
         var descripcion = button.getAttribute("data-descripcion");
-        var items       = (button.getAttribute("data-items") || "").split("|");
-        var nota        = button.getAttribute("data-nota");
-        var precio      = button.getAttribute("data-precio");
+        var items = (button.getAttribute("data-items") || "").split("|");
+        var nota = button.getAttribute("data-nota");
+        var precio = button.getAttribute("data-precio");
 
         pricingModal.querySelector("#pricingModalLabel").textContent = titulo;
-        pricingModal.querySelector("#pricingModalDesc").textContent  = descripcion;
-        pricingModal.querySelector("#pricingModalNota").textContent  = nota;
+        pricingModal.querySelector("#pricingModalDesc").textContent = descripcion;
+        pricingModal.querySelector("#pricingModalNota").textContent = nota;
         pricingModal.querySelector("#pricingModalPrecio").textContent = precio || "A consultar";
 
         var lista = pricingModal.querySelector("#pricingModalItems");
@@ -170,14 +157,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-  // Actualizar el link de Empretienda en el modal según la opción seleccionada
-    document.querySelectorAll('.btn-pricing-modal').forEach(button => {
-        button.addEventListener('click', function() {
-            const empretiendaUrl = this.getAttribute('data-empretienda');
-            const empretiendaLink = document.getElementById('pricingModalEmpretienda');
-            
-            if (empretiendaUrl) {
-                empretiendaLink.href = empretiendaUrl;
-            }
-        });
+// Actualizar el link de Empretienda en el modal según la opción seleccionada
+document.querySelectorAll('.btn-pricing-modal').forEach(button => {
+    button.addEventListener('click', function () {
+        const empretiendaUrl = this.getAttribute('data-empretienda');
+        const empretiendaLink = document.getElementById('pricingModalEmpretienda');
+
+        if (empretiendaUrl) {
+            empretiendaLink.href = empretiendaUrl;
+        }
     });
+});

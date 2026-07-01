@@ -6,12 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CHEMICONSULT</title>
     <link rel="icon" href="img/icon%20logo.png" type="image/x-icon">
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="css/index/styles2.css">
     <link href="https://unpkg.com/aos@2.3.4/dist/aos.css" rel="stylesheet">
 </head>
@@ -19,7 +15,8 @@
 <body>
 
 <div class="header-bg">
-    <img src="img/Laboratorio-acreditado-scaled.jpeg" alt="Laboratorio CHEMICONSULT" class="bg-img">
+    <img src="img/Laboratorio-acreditado-scaled.jpeg" alt="Laboratorio CHEMICONSULT" fetchpriority="high"
+         class="bg-img">
     <div class="dark-overlay"></div>
     <div class="header-overlay" role="group" aria-label="Header logo and slogan">
         <img src="img/Logo%20transparente.png" alt="CHEMICONSULT logo" class="overlay-logo">
@@ -92,10 +89,7 @@
     </div>
 </nav>
 
-<br/>
-<br/>
-
-<section id="section-quienes-somos" class="py-xxl-4  text-center scroll-effect">
+<section id="section-quienes-somos" class="py-xxl-4  text-center scroll-effect p-3">
     <div class="container">
         <h2 class="custom-underline-border">¿Quiénes somos?</h2>
         <p class="mt-4">
@@ -141,7 +135,7 @@
     <section id="section-ambientales"
              class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/01%20ambientales%20sin%20letra.jpg" alt="Imagen 1"
-             class="img-fluid w-100 banner-img">
+             loading="lazy" class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
             <h3 class="display-5 fw-bold text-shadow">AMBIENTALES</h3>
         </div>
@@ -182,15 +176,15 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/ambiental/ambiental1.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 1">
+                                     loading="lazy" alt="Servicio Higiene 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/ambiental/ambiental2.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 2">
+                                     loading="lazy" alt="Servicio Higiene 2">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/ambiental/ambiental3.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 3">
+                                     loading="lazy" alt="Servicio Higiene 3">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselAmbientales"
@@ -214,7 +208,7 @@
     <section id="section-higiene-seguridad"
              class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/seguridad%20e%20higiene%20.jpg" alt="Higiene y Seguridad Laboral"
-             class="img-fluid w-100 banner-img">
+             loading="lazy" class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
             <h3 class="display-5 fw-bold text-shadow">HIGIENE Y SEGURIDAD LABORAL</h3>
         </div>
@@ -248,15 +242,15 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/seguridadhigiene/syh1.jpeg" class="d-block w-100"
-                                     alt="Servicio Higiene 1">
+                                     loading="lazy" alt="Servicio Higiene 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/seguridadhigiene/syh2.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 2">
+                                     loading="lazy" alt="Servicio Higiene 2">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/seguridadhigiene/syh3.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 3">
+                                     loading="lazy" alt="Servicio Higiene 3">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselSeguridad"
@@ -280,7 +274,7 @@
     <!-- ===== SERVICIO: CONTROL DE CALIDAD ===== -->
     <section id="section-qa" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/03%20control%20calidad%20sin%20letra.jpg" alt="Higiene y Seguridad Laboral"
-             class="img-fluid w-100 banner-img">
+             loading="lazy" class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
             <h3 class="display-5 fw-bold text-shadow">CONTROL DE CALIDAD</h3>
         </div>
@@ -312,15 +306,15 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/qa/controlcalidad1.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 1">
+                                     loading="lazy" alt="Servicio Higiene 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/qa/controlcalidad2.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 2">
+                                     loading="lazy" alt="Servicio Higiene 2">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/qa/controlcalidad3.jpg" class="d-block w-100"
-                                     alt="Servicio Higiene 3">
+                                     loading="lazy" alt="Servicio Higiene 3">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselControlCalidad"
@@ -344,7 +338,7 @@
     <!-- ===== SERVICIO: FARMA ===== -->
     <section id="section-farma" class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/04%20farma%20sin%20letra.jpg" alt="Higiene y Seguridad Laboral"
-             class="img-fluid w-100 banner-img">
+             loading="lazy" class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
             <h3 class="display-5 fw-bold text-shadow">FARMA</h3>
         </div>
@@ -371,11 +365,11 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/farma/farma1.png" class="d-block w-100"
-                                     alt="Servicio Higiene 1">
+                                     loading="lazy" alt="Servicio Higiene 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/farma/farma2.png" class="d-block w-100"
-                                     alt="Servicio Higiene 2">
+                                     loading="lazy" alt="Servicio Higiene 2">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselFarma"
@@ -400,7 +394,7 @@
     <section id="section-seguridad-alimentaria"
              class="scroll-effect servicio-banner position-relative text-center text-white">
         <img src="img/servicios/05%20alimentos%20sin%20letra.jpg" alt="Higiene y Seguridad Laboral"
-             class="img-fluid w-100 banner-img">
+             loading="lazy" class="img-fluid w-100 banner-img">
         <div class="banner-overlay d-flex justify-content-center align-items-center">
             <h3 class="display-5 fw-bold text-shadow">SEGURIDAD ALIMENTARIA</h3>
         </div>
@@ -436,15 +430,15 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/alimentaria/seguridad%20alimentaria1.jpg"
-                                     class="d-block w-100" alt="Servicio Higiene 1">
+                                     loading="lazy" class="d-block w-100" alt="Servicio Higiene 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/alimentaria/seguridad%20alimentaria2.jpg"
-                                     class="d-block w-100" alt="Servicio Higiene 2">
+                                     loading="lazy" class="d-block w-100" alt="Servicio Higiene 2">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/alimentaria/seguridad%20alimentaria3.jpg"
-                                     class="d-block w-100" alt="Servicio Higiene 2">
+                                     loading="lazy" class="d-block w-100" alt="Servicio Higiene 2">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button"
@@ -492,7 +486,8 @@
             <!-- Analisis Bacteriologico -->
             <div class="col">
                 <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/analis bacteriologico.png" alt="Ambientales" class="pricing-card-img">
+                    <img src="img/icons/pricing/analis bacteriologico.png" loading="lazy" alt="Analis Bacteriologico"
+                         class="pricing-card-img">
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="ANÁLISIS BACTERIOLÓGICO"
                             data-descripcion="Evaluación fundamental para determinar la aptitud microbiológica del agua de consumo."
@@ -507,7 +502,8 @@
             <!-- Analisis potabilidad basico -->
             <div class="col">
                 <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/Analisis potabilidad basico.png" alt="Ambientales"
+                    <img src="img/icons/pricing/Analisis potabilidad basico.png" loading="lazy"
+                         alt="Analisis Potabilidad Basico"
                          class="pricing-card-img">
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="ANÁLISIS POTABILIDAD BÁSICO"
@@ -524,7 +520,8 @@
             <!-- Analisis Potabilidad Arsenico -->
             <div class="col">
                 <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/Analisis potabilidad arsenico.png" alt="Ambientales"
+                    <img src="img/icons/pricing/Analisis potabilidad arsenico.png" loading="lazy"
+                         alt="Analisis Potabilidad Arsenico"
                          class="pricing-card-img">
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="ANÁLISIS POTABILIDAD C/ ARSÉNICO"
@@ -542,7 +539,8 @@
             <!-- Analisis Potabilidad Metales -->
             <div class="col">
                 <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/Analisis portabilidad metales.png" alt="Ambientales"
+                    <img src="img/icons/pricing/Analisis portabilidad metales.png" loading="lazy"
+                         alt="Analisis Potabilidad Metales"
                          class="pricing-card-img">
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="ANÁLISIS POTABILIDAD + METALES"
@@ -559,7 +557,8 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
             <!-- Analisis de Agua -->
             <div class="col">
                 <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/analisis agua pileta.png" alt="Ambientales" class="pricing-card-img">
+                    <img src="img/icons/pricing/analisis agua pileta.png" loading="lazy" alt="Analisis Agua Pileta"
+                         class="pricing-card-img">
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="ANÁLISIS AGUA DE PILETA"
                             data-descripcion="Evaluá la calidad del agua de tu pileta y verifica el cumplimiento de lo recomendado en el Decreto 3181/07 (Prov. Bs. As.) y Disposición N° 329."
@@ -577,7 +576,8 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
             <!-- Analisis a Eleccion -->
             <div class="col">
                 <div class="pricing-card h-100 d-flex flex-column align-items-center">
-                    <img src="img/icons/pricing/Analisis a eleccion.png" alt="Ambientales" class="pricing-card-img">
+                    <img src="img/icons/pricing/Analisis a eleccion.png" loading="lazy" alt="Analisis a Eleccion"
+                         class="pricing-card-img">
                     <button class="btn-pricing-modal mt-auto" data-bs-toggle="modal" data-bs-target="#pricingModal"
                             data-titulo="ANÁLISIS A ELECCIÓN"
                             data-descripcion="Diseñamos un plan de análisis a la medida de tus necesidades. Comunicate con nosotros para personalizar tu análisis."
@@ -645,17 +645,22 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
                 <!-- === SLIDE 1 === -->
                 <div class="carousel-item active">
                     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
-                        <div class="col"><img src="img/empresas/AgristarLogo.png" class="img-fluid" alt="Agri Star"
+                        <div class="col"><img loading="lazy" src="img/empresas/AgristarLogo.png" class="img-fluid"
+                                              alt="Agri Star"
                                               title="Agri Star"></div>
-                        <div class="col"><img src="img/empresas/ArcorLogo.png" class="img-fluid" alt="Arcor"
+                        <div class="col"><img loading="lazy" src="img/empresas/ArcorLogo.png" class="img-fluid"
+                                              alt="Arcor"
                                               title="Arcor"></div>
-                        <div class="col"><img src="img/empresas/AristonLogo.png" class="img-fluid" alt="Ariston"
+                        <div class="col"><img loading="lazy" src="img/empresas/AristonLogo.png" class="img-fluid"
+                                              alt="Ariston"
                                               title="Ariston"></div>
-                        <div class="col"><img src="img/empresas/ArtesaniasAvicolasLogo.png" class="img-fluid"
+                        <div class="col"><img loading="lazy" src="img/empresas/ArtesaniasAvicolasLogo.png"
+                                              class="img-fluid"
                                               alt="Artesanías Avícolas" title="Artesanías Avícolas"></div>
-                        <div class="col"><img src="img/empresas/AveryLogo.png" class="img-fluid" alt="Avery"
+                        <div class="col"><img loading="lazy" src="img/empresas/AveryLogo.png" class="img-fluid"
+                                              alt="Avery"
                                               title="Avery"></div>
-                        <div class="col"><img src="img/empresas/BarbarellaLogo.png" class="img-fluid"
+                        <div class="col"><img loading="lazy" src="img/empresas/BarbarellaLogo.png" class="img-fluid"
                                               alt="Barbarella" title="Barbarella"></div>
                     </div>
                 </div>
@@ -663,17 +668,22 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
                 <!-- === SLIDE 2 === -->
                 <div class="carousel-item">
                     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
-                        <div class="col"><img src="img/empresas/BioprosurLogo.png" class="img-fluid" alt="Bioprosur"
+                        <div class="col"><img loading="lazy" src="img/empresas/BioprosurLogo.png" class="img-fluid"
+                                              alt="Bioprosur"
                                               title="Bioprosur"></div>
-                        <div class="col"><img src="img/empresas/CeramicasCanuelasLogo.png" class="img-fluid"
+                        <div class="col"><img loading="lazy" src="img/empresas/CeramicasCanuelasLogo.png"
+                                              class="img-fluid"
                                               alt="Cerámicas Cañuelas" title="Cerámicas Cañuelas"></div>
-                        <div class="col"><img src="img/empresas/ClubNauticoLogo.png" class="img-fluid"
+                        <div class="col"><img loading="lazy" src="img/empresas/ClubNauticoLogo.png" class="img-fluid"
                                               alt="Club Náutico" title="Club Náutico San Isidro"></div>
-                        <div class="col"><img src="img/empresas/ComisionEnergiaLogo.png" class="img-fluid"
+                        <div class="col"><img loading="lazy" src="img/empresas/ComisionEnergiaLogo.png"
+                                              class="img-fluid"
                                               alt="CNEA" title="Comisión Nacional de Energía Atómica"></div>
-                        <div class="col"><img src="img/empresas/DropurLogo.png" class="img-fluid" alt="Dro Pur"
+                        <div class="col"><img loading="lazy" src="img/empresas/DropurLogo.png" class="img-fluid"
+                                              alt="Dro Pur"
                                               title="Dro Pur"></div>
-                        <div class="col"><img src="img/empresas/FibraltexLogo.png" class="img-fluid" alt="Fibraltex"
+                        <div class="col"><img loading="lazy" src="img/empresas/FibraltexLogo.png" class="img-fluid"
+                                              alt="Fibraltex"
                                               title="Fibraltex"></div>
                     </div>
                 </div>
@@ -682,18 +692,18 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
                 <div class="carousel-item">
                     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
                         <div class="col"><img src="img/empresas/FabraLogo.png" class="img-fluid" alt="Fabra"
-                                              title="Fabra"></div>
+                                              title="Fabra" loading="lazy"></div>
                         <div class="col"><img src="img/empresas/FemsaLogo.png" class="img-fluid" alt="FEMSA"
-                                              title="FEMSA"></div>
+                                              title="FEMSA" loading="lazy"></div>
                         <div class="col"><img src="img/empresas/FortbentonLogo.png" class="img-fluid"
-                                              alt="Fortbenton" title="Fortbenton"></div>
+                                              alt="Fortbenton" loading="lazy" title="Fortbenton"></div>
                         <div class="col"><img src="img/empresas/IngenatLogo.png" class="img-fluid" alt="Ingenat"
-                                              title="Ingenat"></div>
+                                              title="Ingenat" loading="lazy"></div>
                         <div class="col"><img src="img/empresas/InstitutoAgropecuariaLogo.png" class="img-fluid"
-                                              alt="Instituto Nacional Agropecuario"
+                                              alt="Instituto Nacional Agropecuario" loading="lazy"
                                               title="Instituto Nacional Agropecuario"></div>
                         <div class="col"><img src="img/empresas/MaprimedLogo.png" class="img-fluid" alt="Maprimed"
-                                              title="Maprimed"></div>
+                                              title="Maprimed" loading="lazy"></div>
                     </div>
                 </div>
 
@@ -701,16 +711,17 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
                 <div class="carousel-item">
                     <div class="row row-cols-2 row-cols-md-4 row-cols-lg-6 g-4 justify-content-center">
                         <div class="col"><img src="img/empresas/MarinasGolfLogo.png" class="img-fluid"
-                                              alt="Marinas Golf" title="Marinas Golf"></div>
+                                              alt="Marinas Golf" title="Marinas Golf" loading="lazy"></div>
                         <div class="col"><img src="img/empresas/MiniesterioAmbienteLogo.png" class="img-fluid"
-                                              alt="Ministerio de Ambiente" title="Ministerio de Ambiente"></div>
+                                              alt="Ministerio de Ambiente" title="Ministerio de Ambiente"
+                                              loading="lazy"></div>
                         <div class="col"><img src="img/empresas/TratecoLogo.png" class="img-fluid" alt="TratEco"
-                                              title="TratEco"></div>
+                                              title="TratEco" loading="lazy"></div>
                         <div class="col"><img src="img/empresas/utnlogo.png" class="img-fluid" alt="UTN"
-                                              title="UTN">
+                                              title="UTN" loading="lazy">
                         </div>
                         <div class="col"><img src="img/empresas/ForeverPipeLogo.jpeg" class="img-fluid"
-                                              alt="Forever Pipe" title="Forever Pipe"></div>
+                                              alt="Forever Pipe" title="Forever Pipe" loading="lazy"></div>
                     </div>
                 </div>
 
@@ -799,19 +810,19 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
 <section class="logos-contacto py-4" id="section-logos">
     <div class="container d-flex flex-wrap justify-content-center align-items-center gap-4">
         <div class="logo-item text-center">
-            <img src="img/legales/cofilab.png" alt="COFILAB">
+            <img src="img/legales/cofilab.png" alt="COFILAB" loading="lazy">
             <p>Certificado por COFILAB</p>
         </div>
         <div class="logo-item text-center">
-            <img src="img/legales/apra.png" alt="ApRA">
+            <img src="img/legales/apra.png" alt="ApRA" loading="lazy">
             <p>Registro "RELADA" N°29</p>
         </div>
         <div class="logo-item text-center">
-            <img src="img/legales/OPDS-removebg-preview.png" alt="OPDS">
+            <img src="img/legales/OPDS-removebg-preview.png" alt="OPDS" loading="lazy">
             <p>Registro "OPDS" (BsAs) N°26</p>
         </div>
         <div class="logo-item text-center">
-            <img src="img/legales/cba-logo%20azul.png" alt="Gobierno de Córdoba">
+            <img src="img/legales/cba-logo%20azul.png" alt="Gobierno de Córdoba" loading="lazy">
             <p>Registro "ROLA" (Córdoba) N°14</p>
         </div>
     </div>
@@ -869,9 +880,10 @@ Análisis físico químico: pH, sólidos disueltos totales, alcalinidad, cloruro
 </footer>
 
 
-<script src="js/main.js"></script>
-<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" ...></script>
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="js/main.js"></script>
 <script>
     AOS.init({
         duration: 900,
