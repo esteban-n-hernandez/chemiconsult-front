@@ -133,7 +133,7 @@ ul {
 
 .btn-grad {
     /*  background-image: linear-gradient(to right, #5EA504, #7cd832);*/
-    background: rgb(94, 165, 4);
+    background: #5EA504FF;
     color: white;
     border: none;
     border-radius: 30px;
@@ -424,7 +424,7 @@ ul {
 
 .btn-pricing-modal {
     background: transparent;
-    border: 1.5px solid #5EA504;
+    border: 2px solid #5EA504;
     color: black;
     border-radius: 8px;
     padding: 8px 16px;
@@ -517,11 +517,14 @@ ul {
     margin: 4px 0 0;
 }
 
-.pricing-modal-content .modal-footer .btn-grad {
-    padding: 12px;
-    font-size: 15px;
+.pricing-modal-content .modal-footer {
+    justify-content: center;
 }
 
+.pricing-modal-content .modal-footer .btn-grad {
+    padding: 8px 28px;
+    font-size: 13px;
+}
 .btn-pricing-wpp {
     display: block;
     padding: 12px;
