@@ -1,3 +1,7 @@
+document.addEventListener('DOMContentLoaded', () => {
+    AOS.init({duration: 900, once: true});
+});
+
 // WHATSAPP: mostrar ícono fijo siempre (no depende de sección)
 document.addEventListener("DOMContentLoaded", function () {
     const icono = document.querySelector(".whatsapp-icon");
