@@ -1,6 +1,4 @@
-/* ======================================================
-   VARIABLES DE COLOR Y RECURSOS
-====================================================== */
+/* VARIABLES DE COLOR Y RECURSOS */
 :root {
     --color-green-main: rgba(117, 189, 6, 0.78);
     --color-green-hover: #5EA504;
@@ -19,9 +17,7 @@
     --icon-vision: url('https://cdn-icons-png.flaticon.com/512/1934/1934044.png');
 }
 
-/* ======================================================
-   GLOBAL RESET / AJUSTES
-====================================================== */
+/* GLOBAL RESET / AJUSTES */
 html, body {
     overflow-x: hidden;
     width: 100%;
@@ -39,9 +35,7 @@ ul {
     list-style-position: outside;
 }
 
-/* ======================================================
-   HEADER Y NAVBAR
-====================================================== */
+/* HEADER Y NAVBAR */
 .header-bg {
     position: relative;
     width: 100%;
@@ -108,9 +102,7 @@ ul {
     height: auto;
 }
 
-/* ======================================================
-   TITULOS / TEXTOS / BOTONES
-====================================================== */
+/* TITULOS / TEXTOS / BOTONES */
 .custom-underline-border {
     position: relative;
     display: inline-block;
@@ -140,7 +132,8 @@ ul {
 }
 
 .btn-grad {
-    background-image: linear-gradient(to right, #5EA504, #7cd832);
+    /*  background-image: linear-gradient(to right, #5EA504, #7cd832);*/
+    background: rgb(94, 165, 4);
     color: white;
     border: none;
     border-radius: 30px;
@@ -154,9 +147,7 @@ ul {
     opacity: 0.9;
 }
 
-/* ======================================================
-   SECCIÓN SERVICIOS
-====================================================== */
+/* SECCIÓN SERVICIOS */
 #section-servicios {
     position: relative;
     z-index: 1;
@@ -208,10 +199,10 @@ ul {
     transform: translate(-50%, -50%);
     z-index: 2;
     color: #fff;
-    text-shadow: 2px 2px 10px rgba(0,0,0,0.7);
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
 }
 
-/* ✅ Bullets visibles y verdes */
+/*  Bullets visibles y verdes */
 #section-servicios ul {
     padding-left: 1.5rem;
     margin: 1rem 0;
@@ -231,9 +222,7 @@ ul {
     color: #37b24d;
 }
 
-/* ======================================================
-   CARRUSEL CLIENTES
-====================================================== */
+/* CARRUSEL CLIENTES  */
 .carousel-inner img {
     height: 350px;
     object-fit: cover;
@@ -253,9 +242,7 @@ ul {
     transform: scale(1.08);
 }
 
-/* ======================================================
-   LOGOS LEGALES / CONTACTO
-====================================================== */
+/* LOGOS LEGALES / CONTACTO  */
 .logos-contacto .logo-item {
     text-align: center;
 }
@@ -272,9 +259,7 @@ ul {
     margin: 0;
 }
 
-/* ======================================================
-   FOOTER
-====================================================== */
+/* FOOTER  */
 .footer {
     border-top: 3px solid var(--color-green-hover);
     background-color: #fff;
@@ -300,9 +285,7 @@ ul {
     color: #000;
 }
 
-/* ======================================================
-   WHATSAPP BUTTON
-====================================================== */
+/* WHATSAPP BUTTON  */
 .whatsapp-icon {
     position: fixed;
     bottom: 20px;
@@ -320,9 +303,9 @@ ul {
 
 .carousel-control-prev,
 .carousel-control-next {
-    z-index: 10 !important; /* por encima de overlays e imágenes */
-    width: 5%;              /* ancho visible sin cubrir todo el borde */
-    opacity: 0.8;           /* un poco translúcido */
+    z-index: 10 !important; /* por encima de overlays e imagenes */
+    width: 5%; /* ancho visible sin cubrir todo el borde */
+    opacity: 0.8; /* un poco translúcido */
     transition: opacity 0.3s ease;
 }
 
@@ -331,15 +314,13 @@ ul {
     opacity: 1;
 }
 
-/* ======================================================
-   CAPTCHA STYLING
-====================================================== */
+/* CAPTCHA STYLING */
 .captcha-box {
     background-color: rgba(161, 213, 82, 0.05); /* leve tono verde translúcido */
     border: 1px solid var(--color-green-main);
     border-radius: 12px;
     padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .captcha-img {
@@ -385,7 +366,7 @@ ul {
 }
 
 
-/* ===== PRICING SECTION ===== */
+/* PRICING SECTION */
 #section-pricing {
     background-color: #f8f9fa;
 }
@@ -400,7 +381,7 @@ ul {
 }
 
 .pricing-card:hover {
-    box-shadow: 0 6px 20px rgba(0,0,0,0.09);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
     transform: translateY(-3px);
 }
 
@@ -459,11 +440,11 @@ ul {
     color: #ffffff;
 }
 
-/* ===== PRICING MODAL ===== */
+/* PRICING MODAL */
 .pricing-modal-content {
     border-radius: 14px;
     border: none;
-    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
 }
 
 .pricing-modal-content .modal-title {
@@ -559,6 +540,7 @@ ul {
     background: #1ebe5d;
     color: #ffffff;
 }
+
 /* ======================================================
    RESPONSIVE
 ====================================================== */
@@ -586,22 +568,23 @@ ul {
 
     .footer .container {
         flex-direction: column; /* Apila los divs verticalmente */
-        align-items: center;    /* Centra los elementos */
-        gap: 2rem;              /* Espacio entre secciones */
-        text-align: center;     /* Centra textos y listas */
+        align-items: center; /* Centra los elementos */
+        gap: 2rem; /* Espacio entre secciones */
+        text-align: center; /* Centra textos y listas */
     }
 
     .footer .footer-logo,
     .footer .datos-contacto,
     .footer .footer-social,
     .footer .footer-horarios {
-        width: 100%;            /* Ocupa todo el ancho disponible */
+        width: 100%; /* Ocupa todo el ancho disponible */
     }
 
     .footer .datos-contacto ul,
     .footer .footer-horarios ul {
-        padding-left: 0;        /* Ajusta el padding de las listas */
+        padding-left: 0; /* Ajusta el padding de las listas */
     }
+
     .overlay-logo {
         width: 350px;
     }
@@ -637,6 +620,7 @@ ul {
 [id^="section-"] {
     scroll-margin-top: 90px; /* ajusta según la altura real de tu navbar */
 }
+
 /* Ícono de WhatsApp oculto por defecto */
 .whatsapp-icon {
     position: fixed;
@@ -654,7 +638,7 @@ ul {
     animation: bounce 1.5s infinite;
 }
 
-.dropdown-menu{
+.dropdown-menu {
     min-width: 15rem;
 }
 
@@ -676,7 +660,7 @@ ul {
     margin-bottom: 1rem;
 }
 
-.pricing-text ol{
+.pricing-text ol {
     padding-left: 1.5rem;
     margin: 1rem 0;
     line-height: 1.6;
