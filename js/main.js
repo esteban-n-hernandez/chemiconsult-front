@@ -133,19 +133,37 @@ document.addEventListener("DOMContentLoaded", function () {
         var empretiendaUrl = button.getAttribute("data-empretienda");
         var whatsappMsg = button.getAttribute("data-whatsapp");
 
-        pricingModal.querySelector("#pricingModalLabel").textContent = titulo;
-        pricingModal.querySelector("#pricingModalDesc").textContent = descripcion;
-        pricingModal.querySelector("#pricingModalNota").textContent = nota;
-        pricingModal.querySelector("#pricingModalPrecio").textContent = precio || "A consultar";
+        pricingModal.querySelector("#pricingModalLabel").textContent = titulo || '';
+        pricingModal.querySelector("#pricingModalDesc").textContent = descripcion || '';
+        pricingModal.querySelector("#pricingModalNota").textContent = nota || '';
+        // Mostrar precio con "+ IVA" sólo si existe un precio válido.
+        var precioRaw = precio || "";
+        var precioTrim = precioRaw.toString().trim();
+        var displayPrecio;
+        if (!precioTrim || precioTrim.toLowerCase() === 'a consultar' || precioTrim.toLowerCase() === 'consultar') {
+            displayPrecio = "A consultar";
+        } else {
+            displayPrecio = precioTrim + " + IVA";
+        }
+        pricingModal.querySelector("#pricingModalPrecio").textContent = displayPrecio;
 
         var lista = pricingModal.querySelector("#pricingModalItems");
+        var itemsLabel = pricingModal.querySelector("#pricingModalItemsLabel");
         lista.innerHTML = "";
+
+        var hasItems = false;
         items.forEach(function (item) {
-            if (!item.trim()) return;
+            item = (item || "").trim();
+            if (!item) return;
+            hasItems = true;
             var li = document.createElement("li");
             li.textContent = item;
             lista.appendChild(li);
         });
+
+        // Ocultar "Incluye:" y la lista si no hay items
+        if (itemsLabel) itemsLabel.style.display = hasItems ? "block" : "none";
+        lista.style.display = hasItems ? "block" : "none";
 
         // Empretienda link
         var empretiendaBtn = pricingModal.querySelector("#pricingModalEmpretienda");

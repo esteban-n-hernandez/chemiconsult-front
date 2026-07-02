@@ -228,6 +228,23 @@ ul {
     object-fit: cover;
 }
 
+/* QUIÉNES SOMOS + MISIÓN/VISIÓN: fondo en blanco (por defecto) */
+#section-quienes-somos,
+#section-mision-vision {
+    background-color: #ffffff; /* dejar blanco nuevamente */
+    border-radius: 10px;
+}
+
+#section-quienes-somos .container {
+    padding: 2rem 1rem;
+}
+
+/* Asegurar títulos legibles */
+#section-quienes-somos h2.custom-underline-border,
+#section-mision-vision h2.custom-underline-border {
+    color: #333;
+}
+
 #section-clientes {
     background-color: #fff;
 }
