@@ -130,6 +130,8 @@ document.addEventListener("DOMContentLoaded", function () {
         var items = (button.getAttribute("data-items") || "").split("|");
         var nota = button.getAttribute("data-nota");
         var precio = button.getAttribute("data-precio");
+        var empretiendaUrl = button.getAttribute("data-empretienda");
+        var whatsappMsg = button.getAttribute("data-whatsapp");
 
         pricingModal.querySelector("#pricingModalLabel").textContent = titulo;
         pricingModal.querySelector("#pricingModalDesc").textContent = descripcion;
@@ -145,12 +147,21 @@ document.addEventListener("DOMContentLoaded", function () {
             lista.appendChild(li);
         });
 
-        var wppMsg = encodeURIComponent("Hola, quisiera consultar un presupuesto para el servicio de " + titulo);
+        // Empretienda link
+        var empretiendaBtn = pricingModal.querySelector("#pricingModalEmpretienda");
+        if (empretiendaBtn && empretiendaUrl) {
+            empretiendaBtn.href = empretiendaUrl;
+        }
+
+        // WhatsApp link: usa data-whatsapp si existe, sino genera mensaje con el título
+        var msgWA = whatsappMsg || "Hola, quisiera consultar un presupuesto para el servicio de " + titulo;
         var wppBtn = pricingModal.querySelector("#pricingModalWhatsapp");
-        if (wppBtn) wppBtn.href = "https://wa.me/5491158692422?text=" + wppMsg;
+        if (wppBtn) {
+            wppBtn.href = "https://wa.me/5491158692422?text=" + encodeURIComponent(msgWA);
+        }
     });
 
-
+    // Cerrar modal al hacer click en botón de WhatsApp
     var pricingModalWhatsapp = document.querySelector("#pricingModalWhatsapp");
     if (pricingModalWhatsapp) {
         pricingModalWhatsapp.addEventListener("click", function () {
@@ -158,7 +169,6 @@ document.addEventListener("DOMContentLoaded", function () {
             if (modalInstance) modalInstance.hide();
         });
     }
-
 });
 
 // Actualizar el link de Empretienda en el modal según la opción seleccionada
