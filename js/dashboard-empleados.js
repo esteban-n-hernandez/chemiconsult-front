@@ -333,7 +333,7 @@ function mostrarToast(msg) {
 }
 
 // ── Cargar muestras desde /api/estudios y poblar la tabla ──
-// La base de la API puede configurarse guardando en localStorage.setItem('apiBase','https://chemiconsult.onrender.com')
+// La base de la API puede configurarse guardando en localStorage.setItem('apiBase','http://localhost:8080')
 async function cargarEstudios() {
     const tablaBody = document.getElementById("tablaMuestrasBody");
     if (!tablaBody) return;
@@ -489,7 +489,27 @@ function mostrarMuestras(estudios) {
     }
     filteredMuestras = [...allMuestras];
     currentPage = 1;
+    actualizarKPIs();
     renderPage();
+}
+
+function actualizarKPIs() {
+    // Calcular KPIs desde allMuestras (todos los registros)
+    const totalMuestras = allMuestras.length;
+    const pendientes = allMuestras.filter(m => normalizarEstado(m.estado) === "PENDIENTE").length;
+    const demoradas = allMuestras.filter(m => normalizarEstado(m.estado) === "DEMORADA").length;
+    const informesEmitidos = allMuestras.filter(m => m.tieneInforme).length;
+
+    // Actualizar elementos en el DOM
+    const elKpiMuestras = document.getElementById("kpi-muestras-activas");
+    const elKpiPendientes = document.getElementById("kpi-pendientes");
+    const elKpiDemoradas = document.getElementById("kpi-demoradas");
+    const elKpiInformes = document.getElementById("kpi-informes-emitidos");
+
+    if (elKpiMuestras) elKpiMuestras.textContent = totalMuestras;
+    if (elKpiPendientes) elKpiPendientes.textContent = pendientes;
+    if (elKpiDemoradas) elKpiDemoradas.textContent = demoradas;
+    if (elKpiInformes) elKpiInformes.textContent = informesEmitidos;
 }
 
 function renderPage() {
