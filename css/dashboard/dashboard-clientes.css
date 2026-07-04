@@ -424,3 +424,120 @@ body {
     .bienvenida-icon { display: none; }
     .search-wrapper { min-width: 100%; }
 }
+
+/* ── PDF Side Panel ── */
+.pdf-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    z-index: 1000;
+}
+.pdf-overlay.open { display: block; }
+
+.pdf-panel {
+    position: fixed;
+    top: 0; right: -100%;
+    width: min(700px, 100vw);
+    height: 100vh;
+    background: #fff;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -4px 0 24px rgba(0,0,0,0.15);
+    transition: right 0.3s ease;
+}
+.pdf-panel.open { right: 0; }
+
+.pdf-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+.pdf-panel-header h6 {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    color: #1f2937;
+}
+.pdf-panel-header .btn-close-panel {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #6b7280;
+    line-height: 1;
+}
+.pdf-panel-header .btn-close-panel:hover { color: #111; }
+
+.pdf-panel-actions {
+    display: flex;
+    gap: 8px;
+    padding: 10px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #f9fafb;
+}
+.pdf-panel-actions a {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+}
+.btn-descargar-pdf {
+    background: var(--verde, #16a34a);
+    color: #fff;
+}
+.btn-abrir-nueva {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.pdf-frame-wrapper {
+    flex: 1;
+    overflow: hidden;
+    position: relative;
+}
+.pdf-frame-wrapper iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ── Loading spinner ── */
+.pdf-loading {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: #fff;
+    color: #6b7280;
+    font-size: 14px;
+}
+.spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #e5e7eb;
+    border-top-color: var(--verde, #16a34a);
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Estado skeleton ── */
+.skeleton {
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.2s infinite;
+    border-radius: 6px;
+    height: 16px;
+}
+@keyframes shimmer { to { background-position: -200% 0; } }
