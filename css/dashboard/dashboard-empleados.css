@@ -343,6 +343,11 @@ body {
     color: var(--color-text-success);
 }
 
+.badge-completo-sin-informe {
+    background: #e2e3e5;
+    color: #495057;
+}
+
 .badge-demorada {
     background: var(--color-background-danger);
     color: var(--color-text-danger);

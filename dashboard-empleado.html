@@ -103,7 +103,9 @@
                     <button class="filtro-btn active" onclick="filtrarTabla('todos', this)">Todas</button>
                     <button class="filtro-btn" onclick="filtrarTabla('PENDIENTE', this)">Pendientes</button>
                     <button class="filtro-btn" onclick="filtrarTabla('EN_PROCESO', this)">En proceso</button>
-                    <button class="filtro-btn" onclick="filtrarTabla('INFORME', this)">Informe listo</button>
+                    <button class="filtro-btn" onclick="filtrarTabla('COMPLETO_SIN_INFORME', this)">Completo sin
+                        informe
+                    </button>
                     <button class="filtro-btn" onclick="filtrarTabla('DEMORADA', this)">Demoradas</button>
                 </div>
 
@@ -114,19 +116,23 @@
                         <th>Cliente</th>
                         <th>Tipo de análisis</th>
                         <th>Estado</th>
+                        <th>Fecha alta</th>
                         <th>Fecha límite</th>
                         <th>Acciones</th>
                     </tr>
                     </thead>
                     <tbody id="tablaMuestrasBody">
                     <tr>
-                        <td colspan="6" class="text-center">Cargando muestras...</td>
+                        <td colspan="7" class="text-center">Cargando muestras...</td>
                     </tr>
                     </tbody>
                 </table>
                 <!-- Paginación -->
-                <div class="paginacion-wrapper" id="paginacionEmpleado" style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
-                    <div id="pagInfoEmpleado" style="font-size:14px;color:var(--color-text-secondary);">Mostrando 0–0 de 0</div>
+                <div class="paginacion-wrapper" id="paginacionEmpleado"
+                     style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;">
+                    <div id="pagInfoEmpleado" style="font-size:14px;color:var(--color-text-secondary);">Mostrando 0–0 de
+                        0
+                    </div>
                     <div id="pagControlsEmpleado"></div>
                 </div>
             </div>
@@ -180,7 +186,6 @@
 
     <!-- Fila inferior -->
     <div class="bottom-row">
-
         <!-- Acciones rápidas -->
         <div class="panel">
             <div class="panel-header">
@@ -413,6 +418,22 @@
     let filteredMuestras = [];
     let currentPage = 1;
     const PER_PAGE = 10; // máximo por página
+    const ESTADOS_VISIBLES = new Set(['PENDIENTE', 'EN_PROCESO', 'DEMORADA', 'COMPLETO_SIN_INFORME']);
+
+    function normalizarEstado(estado) {
+        return (estado || '').toString().toUpperCase().replace(/\s+/g, '_');
+    }
+
+    function formatearFechaDMY(valor) {
+        if (!valor || valor === '-') return '-';
+        if (typeof valor === 'string' && /^\d{2}\/\d{2}\/\d{4}$/.test(valor)) return valor;
+        const fecha = new Date(valor);
+        if (Number.isNaN(fecha.getTime())) return valor;
+        const dia = String(fecha.getDate()).padStart(2, '0');
+        const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+        const anio = fecha.getFullYear();
+        return `${dia}/${mes}/${anio}`;
+    }
 
     function filtrarTabla(estado, btn) {
         document.querySelectorAll(".filtro-btn").forEach(b => b.classList.remove("active"));
@@ -421,7 +442,7 @@
         if (estado === 'todos') {
             filteredMuestras = [...allMuestras];
         } else {
-            filteredMuestras = allMuestras.filter(m => (m.estado || '').toString().toUpperCase() === estado);
+            filteredMuestras = allMuestras.filter(m => normalizarEstado(m.estado) === estado);
         }
 
         currentPage = 1;
@@ -432,7 +453,7 @@
     new Chart(document.getElementById("graficoEstados"), {
         type: "doughnut",
         data: {
-            labels: ["Pendiente", "En análisis", "Informe listo", "Demorada"],
+            labels: ["Pendiente", "En proceso", "Completo sin informe", "Demorada"],
             datasets: [{
                 data: [4, 6, 3, 2],
                 backgroundColor: ["#fff3cd", "#cfe2ff", "#d1e7dd", "#f8d7da"],
@@ -611,16 +632,6 @@
 
         console.log("📦 Payload a enviar:", payload);
 
-        // ── Acá va el fetch al backend ──
-        // const res = await fetch("http://localhost:8080/api/muestras", {
-        //     method: "POST",
-        //     headers: {
-        //         "Content-Type": "application/json",
-        //         "Authorization": "Bearer " + localStorage.getItem("token")
-        //     },
-        //     body: JSON.stringify(payload)
-        // });
-
         // Simular éxito por ahora
         const btnGuardar = document.getElementById("btnGuardar");
         btnGuardar.disabled = true;
@@ -647,7 +658,7 @@
     async function cargarEstudios() {
         const tablaBody = document.getElementById('tablaMuestrasBody');
         if (!tablaBody) return;
-        tablaBody.innerHTML = `<tr><td colspan="6" class="text-center">Cargando muestras...</td></tr>`;
+        tablaBody.innerHTML = `<tr><td colspan="7" class="text-center">Cargando muestras...</td></tr>`;
         const token = localStorage.getItem('token');
 
         // API_BASE configurable desde localStorage (útil en desarrollo si el backend corre en otro puerto)
@@ -660,7 +671,7 @@
             tried.push(url);
             return await fetch(url, {
                 method: 'GET',
-                headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+                headers: token ? {'Authorization': 'Bearer ' + token} : {}
             });
         }
 
@@ -670,10 +681,11 @@
 
             // Si obtuvimos 404 y no se especificó API_BASE, intentamos algunos puertos comunes de dev
             if (resp && resp.status === 404 && !API_BASE) {
-                const fallbacks = ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000', 'http://127.0.0.1:3000'];
+                const fallbacks = ['http://localhost:8080'];
                 for (const fb of fallbacks) {
                     try {
                         resp = await tryFetch(fb + '/api/estudios');
+                        console.log("Respuesta lista de muestras", resp);
                         if (resp && resp.ok) break;
                     } catch (e) {
                         // Ignorar y seguir probando
@@ -687,14 +699,16 @@
                 throw new Error(`HTTP ${resp.status} ${resp.statusText} - ${txt}`);
             }
 
+            console.log(`Respuesta ${resp.status} ${resp.statusText}`);
             const estudios = await resp.json();
+            console.log(estudios)
             mostrarMuestras(estudios || []);
         } catch (err) {
             console.error('Error cargando estudios:', err);
             const listaUrls = (localStorage.getItem('apiBase') ? [(localStorage.getItem('apiBase').replace(/\/$/, '') + '/api/estudios')] : []).concat(['http://localhost:8080/api/estudios', 'http://127.0.0.1:8080/api/estudios', 'http://localhost:3000/api/estudios']).join(', ');
             tablaBody.innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center text-danger">
+                    <td colspan="7" class="text-center text-danger">
                         Error al cargar muestras. Se intentaron las rutas: ${tried.join(', ')}.<br>
                         Si tu backend corre en otro puerto, guarda la base en localStorage con:<br>
                         <code>localStorage.setItem('apiBase','http://localhost:8080')</code>
@@ -705,13 +719,18 @@
 
     function badgeClassParaEstado(estado) {
         if (!estado) return 'badge-estado badge-pendiente';
-        const e = estado.toString().toUpperCase();
+        const e = normalizarEstado(estado);
         switch (e) {
-            case 'DEMORADA': return 'badge-estado badge-demorada';
-            case 'EN_PROCESO': return 'badge-estado badge-proceso';
-            case 'INFORME': return 'badge-estado badge-informe';
-            case 'PENDIENTE': return 'badge-estado badge-pendiente';
-            default: return 'badge-estado';
+            case 'DEMORADA':
+                return 'badge-estado badge-demorada';
+            case 'EN_PROCESO':
+                return 'badge-estado badge-proceso';
+            case 'COMPLETO_SIN_INFORME':
+                return 'badge-estado badge-completo-sin-informe';
+            case 'PENDIENTE':
+                return 'badge-estado badge-pendiente';
+            default:
+                return 'badge-estado';
         }
     }
 
@@ -723,8 +742,9 @@
             cliente: est.cliente || est.clienteNombre || est.customer || '-',
             tipo: est.tipo || est.tipoAnalisis || est.tipo_de_analisis || '-',
             estado: est.estado || est.status || '-',
+            fechaAlta: formatearFechaDMY(est.fechaAlta || est.fecha_alta || est.fechaCreacion || est.fecha_creacion || est.createdDate || est.createdAt || est.fechaDeAlta || '-'),
             fecha: est.fechaEntrega || est.fecha_entrega || est.deliveryDate || est.fecha || '-'
-        })) : [];
+        })).filter(m => ESTADOS_VISIBLES.has(normalizarEstado(m.estado))) : [];
 
         // Si se desea mostrar un total fijo para demostración, poner en localStorage.demoTotal = '40'
         const demoTotal = parseInt(localStorage.getItem('demoTotal') || '0');
@@ -733,9 +753,16 @@
             const clones = [];
             let idx = 0;
             while (allMuestras.length + clones.length < demoTotal) {
-                const source = allMuestras[idx % allMuestras.length] || {codigo: `DEM-${idx+1}`, cliente: 'Demo', tipo: '—', estado: 'PENDIENTE', fecha: '-' };
+                const source = allMuestras[idx % allMuestras.length] || {
+                    codigo: `DEM-${idx + 1}`,
+                    cliente: 'Demo',
+                    tipo: '—',
+                    estado: 'PENDIENTE',
+                    fechaAlta: '-',
+                    fecha: '-'
+                };
                 const clone = Object.assign({}, source);
-                clone.codigo = `${clone.codigo}-D${idx+1}`;
+                clone.codigo = `${clone.codigo}-D${idx + 1}`;
                 clones.push(clone);
                 idx++;
                 // safety break
@@ -763,18 +790,13 @@
 
         tablaBody.innerHTML = '';
         if (total === 0) {
-            tablaBody.innerHTML = `<tr><td colspan="6" class="text-center">No hay muestras disponibles</td></tr>`;
+            tablaBody.innerHTML = `<tr><td colspan="7" class="text-center">No hay muestras disponibles</td></tr>`;
         } else {
-                filteredMuestras.slice(start, end).forEach(m => {
+            filteredMuestras.slice(start, end).forEach(m => {
                 const badgeClass = badgeClassParaEstado(m.estado);
                 const acciones = [];
-                    acciones.push(`<button class="btn-accion btn-ver" data-id="${m.id}" title="Ver"><i class="bi bi-eye"></i></button>`);
-                    if ((m.estado || '').toString().toUpperCase() !== 'INFORME') {
-                        // botón para subir informe (abre file picker)
-                        acciones.push(`<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`);
-                    } else {
-                        acciones.push(`<button class="btn-accion" title="Enviar informe"><i class="bi bi-send"></i></button>`);
-                    }
+                acciones.push(`<button class="btn-accion btn-ver" data-id="${m.id}" title="Ver"><i class="bi bi-eye"></i></button>`);
+                acciones.push(`<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`);
 
                 const row = `
                     <tr data-estado="${(m.estado || '').toString().toUpperCase()}" data-id="${m.id}">
@@ -782,6 +804,7 @@
                         <td>${m.cliente}</td>
                         <td>${m.tipo}</td>
                         <td><span class="${badgeClass}">${m.estado}</span></td>
+                        <td>${m.fechaAlta || '-'}</td>
                         <td>${m.fecha}</td>
                         <td>${acciones.join(' ')}</td>
                     </tr>`;
@@ -799,14 +822,22 @@
         prev.className = 'btn btn-sm btn-outline-secondary me-1';
         prev.disabled = currentPage === 1;
         prev.innerHTML = '&laquo;';
-        prev.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderPage(); } });
+        prev.addEventListener('click', () => {
+            if (currentPage > 1) {
+                currentPage--;
+                renderPage();
+            }
+        });
         pagControls.appendChild(prev);
 
         for (let i = 1; i <= totalPages; i++) {
             const b = document.createElement('button');
             b.className = 'btn btn-sm me-1' + (i === currentPage ? ' btn-primary' : ' btn-outline-secondary');
             b.textContent = i;
-            b.addEventListener('click', () => { currentPage = i; renderPage(); });
+            b.addEventListener('click', () => {
+                currentPage = i;
+                renderPage();
+            });
             pagControls.appendChild(b);
         }
 
@@ -814,7 +845,12 @@
         next.className = 'btn btn-sm btn-outline-secondary';
         next.disabled = currentPage === totalPages;
         next.innerHTML = '&raquo;';
-        next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderPage(); } });
+        next.addEventListener('click', () => {
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderPage();
+            }
+        });
         pagControls.appendChild(next);
     }
 
@@ -884,7 +920,7 @@
                 try {
                     const resp = await fetch(url, {
                         method: 'POST',
-                        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                        headers: token ? {'Authorization': 'Bearer ' + token} : {},
                         body: fd
                     });
 
@@ -943,7 +979,7 @@
                 try {
                     const resp = await fetch(url, {
                         method: 'GET',
-                        headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+                        headers: token ? {'Authorization': 'Bearer ' + token} : {}
                     });
 
                     if (!resp.ok) {
