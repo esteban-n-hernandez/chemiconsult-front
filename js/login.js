@@ -9,7 +9,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     formBody.append("password", password);
 
     try {
-        const response = await fetch("http://localhost:8080/login", {
+        const response = await fetch("https://chemiconsult.onrender.com/login", {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: formBody
@@ -42,9 +42,9 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
 // OAuth buttons desactivados
 // document.getElementById("msLoginBtn").addEventListener("click", function () {
-//     window.location.href = "http://localhost:8080/oauth2/authorization/microsoft";
+//     window.location.href = "https://chemiconsult.onrender.com/oauth2/authorization/microsoft";
 // });
 
 // document.getElementById("googleLoginBtn").addEventListener("click", function () {
-//     window.location.href = "http://localhost:8080/oauth2/authorization/google";
+//     window.location.href = "https://chemiconsult.onrender.com/oauth2/authorization/google";
 // });
