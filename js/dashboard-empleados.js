@@ -442,6 +442,7 @@ function mostrarMuestras(estudios) {
                 tipo:
                     est.tipo || est.tipoAnalisis || est.tipo_de_analisis || "-",
                 estado: est.estado || est.status || "-",
+                tieneInforme: (est.estado || est.status || "").toString().toUpperCase() === "COMPLETO",
                 fechaAlta: formatearFechaDMY(
                     est.fechaAlta ||
                     est.fecha_alta ||
@@ -511,9 +512,12 @@ function renderPage() {
         filteredMuestras.slice(start, end).forEach((m) => {
             const badgeClass = badgeClassParaEstado(m.estado);
             const acciones = [];
-            acciones.push(
-                `<button class="btn-accion btn-ver" data-id="${m.id}" title="Ver"><i class="bi bi-eye"></i></button>`,
-            );
+            // Solo mostrar botón "Ver" si realmente hay informe disponible
+            if (m.tieneInforme) {
+                acciones.push(
+                    `<button class="btn-accion btn-ver" data-id="${m.id}" title="Ver"><i class="bi bi-eye"></i></button>`,
+                );
+            }
             acciones.push(
                 `<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`,
             );

@@ -40,10 +40,11 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     }
 });
 
-document.getElementById("msLoginBtn").addEventListener("click", function () {
-    window.location.href = "http://localhost:8080/oauth2/authorization/microsoft";
-});
+// OAuth buttons desactivados
+// document.getElementById("msLoginBtn").addEventListener("click", function () {
+//     window.location.href = "http://localhost:8080/oauth2/authorization/microsoft";
+// });
 
-document.getElementById("googleLoginBtn").addEventListener("click", function () {
-    window.location.href = "http://localhost:8080/oauth2/authorization/google";
-});
+// document.getElementById("googleLoginBtn").addEventListener("click", function () {
+//     window.location.href = "http://localhost:8080/oauth2/authorization/google";
+// });
