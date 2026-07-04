@@ -612,7 +612,7 @@
         console.log("📦 Payload a enviar:", payload);
 
         // ── Acá va el fetch al backend ──
-        // const res = await fetch("https://chemiconsult.onrender.com/api/muestras", {
+        // const res = await fetch("http://localhost:8080/api/muestras", {
         //     method: "POST",
         //     headers: {
         //         "Content-Type": "application/json",
@@ -643,7 +643,7 @@
     }
 
     // ── Cargar muestras desde /api/estudios y poblar la tabla ──
-    // La base de la API puede configurarse guardando en localStorage.setItem('apiBase','https://chemiconsult.onrender.com')
+    // La base de la API puede configurarse guardando en localStorage.setItem('apiBase','http://localhost:8080')
     async function cargarEstudios() {
         const tablaBody = document.getElementById('tablaMuestrasBody');
         if (!tablaBody) return;
@@ -652,6 +652,7 @@
 
         // API_BASE configurable desde localStorage (útil en desarrollo si el backend corre en otro puerto)
         const API_BASE = (localStorage.getItem('apiBase') || '').replace(/\/$/, '');
+        const DEFAULT_API_BASE = 'http://localhost:8080';
         const tried = [];
 
         // Helper para intentar una URL concreta
@@ -664,12 +665,12 @@
         }
 
         try {
-            const baseEndpoint = (API_BASE ? API_BASE : '') + '/api/estudios';
+            const baseEndpoint = (API_BASE ? API_BASE : DEFAULT_API_BASE) + '/api/estudios';
             let resp = await tryFetch(baseEndpoint);
 
             // Si obtuvimos 404 y no se especificó API_BASE, intentamos algunos puertos comunes de dev
             if (resp && resp.status === 404 && !API_BASE) {
-                const fallbacks = ['https://chemiconsult.onrender.com', 'http://127.0.0.1:8080', 'http://localhost:3000', 'http://127.0.0.1:3000'];
+                const fallbacks = ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000', 'http://127.0.0.1:3000'];
                 for (const fb of fallbacks) {
                     try {
                         resp = await tryFetch(fb + '/api/estudios');
@@ -690,13 +691,13 @@
             mostrarMuestras(estudios || []);
         } catch (err) {
             console.error('Error cargando estudios:', err);
-            const listaUrls = (localStorage.getItem('apiBase') ? [(localStorage.getItem('apiBase').replace(/\/$/, '') + '/api/estudios')] : []).concat(['/api/estudios', 'https://chemiconsult.onrender.com/api/estudios', 'http://127.0.0.1:8080/api/estudios', 'http://localhost:3000/api/estudios']).join(', ');
+            const listaUrls = (localStorage.getItem('apiBase') ? [(localStorage.getItem('apiBase').replace(/\/$/, '') + '/api/estudios')] : []).concat(['http://localhost:8080/api/estudios', 'http://127.0.0.1:8080/api/estudios', 'http://localhost:3000/api/estudios']).join(', ');
             tablaBody.innerHTML = `
                 <tr>
                     <td colspan="6" class="text-center text-danger">
                         Error al cargar muestras. Se intentaron las rutas: ${tried.join(', ')}.<br>
                         Si tu backend corre en otro puerto, guarda la base en localStorage con:<br>
-                        <code>localStorage.setItem('apiBase','https://chemiconsult.onrender.com')</code>
+                        <code>localStorage.setItem('apiBase','http://localhost:8080')</code>
                     </td>
                 </tr>`;
         }
@@ -767,7 +768,7 @@
                 filteredMuestras.slice(start, end).forEach(m => {
                 const badgeClass = badgeClassParaEstado(m.estado);
                 const acciones = [];
-                    acciones.push(`<button class="btn-accion" title="Ver"><i class="bi bi-eye"></i></button>`);
+                    acciones.push(`<button class="btn-accion btn-ver" data-id="${m.id}" title="Ver"><i class="bi bi-eye"></i></button>`);
                     if ((m.estado || '').toString().toUpperCase() !== 'INFORME') {
                         // botón para subir informe (abre file picker)
                         acciones.push(`<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`);
@@ -858,7 +859,11 @@
     async function subirDocumento(id, file, triggerBtn) {
         const API_BASE = (localStorage.getItem('apiBase') || '').replace(/\/$/, '');
         const token = localStorage.getItem('token');
-        const url = (API_BASE ? API_BASE : '') + `/api/estudios/${id}/documento`;
+        const endpoint = `/api/estudios/${id}/documento`;
+        const bases = API_BASE
+            ? [API_BASE]
+            : ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000', 'http://127.0.0.1:3000'];
+        const intentadas = [];
 
         // Opcional: indicar progreso/estados en el botón trigger
         let originalHtml;
@@ -871,21 +876,35 @@
         try {
             const fd = new FormData();
             fd.append('file', file, file.name);
+            let ultimoError = null;
 
-            const resp = await fetch(url, {
-                method: 'POST',
-                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
-                body: fd
-            });
+            for (const base of bases) {
+                const url = `${base}${endpoint}`;
+                intentadas.push(url);
+                try {
+                    const resp = await fetch(url, {
+                        method: 'POST',
+                        headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                        body: fd
+                    });
 
-            if (!resp.ok) {
-                const txt = await resp.text().catch(() => '');
-                throw new Error(`HTTP ${resp.status} ${resp.statusText} ${txt}`);
+                    if (!resp.ok) {
+                        // Si no se configuró apiBase y pegamos primero al front, probamos backends comunes
+                        if (!API_BASE && resp.status === 404) continue;
+                        const txt = await resp.text().catch(() => '');
+                        throw new Error(`HTTP ${resp.status} ${resp.statusText} ${txt}`);
+                    }
+
+                    mostrarToast('Archivo subido correctamente');
+                    // recargar la lista para reflejar cambios (archivoUrl/estado)
+                    await cargarEstudios();
+                    return;
+                } catch (err) {
+                    ultimoError = err;
+                    if (API_BASE) break; // si está configurado, no hay que adivinar rutas
+                }
             }
-
-            mostrarToast('Archivo subido correctamente');
-            // recargar la lista para reflejar cambios (archivoUrl/estado)
-            await cargarEstudios();
+            throw new Error(`No se pudo subir el archivo. Rutas intentadas: ${intentadas.join(', ')}. Detalle: ${(ultimoError && (ultimoError.message || ultimoError)) || 'sin detalle'}`);
         } catch (err) {
             console.error('Error subiendo documento:', err);
             alert('Error subiendo el archivo: ' + (err.message || err));
@@ -897,13 +916,88 @@
         }
     }
 
+    async function verResultado(id, triggerBtn) {
+        const API_BASE = (localStorage.getItem('apiBase') || '').replace(/\/$/, '');
+        const token = localStorage.getItem('token');
+        const endpoint = `/api/estudios/${id}/resultado`;
+        const bases = API_BASE
+            ? [API_BASE]
+            : ['http://localhost:8080', 'http://127.0.0.1:8080', 'http://localhost:3000', 'http://127.0.0.1:3000'];
+        const intentadas = [];
+        let resultadoWindow = null;
+
+        let originalHtml;
+        if (triggerBtn) {
+            originalHtml = triggerBtn.innerHTML;
+            triggerBtn.disabled = true;
+            triggerBtn.innerHTML = `<i class="bi bi-hourglass-split"></i>`;
+        }
+
+        try {
+            resultadoWindow = window.open('', '_blank');
+            let ultimoError = null;
+
+            for (const base of bases) {
+                const url = `${base}${endpoint}`;
+                intentadas.push(url);
+                try {
+                    const resp = await fetch(url, {
+                        method: 'GET',
+                        headers: token ? { 'Authorization': 'Bearer ' + token } : {}
+                    });
+
+                    if (!resp.ok) {
+                        if (!API_BASE && resp.status === 404) continue;
+                        const txt = await resp.text().catch(() => '');
+                        throw new Error(`HTTP ${resp.status} ${resp.statusText} ${txt}`);
+                    }
+
+                    const blob = await resp.blob();
+                    if (!blob || blob.size === 0) {
+                        throw new Error('El resultado está vacío');
+                    }
+
+                    const blobUrl = URL.createObjectURL(blob);
+                    if (resultadoWindow) {
+                        resultadoWindow.location.href = blobUrl;
+                    } else {
+                        window.open(blobUrl, '_blank');
+                    }
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
+                    return;
+                } catch (err) {
+                    ultimoError = err;
+                    if (API_BASE) break;
+                }
+            }
+            throw new Error(`No se pudo abrir el resultado. Rutas intentadas: ${intentadas.join(', ')}. Detalle: ${(ultimoError && (ultimoError.message || ultimoError)) || 'sin detalle'}`);
+        } catch (err) {
+            if (resultadoWindow && !resultadoWindow.closed) resultadoWindow.close();
+            console.error('Error obteniendo resultado:', err);
+            alert('Error abriendo resultado: ' + (err.message || err));
+        } finally {
+            if (triggerBtn) {
+                triggerBtn.disabled = false;
+                if (originalHtml) triggerBtn.innerHTML = originalHtml;
+            }
+        }
+    }
+
     // Delegación de clicks en botones de subir (se aplica después de renderizado)
     document.addEventListener('click', function (e) {
-        const btn = e.target.closest('.btn-subir');
-        if (!btn) return;
-        const id = btn.getAttribute('data-id');
+        const btnVer = e.target.closest('.btn-ver');
+        if (btnVer) {
+            const id = btnVer.getAttribute('data-id');
+            if (!id) return alert('ID de muestra desconocido');
+            verResultado(id, btnVer);
+            return;
+        }
+
+        const btnSubir = e.target.closest('.btn-subir');
+        if (!btnSubir) return;
+        const id = btnSubir.getAttribute('data-id');
         if (!id) return alert('ID de muestra desconocido');
-        startUploadForId(id, btn);
+        startUploadForId(id, btnSubir);
     });
 
     // Cargar al iniciar
