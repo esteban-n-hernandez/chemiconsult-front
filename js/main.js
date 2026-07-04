@@ -42,37 +42,6 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// PRICING MODAL: popular con datos del servicio clickeado
-document.addEventListener("DOMContentLoaded", function () {
-    var pricingModal = document.getElementById("pricingModal");
-    if (!pricingModal) return;
-
-    pricingModal.addEventListener("show.bs.modal", function (event) {
-        var button = event.relatedTarget;
-        var titulo = button.getAttribute("data-titulo");
-        var descripcion = button.getAttribute("data-descripcion");
-        var items = button.getAttribute("data-items").split("|");
-        var nota = button.getAttribute("data-nota");
-
-        pricingModal.querySelector("#pricingModalLabel").textContent = titulo;
-        pricingModal.querySelector("#pricingModalDesc").textContent = descripcion;
-        pricingModal.querySelector("#pricingModalNota").textContent = nota;
-
-        var lista = pricingModal.querySelector("#pricingModalItems");
-        lista.innerHTML = "";
-        items.forEach(function (item) {
-            var li = document.createElement("li");
-            li.textContent = item;
-            lista.appendChild(li);
-        });
-
-        var wppMsg = encodeURIComponent("Hola, quisiera consultar un presupuesto para el servicio de " + titulo);
-        var wppBtn = pricingModal.querySelector("#pricingModalWhatsapp");
-        if (wppBtn) wppBtn.href = "https://wa.me/5491158692422?text=" + wppMsg;
-    });
-});
-
-
 // PRICING: cargar precios desde Google Sheet
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -157,7 +126,9 @@ document.addEventListener("DOMContentLoaded", function () {
             if (!item) return;
             hasItems = true;
             var li = document.createElement("li");
-            li.textContent = item;
+            // innerHTML (en vez de textContent) permite usar <i>, <em>, <b>, etc.
+            // dentro de data-items para dar formato (ej: cursiva en nombres científicos)
+            li.innerHTML = item;
             lista.appendChild(li);
         });
 
