@@ -333,7 +333,7 @@ function mostrarToast(msg) {
 }
 
 // ── Cargar muestras desde /api/estudios y poblar la tabla ──
-// La base de la API puede configurarse guardando en localStorage.setItem('apiBase','http://localhost:8080')
+// La base de la API puede configurarse guardando en localStorage.setItem('apiBase','https://chemiconsult.onrender.com')
 async function cargarEstudios() {
     const tablaBody = document.getElementById("tablaMuestrasBody");
     if (!tablaBody) return;
@@ -345,7 +345,7 @@ async function cargarEstudios() {
         /\/$/,
         "",
     );
-    const DEFAULT_API_BASE = "http://localhost:8080";
+    const DEFAULT_API_BASE = "https://chemiconsult.onrender.com";
     const tried = [];
 
     // Helper para intentar una URL concreta
@@ -364,7 +364,7 @@ async function cargarEstudios() {
 
         // Si obtuvimos 404 y no se especificó API_BASE, intentamos algunos puertos comunes de dev
         if (resp && resp.status === 404 && !API_BASE) {
-            const fallbacks = ["http://localhost:8080"];
+            const fallbacks = ["https://chemiconsult.onrender.com"];
             for (const fb of fallbacks) {
                 try {
                     resp = await tryFetch(fb + "/api/estudios");
@@ -397,7 +397,7 @@ async function cargarEstudios() {
                 : []
         )
             .concat([
-                "http://localhost:8080/api/estudios",
+                "https://chemiconsult.onrender.com/api/estudios",
                 "http://127.0.0.1:8080/api/estudios",
                 "http://localhost:3000/api/estudios",
             ])
@@ -407,7 +407,7 @@ async function cargarEstudios() {
                     <td colspan="7" class="text-center text-danger">
                         Error al cargar muestras. Se intentaron las rutas: ${tried.join(", ")}.<br>
                         Si tu backend corre en otro puerto, guarda la base en localStorage con:<br>
-                        <code>localStorage.setItem('apiBase','http://localhost:8080')</code>
+                        <code>localStorage.setItem('apiBase','https://chemiconsult.onrender.com')</code>
                     </td>
                 </tr>`;
     }
@@ -633,7 +633,7 @@ async function subirDocumento(id, file, triggerBtn) {
     const bases = API_BASE
         ? [API_BASE]
         : [
-            "http://localhost:8080",
+            "https://chemiconsult.onrender.com",
             "http://127.0.0.1:8080",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
@@ -705,7 +705,7 @@ async function verResultado(id, triggerBtn) {
     const bases = API_BASE
         ? [API_BASE]
         : [
-            "http://localhost:8080",
+            "https://chemiconsult.onrender.com",
             "http://127.0.0.1:8080",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
