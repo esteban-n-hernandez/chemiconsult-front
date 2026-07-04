@@ -717,6 +717,7 @@
     function mostrarMuestras(estudios) {
         // Normalizar y almacenar en memoria para paginación
         allMuestras = Array.isArray(estudios) ? estudios.map(est => ({
+            id: est.id || est._id || est.codigo || est.protocolo || null,
             codigo: est.protocolo || est.codigo || est.id || '-',
             cliente: est.cliente || est.clienteNombre || est.customer || '-',
             tipo: est.tipo || est.tipoAnalisis || est.tipo_de_analisis || '-',
@@ -763,18 +764,19 @@
         if (total === 0) {
             tablaBody.innerHTML = `<tr><td colspan="6" class="text-center">No hay muestras disponibles</td></tr>`;
         } else {
-            filteredMuestras.slice(start, end).forEach(m => {
+                filteredMuestras.slice(start, end).forEach(m => {
                 const badgeClass = badgeClassParaEstado(m.estado);
                 const acciones = [];
-                acciones.push(`<button class="btn-accion" title="Ver"><i class="bi bi-eye"></i></button>`);
-                if ((m.estado || '').toString().toUpperCase() !== 'INFORME') {
-                    acciones.push(`<button class="btn-accion" title="Subir resultados"><i class="bi bi-upload"></i></button>`);
-                } else {
-                    acciones.push(`<button class="btn-accion" title="Enviar informe"><i class="bi bi-send"></i></button>`);
-                }
+                    acciones.push(`<button class="btn-accion" title="Ver"><i class="bi bi-eye"></i></button>`);
+                    if ((m.estado || '').toString().toUpperCase() !== 'INFORME') {
+                        // botón para subir informe (abre file picker)
+                        acciones.push(`<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`);
+                    } else {
+                        acciones.push(`<button class="btn-accion" title="Enviar informe"><i class="bi bi-send"></i></button>`);
+                    }
 
                 const row = `
-                    <tr data-estado="${(m.estado || '').toString().toUpperCase()}">
+                    <tr data-estado="${(m.estado || '').toString().toUpperCase()}" data-id="${m.id}">
                         <td><span class="cod-badge">${m.codigo}</span></td>
                         <td>${m.cliente}</td>
                         <td>${m.tipo}</td>
@@ -814,6 +816,95 @@
         next.addEventListener('click', () => { if (currentPage < totalPages) { currentPage++; renderPage(); } });
         pagControls.appendChild(next);
     }
+
+    // ── Upload de PDF (file input global y handlers) ──
+    // Creamos un input file oculto que reutilizaremos
+    const globalFileInput = document.createElement('input');
+    globalFileInput.type = 'file';
+    globalFileInput.accept = 'application/pdf';
+    globalFileInput.style.display = 'none';
+    document.body.appendChild(globalFileInput);
+
+    // Cuando el usuario seleccione un archivo, iniciamos el upload
+    globalFileInput.addEventListener('change', async function (e) {
+        const file = this.files && this.files[0];
+        const targetId = this.dataset.targetId;
+        const triggerBtnSelector = this.dataset.triggerBtnSelector;
+        let triggerBtn = null;
+        if (triggerBtnSelector) triggerBtn = document.querySelector(triggerBtnSelector);
+        if (!file || !targetId) return;
+        try {
+            await subirDocumento(targetId, file, triggerBtn);
+        } finally {
+            // limpiar el input para permitir seleccionar el mismo archivo otra vez
+            this.value = '';
+            delete this.dataset.targetId;
+            delete this.dataset.triggerBtnSelector;
+        }
+    });
+
+    // Función que dispara el file picker para un id dado
+    function startUploadForId(id, triggerBtn) {
+        globalFileInput.dataset.targetId = id;
+        if (triggerBtn && triggerBtn instanceof Element) {
+            const attr = 'data-upload-trigger-' + Math.random().toString(36).slice(2, 9);
+            triggerBtn.setAttribute(attr, '1');
+            globalFileInput.dataset.triggerBtnSelector = '[' + attr + ']';
+        }
+        globalFileInput.click();
+    }
+
+    // Subir documento usando fetch + FormData
+    async function subirDocumento(id, file, triggerBtn) {
+        const API_BASE = (localStorage.getItem('apiBase') || '').replace(/\/$/, '');
+        const token = localStorage.getItem('token');
+        const url = (API_BASE ? API_BASE : '') + `/api/estudios/${id}/documento`;
+
+        // Opcional: indicar progreso/estados en el botón trigger
+        let originalHtml;
+        if (triggerBtn) {
+            originalHtml = triggerBtn.innerHTML;
+            triggerBtn.disabled = true;
+            triggerBtn.innerHTML = `<i class="bi bi-hourglass-split"></i>`;
+        }
+
+        try {
+            const fd = new FormData();
+            fd.append('file', file, file.name);
+
+            const resp = await fetch(url, {
+                method: 'POST',
+                headers: token ? { 'Authorization': 'Bearer ' + token } : {},
+                body: fd
+            });
+
+            if (!resp.ok) {
+                const txt = await resp.text().catch(() => '');
+                throw new Error(`HTTP ${resp.status} ${resp.statusText} ${txt}`);
+            }
+
+            mostrarToast('Archivo subido correctamente');
+            // recargar la lista para reflejar cambios (archivoUrl/estado)
+            await cargarEstudios();
+        } catch (err) {
+            console.error('Error subiendo documento:', err);
+            alert('Error subiendo el archivo: ' + (err.message || err));
+        } finally {
+            if (triggerBtn) {
+                triggerBtn.disabled = false;
+                if (originalHtml) triggerBtn.innerHTML = originalHtml;
+            }
+        }
+    }
+
+    // Delegación de clicks en botones de subir (se aplica después de renderizado)
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-subir');
+        if (!btn) return;
+        const id = btn.getAttribute('data-id');
+        if (!id) return alert('ID de muestra desconocido');
+        startUploadForId(id, btn);
+    });
 
     // Cargar al iniciar
     cargarEstudios();
