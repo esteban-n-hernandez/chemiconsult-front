@@ -10,7 +10,9 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadTasks() {
-    try {
+    const token = localStorage.getItem("token");
+    console.log(token)
+    try {ñ
         const res = await fetch(API_URL);
         if (!res.ok) throw new Error("No se pudieron cargar tareas");
         tasks = await res.json();
