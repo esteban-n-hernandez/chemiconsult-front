@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/tasks"; // ajustalo a tu backend
+const API_URL = "https://chemiconsult.onrender.com/api/tasks";
 
 let tasks = [];
 let draggedTaskId = null;
