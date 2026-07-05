@@ -331,7 +331,6 @@ formAlta.addEventListener("submit", async function (e) {
     btnGuardar.disabled = true;
     btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
-    setTimeout(() => {
     try {
         const response = await fetch("http://localhost:8080/api/estudios", {
             method: "POST",
