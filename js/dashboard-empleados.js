@@ -380,11 +380,11 @@ async function cargarEstudios() {
     const token = localStorage.getItem("token");
 
     // API_BASE configurable desde localStorage (útil en desarrollo si el backend corre en otro puerto)
-    const API_BASE = (localStorage.getItem("apiBase") || "").replace(
-        /\/$/,
-        "",
-    );
-    const DEFAULT_API_BASE = "https://chemiconsult.onrender.com";
+
+    const API_BASE = (localStorage.getItem("apiBase") || "https://chemiconsult.onrender.com").replace(/\/$/, "");
+    const response = await fetch(`${API_BASE}/login`, { ... });
+
+    const DEFAULT_API_BASE = "http://localhost:8080";
     const tried = [];
 
     // Helper para intentar una URL concreta
