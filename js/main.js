@@ -110,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
         var precioTrim = precioRaw.toString().trim();
         var displayPrecio;
         if (!precioTrim || precioTrim.toLowerCase() === 'a consultar' || precioTrim.toLowerCase() === 'consultar') {
-            displayPrecio = "A consultar";
+            displayPrecio = "Consultar";
         } else {
             displayPrecio = precioTrim + " + IVA";
         }
