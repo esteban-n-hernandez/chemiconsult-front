@@ -1,0 +1,279 @@
+/* ==========================================================================
+   Variables - Minimalismo con Acento Corporativo Chemiconsult
+   ========================================================================== */
+:root {
+    --verde: #5EA504;
+    --verde-oscuro: #4a8403;
+    --bg-main: #f8fafc;           /* Fondo ultra claro y limpio */
+    --bg-sidebar: #ffffff;        /* Sidebar blanco minimalista */
+
+    /* Textos y Bordes */
+    --text-primary: #0f172a;
+    --text-secondary: #64748b;
+    --text-muted: #94a3b8;
+    --border-flat: #e2e8f0;       /* Líneas divisorias muy finas */
+
+    /* Estados del Tablero (Acentos Sutiles) */
+    --status-todo: #94a3b8;
+    --status-inprogress: #3b82f6;
+    --status-done: var(--verde);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg-main);
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    color: var(--text-primary);
+}
+
+/* ==========================================================================
+   ── Sidebar Premium Minimalista (Verde Plano Corporativo Puro) ──
+   ========================================================================== */
+.sidebar {
+    width: 240px;
+    background: #5EA504; /* Tu verde original, 100% plano, sin degradados */
+    border-radius: 16px; /* Curvatura moderna idéntica a la imagen */
+    padding: 2.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+
+    /* Estructura independiente flotante */
+    height: calc(100vh - 4rem);
+    margin: 2rem 0 2rem 2rem;
+
+    /* Sombra ultra sutil y difuminada para que parezca flotar suavemente */
+    box-shadow: 0 12px 30px rgba(94, 165, 4, 0.06);
+}
+
+.sidebar-logo {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.sidebar-logo h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0;
+    letter-spacing: 0.5px;
+    color: #ffffff;
+}
+
+.sidebar-logo p {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 3px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Enlaces limpios con contraste calibrado */
+.sidebar a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    padding: 0.7rem 0.85rem;
+    border-radius: 10px; /* Esquinas redondeadas en armonía con la barra */
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+}
+
+/* Hover minimalista muy ligero */
+.sidebar a:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+/* Pestaña Activa: Estilo premium con fondo translúcido (no rompe el bloque verde) */
+.sidebar a.active {
+    background: rgba(255, 255, 255, 0.15); /* Blanco con opacidad para integrarse al fondo */
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.sidebar a i {
+    font-size: 18px;
+}
+
+.sidebar-divider {
+    border: none;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin: 1.25rem 0;
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+}
+
+
+
+/* ── Contenedor y Encabezados ── */
+.container-fluid {
+    flex: 1;
+    padding: 2.5rem !important;
+    overflow-y: auto;
+    height: 100vh;
+}
+
+.page-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: -0.3px;
+    color: var(--text-primary);
+}
+
+/* Botón Plano con Acento */
+.btn-primary {
+    background-color: var(--verde) !important;
+    border: none !important;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 6px;
+    box-shadow: none !important;
+    transition: background 0.15s ease;
+}
+
+.btn-primary:hover {
+    background-color: var(--verde-oscuro) !important;
+}
+
+/* ==========================================================================
+   Tablero Kanban Minimalista (Estilo "Flat")
+   ========================================================================== */
+.kanban-col {
+    background: #ffffff;
+    border: 1px solid var(--border-flat);
+    border-radius: 10px;
+    padding: 1.25rem 1rem;
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 160px);
+    position: relative;
+}
+
+.kanban-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.25rem;
+}
+
+.kanban-header h6 {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Pequeño punto de color indicador en lugar de una barra entera */
+.kanban-header h6::before {
+    content: '';
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.kanban-col[data-status="TODO"] .kanban-header h6::before { background: var(--status-todo); }
+.kanban-col[data-status="IN_PROGRESS"] .kanban-header h6::before { background: var(--status-inprogress); }
+.kanban-col[data-status="DONE"] .kanban-header h6::before { background: var(--status-done); }
+
+/* Badges numéricos limpios sin fondo pesado */
+.kanban-header .badge {
+    background: #f1f5f9 !important;
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.dropzone {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.dropzone.drag-over {
+    background: #f8fafc;
+    border: 1px dashed var(--text-muted);
+    border-radius: 6px;
+}
+
+/* ── Tarjetas Estilo "Flat Canvas" ── */
+.kanban-card {
+    background: #ffffff;
+    border: 1px solid var(--border-flat);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    cursor: grab;
+    transition: all 0.15s ease-in-out;
+}
+
+/* El hover solo destaca un borde sutil para no saturar */
+.kanban-card:hover {
+    border-color: var(--text-muted);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.03);
+}
+
+.kanban-card.dragging {
+    opacity: 0.3;
+    transform: scale(0.98);
+}
+
+.kanban-card-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    margin-bottom: 3px;
+    line-height: 1.4;
+}
+
+.kanban-card-desc {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin: 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ── Modales Planos ── */
+.modal-content {
+    border-radius: 10px;
+    border: 1px solid var(--border-flat);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+}
+
+.form-control, .form-select {
+    border-radius: 6px;
+    border: 1px solid var(--border-flat);
+    background-color: #f8fafc;
+    font-size: 13px;
+    padding: 8px 12px;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: #ffffff;
+    border-color: var(--verde);
+    box-shadow: 0 0 0 3px rgba(94, 165, 4, 0.12);
+}
