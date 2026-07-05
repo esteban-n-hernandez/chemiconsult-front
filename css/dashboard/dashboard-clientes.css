@@ -14,60 +14,88 @@ body {
     overflow: hidden;
     font-family: 'Segoe UI', sans-serif;
 }
-
-/* ── Sidebar ── */
+/* ==========================================================================
+   ── Sidebar Premium Minimalista (Verde Plano Corporativo Puro) ──
+   ========================================================================== */
 .sidebar {
     width: 240px;
-    background: linear-gradient(180deg, #5EA504 0%, #4a8403 100%);
-    color: white;
-    padding: 1.5rem 1rem;
+    background: #5EA504; /* Verde original 100% plano sin degradados */
+    border-radius: 16px; /* Curvatura moderna flotante */
+    padding: 2.5rem 1.25rem;
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
     flex-shrink: 0;
+
+    /* Estructura independiente flotante */
+    height: calc(100vh - 4rem);
+    margin: 2rem 0 2rem 2rem;
+
+    /* Sombra ultra sutil y difuminada para que parezca flotar suavemente */
+    box-shadow: 0 12px 30px rgba(94, 165, 4, 0.06);
 }
 
 .sidebar-logo {
     text-align: center;
-    margin-bottom: 2rem;
+    margin-bottom: 3rem;
 }
 
 .sidebar-logo h2 {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     font-weight: 700;
     margin: 0;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
+    color: #ffffff;
 }
 
 .sidebar-logo p {
-    font-size: 11px;
-    opacity: 0.75;
-    margin: 2px 0 0;
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.65);
+    margin: 3px 0 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
+/* Enlaces limpios con contraste calibrado */
 .sidebar a {
-    color: white;
+    color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    padding: 0.65rem 1rem;
-    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+    border-radius: 10px; /* Esquinas redondeadas en armonía con la barra */
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    transition: background 0.2s;
+    gap: 12px;
+    font-size: 13.5px;
+    font-weight: 500;
+    transition: all 0.15s ease;
 }
 
-.sidebar a:hover,
-.sidebar a.active { background: rgba(255,255,255,0.2); }
-.sidebar a i { font-size: 18px; }
+/* Hover minimalista muy ligero */
+.sidebar a:hover {
+    background: rgba(255, 255, 255, 0.06);
+    color: #ffffff;
+}
+
+/* Pestaña Activa: Estilo premium con fondo translúcido */
+.sidebar a.active {
+    background: rgba(255, 255, 255, 0.15); /* Blanco con opacidad integrada al fondo */
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.sidebar a i {
+    font-size: 18px;
+}
 
 .sidebar-divider {
     border: none;
-    border-top: 1px solid rgba(255,255,255,0.2);
-    margin: 0.75rem 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    margin: 1.25rem 0;
 }
 
-.sidebar-bottom { margin-top: auto; }
+.sidebar-bottom {
+    margin-top: auto;
+}
 
 /* ── Contenido ── */
 .content {
