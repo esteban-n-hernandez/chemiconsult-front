@@ -371,8 +371,6 @@ function mostrarToast(msg) {
     setTimeout(() => toast.classList.remove("visible"), 3500);
 }
 
-// ── Cargar muestras desde /api/estudios y poblar la tabla ──
-// La base de la API puede configurarse guardando en localStorage.setItem('apiBase','http://localhost:8080')
 async function cargarEstudios() {
     const tablaBody = document.getElementById("tablaMuestrasBody");
     if (!tablaBody) return;
@@ -380,9 +378,10 @@ async function cargarEstudios() {
     const token = localStorage.getItem("token");
 
     // API_BASE configurable desde localStorage (útil en desarrollo si el backend corre en otro puerto)
-
-    const API_BASE = (localStorage.getItem("apiBase") || "https://chemiconsult.onrender.com").replace(/\/$/, "");
-    const response = await fetch(`${API_BASE}/login`, { ... });
+    const API_BASE = (localStorage.getItem("apiBase") || "").replace(
+        /\/$/,
+        "",
+    );
 
     const DEFAULT_API_BASE = "http://localhost:8080";
     const tried = [];
@@ -425,20 +424,6 @@ async function cargarEstudios() {
         mostrarMuestras(estudios || []);
     } catch (err) {
         console.error("Error cargando estudios:", err);
-        const listaUrls = (
-            localStorage.getItem("apiBase")
-                ? [
-                    localStorage.getItem("apiBase").replace(/\/$/, "") +
-                    "/api/estudios",
-                ]
-                : []
-        )
-            .concat([
-                "https://chemiconsult.onrender.com/api/estudios",
-                "http://127.0.0.1:8080/api/estudios",
-                "http://localhost:3000/api/estudios",
-            ])
-            .join(", ");
         tablaBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-danger">
