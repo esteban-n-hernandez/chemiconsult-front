@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://chemiconsult.onrender.com';
 
 // ── Guard: solo EMPLEADO e IT ──
 const rol = (localStorage.getItem("userRole") || "").toUpperCase();
@@ -334,7 +334,7 @@ formAlta.addEventListener("submit", async function (e) {
     btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
     try {
-        const response = await fetch("http://localhost:8080/api/estudios", {
+        const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -385,7 +385,7 @@ async function cargarEstudios() {
         "",
     );
 
-    const DEFAULT_API_BASE = "http://localhost:8080";
+    const DEFAULT_API_BASE = "https://chemiconsult.onrender.com";
     const tried = [];
 
     // Helper para intentar una URL concreta

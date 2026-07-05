@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080';
+const API_URL = 'https://chemiconsult.onrender.com';
 
 document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
@@ -44,9 +44,9 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
 // OAuth buttons desactivados
 // document.getElementById("msLoginBtn").addEventListener("click", function () {
-//     window.location.href = "http://localhost:8080/oauth2/authorization/microsoft";
+//     window.location.href = "https://chemiconsult.onrender.com/oauth2/authorization/microsoft";
 // });
 
 // document.getElementById("googleLoginBtn").addEventListener("click", function () {
-//     window.location.href = "http://localhost:8080/oauth2/authorization/google";
+//     window.location.href = "https://chemiconsult.onrender.com/oauth2/authorization/google";
 // });
