@@ -1,3 +1,5 @@
+const API_URL = 'http://localhost:8080';
+
 document.getElementById("loginForm").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -9,7 +11,7 @@ document.getElementById("loginForm").addEventListener("submit", async function (
     formBody.append("password", password);
 
     try {
-        const response = await fetch("https://chemiconsult.onrender.com/login", {
+        const response = await fetch(API_URL+"/login", {
             method: "POST",
             headers: {"Content-Type": "application/x-www-form-urlencoded"},
             body: formBody

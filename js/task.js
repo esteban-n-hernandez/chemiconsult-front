@@ -1,4 +1,4 @@
-const API_URL = "https://chemiconsult.onrender.com/api/tasks";
+const API_URL = "http://localhost:8080/api/task";
 
 let tasks = [];
 let draggedTaskId = null;
@@ -86,13 +86,9 @@ function setupDropzones() {
 }
 
 async function updateTaskStatus(task, newStatus) {
-    const payload = { ...task, status: newStatus };
-
     try {
-        const res = await fetch(`${API_URL}/${task.id}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+        const res = await fetch(`${API_URL}/${task.id}/status?status=${encodeURIComponent(newStatus)}`, {
+            method: "PUT"
         });
         if (!res.ok) throw new Error("No se pudo actualizar estado");
 
@@ -115,8 +111,7 @@ function setupForm() {
 
         const payload = {
             title: document.getElementById("title").value.trim(),
-            description: document.getElementById("description").value.trim(),
-            status: document.getElementById("status").value
+            description: document.getElementById("description").value.trim()
         };
 
         try {
