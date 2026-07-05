@@ -298,30 +298,70 @@ formAlta.addEventListener("submit", async function (e) {
 
     if (!v1 || !v2 || !v3 || !v4 || !v5) return;
 
-    // Armar payload
+    // Obtener userId del token JWT
+    const token = localStorage.getItem("token");
+    let userId = 0;
+    try {
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        userId = payload.userID || 0;
+    } catch (e) {
+        console.error("Error extrayendo userId del token:", e);
+    }
+
+    // Armar payload según formato del backend
     const payload = {
-        protocolo,
-        fecha,
-        cliente,
-        idMuestra,
-        tipo,
+        id: 0,
+        tipo: tipo,
+        estado: "PENDIENTE",
+        archivo: [],
+        archivoUrl: "",
+        userId: userId,
+        userMail: userEmail || "",
+        protocolo: protocolo,
+        cliente: cliente,
+        idMuestra: idMuestra,
+        fecha: fecha,
+        observaciones: observaciones,
         parametros: parametros.filter((p) => p.trim() !== ""),
-        observaciones,
     };
 
     console.log("📦 Payload a enviar:", payload);
 
-    // Simular éxito por ahora
     const btnGuardar = document.getElementById("btnGuardar");
     btnGuardar.disabled = true;
     btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
     setTimeout(() => {
+    try {
+        const response = await fetch("http://localhost:8080/api/estudios", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.text();
+            throw new Error(`HTTP ${response.status}: ${errorData}`);
+        }
+
+        const data = await response.json();
+        console.log("✅ Muestra creada:", data);
+
         cerrarModal();
+        mostrarToast(`Muestra ${protocolo} registrada correctamente`);
+        
+        // Recargar la tabla de estudios
+        cargarEstudios();
+    } catch (error) {
+        console.error("Error creando muestra:", error);
+        mostrarToast(`❌ Error: ${error.message}`);
+    } finally {
         btnGuardar.disabled = false;
         btnGuardar.innerHTML = `<i class="bi bi-check-lg"></i> Guardar muestra`;
-        mostrarToast(`Muestra ${protocolo} registrada correctamente`);
-    }, 800);
+    }
 });
 
 // ── Toast ──
@@ -359,7 +399,7 @@ async function cargarEstudios() {
 
     try {
         const baseEndpoint =
-            (API_BASE ? API_BASE : DEFAULT_API_BASE) + "/api/estudios";
+            (API_BASE ? API_BASE : DEFAULT_API_BASE) + "/api/estudios/all";
         let resp = await tryFetch(baseEndpoint);
 
         // Si obtuvimos 404 y no se especificó API_BASE, intentamos algunos puertos comunes de dev
@@ -367,7 +407,7 @@ async function cargarEstudios() {
             const fallbacks = ["https://chemiconsult.onrender.com"];
             for (const fb of fallbacks) {
                 try {
-                    resp = await tryFetch(fb + "/api/estudios");
+                    resp = await tryFetch(fb + "/api/estudios/all");
                     console.log("Respuesta lista de muestras", resp);
                     if (resp && resp.ok) break;
                 } catch (e) {
@@ -382,9 +422,7 @@ async function cargarEstudios() {
             throw new Error(`HTTP ${resp.status} ${resp.statusText} - ${txt}`);
         }
 
-        console.log(`Respuesta ${resp.status} ${resp.statusText}`);
         const estudios = await resp.json();
-        console.log(estudios);
         mostrarMuestras(estudios || []);
     } catch (err) {
         console.error("Error cargando estudios:", err);
@@ -431,6 +469,7 @@ function badgeClassParaEstado(estado) {
 }
 
 function mostrarMuestras(estudios) {
+    console.log("📊 Muestras recibidas del backend:", estudios);
     // Normalizar y almacenar en memoria para paginación
     allMuestras = Array.isArray(estudios)
         ? estudios
