@@ -19,12 +19,10 @@ document.getElementById("loginForm").addEventListener("submit", async function (
 
         if (response.ok) {
             const data = await response.json();
-
-            console.log("✅ Respuesta completa:", data);
-
             localStorage.setItem("token", data.token);
             localStorage.setItem("userEmail", email);
             localStorage.setItem("userRole", data.role.toUpperCase());
+            localStorage.setItem("userId", data.userId);
 
             const rol = data.role.toUpperCase();
 
