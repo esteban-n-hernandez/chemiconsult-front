@@ -1,4 +1,7 @@
-const API_URL = "https://chemiconsult.onrender.com/api/tasks";
+const API_URL = "http://localhost:8080/api/task";
+const token = localStorage.getItem("token");
+const userId = localStorage.getItem("userId");
+const userEmail = localStorage.getItem("userEmail");
 
 let tasks = [];
 let draggedTaskId = null;
@@ -10,8 +13,12 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 async function loadTasks() {
+    console.log(token);
     try {
-        const res = await fetch(API_URL);
+        const res = await fetch(API_URL, {
+            method: "GET",
+            headers: {'Authorization': `Bearer ${token}`}
+        });
         if (!res.ok) throw new Error("No se pudieron cargar tareas");
         tasks = await res.json();
         renderBoard();
@@ -44,36 +51,62 @@ function renderBoard() {
 
 function createTaskCard(task) {
     const div = document.createElement("div");
-    div.className = `task-card ${task.status.toLowerCase()}`;
+
+    // Convertimos IN_PROGRESS a in_progress para que coincida exactamente con las reglas de CSS
+    const statusClass = task.status.toLowerCase().replace("-", "_");
+    div.className = `kanban-card ${statusClass}`;
     div.draggable = true;
     div.dataset.id = task.id;
 
+    // Detectamos la información del creador buscando campos comunes en el JSON
+    const creatorEmail = task.userName || task.user?.email || userEmail || "Usuario";
+    const initials = getInitials(creatorEmail);
+
     div.innerHTML = `
-    <div class="task-title">${escapeHtml(task.title)}</div>
-    <div class="task-meta mb-2">${escapeHtml(task.description || "")}</div>
-    <div class="d-flex gap-2">
-      <button class="btn btn-sm btn-outline-danger" onclick="deleteTask(${task.id})">Eliminar</button>
+    <div class="kanban-card-body">
+        <div class="kanban-card-title">${escapeHtml(task.title)}</div>
+        <p class="kanban-card-desc">${escapeHtml(task.description || "")}</p>
+    </div>
+    <div class="kanban-card-footer">
+        <div class="kanban-card-actions">
+            <button class="btn btn-link-danger p-0" title="Eliminar" onclick="deleteTask(${task.id})">
+                <i class="bi bi-trash3"></i>
+            </button>
+        </div>
+        <div class="task-creator" title="Creado por: ${escapeHtml(creatorEmail)}">
+            <span class="creator-avatar">${escapeHtml(initials)}</span>
+        </div>
     </div>
   `;
 
-    div.addEventListener("dragstart", () => { draggedTaskId = task.id; });
-    div.addEventListener("dragend", () => { draggedTaskId = null; });
+    div.addEventListener("dragstart", () => {
+        draggedTaskId = task.id;
+        div.classList.add("dragging");
+    });
+    div.addEventListener("dragend", () => {
+        draggedTaskId = null;
+        div.classList.remove("dragging");
+    });
 
     return div;
 }
 
 function setupDropzones() {
     document.querySelectorAll(".kanban-col").forEach(col => {
+        const zone = col.querySelector(".dropzone");
+
         col.addEventListener("dragover", (e) => {
             e.preventDefault();
-            col.classList.add("dropzone-over");
+            zone.classList.add("drag-over");
         });
 
-        col.addEventListener("dragleave", () => col.classList.remove("dropzone-over"));
+        col.addEventListener("dragleave", (e) => {
+            if (!col.contains(e.relatedTarget)) zone.classList.remove("drag-over");
+        });
 
         col.addEventListener("drop", async (e) => {
             e.preventDefault();
-            col.classList.remove("dropzone-over");
+            zone.classList.remove("drag-over");
             if (!draggedTaskId) return;
 
             const newStatus = col.dataset.status;
@@ -86,13 +119,10 @@ function setupDropzones() {
 }
 
 async function updateTaskStatus(task, newStatus) {
-    const payload = { ...task, status: newStatus };
-
     try {
-        const res = await fetch(`${API_URL}/${task.id}`, {
+        const res = await fetch(`${API_URL}/${task.id}/status?status=${encodeURIComponent(newStatus)}`, {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
+            headers: {'Authorization': `Bearer ${token}`}
         });
         if (!res.ok) throw new Error("No se pudo actualizar estado");
 
@@ -116,13 +146,13 @@ function setupForm() {
         const payload = {
             title: document.getElementById("title").value.trim(),
             description: document.getElementById("description").value.trim(),
-            status: document.getElementById("status").value
+            userId: userId ? Number(userId) : null
         };
 
         try {
             const res = await fetch(API_URL, {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: {"Content-Type": "application/json", 'Authorization': `Bearer ${token}`},
                 body: JSON.stringify(payload)
             });
             if (!res.ok) throw new Error("No se pudo crear tarea");
@@ -142,9 +172,11 @@ function setupForm() {
 
 async function deleteTask(id) {
     if (!confirm("¿Eliminar tarea?")) return;
-
     try {
-        const res = await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        const res = await fetch(`${API_URL}/${id}`, {
+            method: "DELETE",
+            headers: {'Authorization': `Bearer ${token}`}
+        });
         if (!res.ok) throw new Error("No se pudo eliminar");
         tasks = tasks.filter(t => t.id !== id);
         renderBoard();
@@ -152,6 +184,27 @@ async function deleteTask(id) {
         console.error(e);
         alert("Error eliminando tarea");
     }
+}
+
+function getInitials(nameOrEmail) {
+    if (!nameOrEmail) return "??";
+
+    // Si viene en formato email (ej: carlos.mendoza@chemiconsult.com)
+    if (nameOrEmail.includes("@")) {
+        const namePart = nameOrEmail.split("@")[0];
+        const parts = namePart.split(/[\._\-]/);
+        if (parts.length >= 2) {
+            return (parts[0][0] + parts[1][0]).toUpperCase();
+        }
+        return namePart.substring(0, 2).toUpperCase();
+    }
+
+    // Si viene un nombre completo común (ej: "Carlos Mendoza")
+    const parts = nameOrEmail.trim().split(" ");
+    if (parts.length >= 2) {
+        return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return nameOrEmail.substring(0, 2).toUpperCase();
 }
 
 function escapeHtml(str) {

@@ -1,3 +1,5 @@
+const API_URL = 'https://chemiconsult.onrender.com';
+
 // ── Guard: solo EMPLEADO e IT ──
 const rol = (localStorage.getItem("userRole") || "").toUpperCase();
 if (!localStorage.getItem("token") || rol === "ROLE_CLIENTE") {
@@ -332,7 +334,7 @@ formAlta.addEventListener("submit", async function (e) {
     btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
     try {
-        const response = await fetch("http://localhost:8080/api/estudios", {
+        const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -383,7 +385,7 @@ async function cargarEstudios() {
         "",
     );
 
-    const DEFAULT_API_BASE = "http://localhost:8080";
+    const DEFAULT_API_BASE = "https://chemiconsult.onrender.com";
     const tried = [];
 
     // Helper para intentar una URL concreta
@@ -402,7 +404,7 @@ async function cargarEstudios() {
 
         // Si obtuvimos 404 y no se especificó API_BASE, intentamos algunos puertos comunes de dev
         if (resp && resp.status === 404 && !API_BASE) {
-            const fallbacks = ["https://chemiconsult.onrender.com"];
+            const fallbacks = [API_URL];
             for (const fb of fallbacks) {
                 try {
                     resp = await tryFetch(fb + "/api/estudios/all");
@@ -676,7 +678,7 @@ async function subirDocumento(id, file, triggerBtn) {
     const bases = API_BASE
         ? [API_BASE]
         : [
-            "https://chemiconsult.onrender.com",
+            API_URL,
             "http://127.0.0.1:8080",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
@@ -748,7 +750,7 @@ async function verResultado(id, triggerBtn) {
     const bases = API_BASE
         ? [API_BASE]
         : [
-            "https://chemiconsult.onrender.com",
+            API_URL,
             "http://127.0.0.1:8080",
             "http://localhost:3000",
             "http://127.0.0.1:3000",
