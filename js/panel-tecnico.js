@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://chemiconsult.onrender.com/api";
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarMetodologias();
@@ -44,6 +44,7 @@ function renderizarTablaMetodologias(lista) {
         // Armamos la fila de la tabla con el diseño de tu HTML
         const fila = document.createElement('tr');
         fila.innerHTML = `
+            <td>${met.descripcion}</td>
             <td>${met.nombre}</td>
             <td>${met.referencia || '-'}</td>
             <td>
