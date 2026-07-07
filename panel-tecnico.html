@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Configuraciones Técnicas - CHEMICONSULT</title>
+    <!-- Bootstrap CSS e Iconos (Manteniendo tus dependencias) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/panel/panel-tecnico.css">
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<!-- CONTENIDO CON AJUSTE FLOTANTE COMPENSADO -->
+<div class="content">
+
+    <!-- Header Idéntico al tuyo de Muestras -->
+    <div class="page-header">
+        <div>
+            <h1>Panel Técnico de Configuración</h1>
+            <p id="fecha-hoy">Administración integral de matrices analíticas</p>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <p class="header-user-name" id="header-nombre">—</p>
+                <p class="header-user-role" id="header-rol">—</p>
+            </div>
+            <div class="avatar-circle" id="header-avatar">--</div>
+        </div>
+    </div>
+
+    <!-- Filtros de Navegación Tipo Pestañas -->
+    <div class="filtros-tabs">
+        <button class="tab-btn-custom active" onclick="cambiarPestaña('resoluciones')">
+            <i class="bi bi-file-earmark-text"></i> Resoluciones / Marcos Legales
+        </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('parametros')">
+            <i class="bi bi-sliders"></i> Parámetros Básicos
+        </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('metodologias')">
+            <i class="bi bi-journal-bookmark"></i> Metodologías Analíticas
+        </button>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: RESOLUCIONES
+         ========================================== -->
+    <div id="tab-resoluciones" class="tab-content-panel active">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Alta de Resolución</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formResolucion">
+                        <div class="form-group-custom">
+                            <label>Nombre de la Norma</label>
+                            <input type="text" id="resNombre" class="form-control-custom"
+                                   placeholder="Ej: CAA Art 982 - Agua" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Organismo Emisor</label>
+                            <input type="text" id="resOrganismo" class="form-control-custom"
+                                   placeholder="Ej: Código Alimentario Arg" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Notas de Referencia</label>
+                            <textarea id="resDescripcion" class="form-control-custom" rows="3"
+                                      placeholder="Opcional..."></textarea>
+                        </div>
+                        <button type="submit" class="btn-guardar-custom"><i class="bi bi-check-lg"></i> Guardar
+                            Resolución
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-table text-primary"></i> Resoluciones Registradas</h5>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Nombre / Norma</th>
+                            <th>Organismo</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaResolucionesBody">
+                        <!-- Inyección dinámica con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: PARÁMETROS
+         ========================================== -->
+    <div id="tab-parametros" class="tab-content-panel">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Alta de Parámetro</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formParametro">
+                        <div class="form-group-custom">
+                            <label>Nombre del Parámetro</label>
+                            <input type="text" id="paramNombre" class="form-control-custom"
+                                   placeholder="Ej: pH, Turbidez, Arsénico" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Unidad de Medida</label>
+                            <input type="text" id="paramUnidad" class="form-control-custom"
+                                   placeholder="Ej: mg/L, U.N.T" required>
+                        </div>
+                        <button type="submit" class="btn-guardar-custom"><i class="bi bi-check-lg"></i> Guardar
+                            Parámetro
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-table text-primary"></i> Lista de Parámetros</h5>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Parámetro</th>
+                            <th>Unidad de Medida</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaParametrosBody">
+                        <!-- Inyección dinámica con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: METODOLOGÍAS
+         ========================================== -->
+    <div id="tab-metodologias" class="tab-content-panel">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Alta de Metodología</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formMetodologia">
+                        <div class="form-group-custom">
+                            <label>Nombre / Técnica</label>
+                            <input type="text" id="metNombre" class="form-control-custom"
+                                   placeholder="Ej: Potenciometría (SM 4500-H+)" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Referencia Bibliográfica</label>
+                            <input type="text" id="metReferencia" class="form-control-custom"
+                                   placeholder="Ej: Standard Methods 23rd Ed.">
+                        </div>
+                        <button type="submit" class="btn-guardar-custom"><i class="bi bi-check-lg"></i> Guardar
+                            Metodología
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-table text-primary"></i> Metodologías Habilitadas</h5>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Técnica / Método</th>
+                            <th>Referencia</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaMetodologiasBody">
+                        <!-- Inyección dinámica con JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Conmutador interactivo de pestañas usando tus selectores de filtros activos
+    function cambiarPestaña(tabId) {
+        document.querySelectorAll('.tab-content-panel').forEach(panel => panel.classList.remove('active'));
+        document.querySelectorAll('.tab-btn-custom').forEach(btn => btn.classList.remove('active'));
+
+        document.getElementById(`tab-${tabId}`).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+</script>
+<script src="js/sidebar.js"></script>
+<script src="js/panel-tecnico.js"></script>
+</body>
+</html>
