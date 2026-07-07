@@ -10,44 +10,9 @@
     <link rel="stylesheet" href="css/dashboard/dashboard-empleados.css"/>
 </head>
 <body>
+
 <!-- SIDEBAR -->
-<div class="sidebar">
-    <div class="sidebar-logo">
-        <h2>CHEMICONSULT</h2>
-        <p>Laboratorio de análisis</p>
-    </div>
-
-    <a href="dashboard-empleado.html" class="active">
-        <i class="bi bi-speedometer2"></i> Dashboard</a>
-
-    <a href="task.html">
-        <i class="bi bi-speedometer2"></i>Tareas</a>
-
-    <a href="#"><i class="bi bi-person-circle"></i> Perfil</a>
-
-    <a href="estudios.html">
-        <i class="bi bi-file-earmark-medical"></i>Parametros</a>
-
-    <a href="estudios.html"
-    ><i class="bi bi-file-earmark-medical"></i>Muestras</a
-    >
-    <a href="estudios.html"
-    ><i class="bi bi-file-earmark-medical"></i>Metodologias</a
-    >
-    <a href="estudios.html">
-        <i class="bi bi-file-earmark-medical"></i>Resoluciones</a>
-    <a href="clientes.html"><i class="bi bi-people"></i> Clientes</a>
-    <a href="#"><i class="bi bi-receipt"></i> Facturación</a>
-
-
-    <hr class="sidebar-divider"/>
-
-    <div class="sidebar-bottom">
-        <a href="#" id="logout-btn"
-        ><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a
-        >
-    </div>
-</div>
+<div id="sidebar-container"></div>
 
 <!-- CONTENIDO -->
 <div class="content">
@@ -59,16 +24,11 @@
         </div>
         <div class="header-user">
             <div class="header-user-info">
-                <p
-                        class="header-user-name"
-                        id="header-nombre"
-                >
+                <p class="header-user-name"
+                   id="header-nombre">
                     —
                 </p>
-                <p
-                        class="header-user-role"
-                        id="header-rol"
-                >
+                <p class="header-user-role" id="header-rol">
                     —
                 </p>
             </div>
@@ -102,9 +62,7 @@
             </div>
         </div>
         <div class="kpi-card rojo">
-            <div
-                    class="kpi-icon rojo kpi-icon-highlight"
-            >
+            <div class="kpi-icon rojo kpi-icon-highlight">
                 <i class="bi bi-check2-circle"></i>
             </div>
             <div class="kpi-data">
@@ -120,12 +78,9 @@
         <div class="panel">
             <div class="panel-header">
                 <h5>
-                    <i class="bi bi-list-check me-2 panel-title-icon-green"></i
-                    >Cola de trabajo — Muestras activas
+                    <i class="bi bi-list-check me-2 panel-title-icon-green"></i>Cola de trabajo — Muestras activas
                 </h5>
-                <button
-                        class="btn btn-sm btn-success btn-nueva-muestra btn-nueva-muestra-btn"
-                >
+                <button class="btn btn-sm btn-success btn-nueva-muestra btn-nueva-muestra-btn">
                     <i class="bi bi-plus-lg"></i> Nueva muestra
                 </button>
             </div>
@@ -133,32 +88,19 @@
                 <div class="filtros">
                     <button
                             class="filtro-btn active"
-                            onclick="filtrarTabla('todos', this)"
-                    >
+                            onclick="filtrarTabla('todos', this)">
                         Todas
                     </button>
-                    <button
-                            class="filtro-btn"
-                            onclick="filtrarTabla('PENDIENTE', this)"
-                    >
+                    <button class="filtro-btn" onclick="filtrarTabla('PENDIENTE', this)">
                         Pendientes
                     </button>
-                    <button
-                            class="filtro-btn"
-                            onclick="filtrarTabla('EN_PROCESO', this)"
-                    >
+                    <button class="filtro-btn" onclick="filtrarTabla('EN_PROCESO', this)">
                         En proceso
                     </button>
-                    <button
-                            class="filtro-btn"
-                            onclick="filtrarTabla('COMPLETO_SIN_INFORME', this)"
-                    >
+                    <button class="filtro-btn" onclick="filtrarTabla('COMPLETO_SIN_INFORME', this)">
                         Completo sin informe
                     </button>
-                    <button
-                            class="filtro-btn"
-                            onclick="filtrarTabla('DEMORADA', this)"
-                    >
+                    <button class="filtro-btn" onclick="filtrarTabla('DEMORADA', this)">
                         Demoradas
                     </button>
                 </div>
@@ -452,5 +394,6 @@
     <span id="toastMsg">Muestra registrada correctamente</span>
 </div>
 <script src="js/dashboard-empleados.js"></script>
+<script src="js/sidebar.js"></script>
 </body>
 </html>
