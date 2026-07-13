@@ -1,7 +1,7 @@
 // js/muestras.js
 "use strict";
 
-const API_URL = "http://localhost:8080/api";
+const API_URL = "https://chemiconsult.onrender.com/api";
 
 // FIX: endpoint real ya disponible con datos cargados (matriz Líquida) — mock desactivado.
 // Volver a true solo si necesitás developear sin backend levantado.
