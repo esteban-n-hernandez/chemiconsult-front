@@ -1,6 +1,8 @@
 :root {
     --verde: #5EA504;
     --verde-oscuro: #4a8403;
+    --verde-suave: #f2f7e9;
+    --verde-suave-hover: #e9f2db;
     --color-text-secondary: #6c757d;
     --color-text-tertiary: #adb5bd;
     --color-text-info: #0d6efd;
@@ -12,6 +14,7 @@
     --color-background-warning: #fff3cd;
     --color-background-danger: #f8d7da;
     --color-border-tertiary: #dee2e6;
+    --color-border-soft: #eceef0;
 }
 
 * {
@@ -27,16 +30,16 @@ body {
 }
 
 /* ==========================================================================
-   ── Sidebar Premium Minimalista (Verde Plano Corporativo Puro) ──
+   ── Sidebar (Verde plano original + tipografía minimalista actual) ──
    ========================================================================== */
 .sidebar {
     width: 240px;
-    background: #5EA504; /* Verde original 100% plano sin degradados */
-    border-radius: 16px; /* Curvatura moderna flotante */
-    padding: 2.5rem 1.25rem;
+    background: #5EA504;
+    border-radius: 16px;
+    padding: 2rem 1rem;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 2px;
     flex-shrink: 0;
 
     /* Estructura independiente flotante */
@@ -48,16 +51,29 @@ body {
 }
 
 .sidebar-logo {
-    text-align: center;
-    margin-bottom: 3rem;
+    text-align: left;
+    padding: 0 0.75rem;
+    margin-bottom: 2.5rem;
 }
 
 .sidebar-logo h2 {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
     font-weight: 700;
     margin: 0;
-    letter-spacing: 0.5px;
+    letter-spacing: 0.2px;
     color: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sidebar-logo h2::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 3px;
+    background: #ffffff;
+    flex-shrink: 0;
 }
 
 .sidebar-logo p {
@@ -68,42 +84,48 @@ body {
     letter-spacing: 0.5px;
 }
 
-/* Enlaces limpios con contraste calibrado */
+/* Enlaces: misma tipografía y espaciado actuales, adaptados al fondo verde */
 .sidebar a {
     color: rgba(255, 255, 255, 0.8);
     text-decoration: none;
-    padding: 0.7rem 0.85rem;
-    border-radius: 10px; /* Esquinas redondeadas en armonía con la barra */
+    padding: 0.65rem 0.75rem;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     gap: 12px;
     font-size: 13.5px;
     font-weight: 500;
-    transition: all 0.15s ease;
+    border-left: 2px solid transparent;
+    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
-/* Hover minimalista muy ligero */
 .sidebar a:hover {
-    background: rgba(255, 255, 255, 0.06);
+    background: rgba(255, 255, 255, 0.08);
     color: #ffffff;
 }
 
-/* Pestaña Activa: Estilo premium con fondo translúcido */
 .sidebar a.active {
-    background: rgba(255, 255, 255, 0.15); /* Blanco con opacidad integrada al fondo */
+    background: rgba(255, 255, 255, 0.16);
     color: #ffffff;
     font-weight: 600;
-    box-shadow: none;
+    border-left: 2px solid #ffffff;
 }
 
 .sidebar a i {
-    font-size: 18px;
+    font-size: 17px;
+    color: rgba(255, 255, 255, 0.75);
+    transition: color 0.15s ease;
+}
+
+.sidebar a:hover i,
+.sidebar a.active i {
+    color: #ffffff;
 }
 
 .sidebar-divider {
     border: none;
     border-top: 1px solid rgba(255, 255, 255, 0.12);
-    margin: 1.25rem 0;
+    margin: 1.25rem 0.75rem;
 }
 
 .sidebar-bottom {
@@ -174,8 +196,8 @@ body {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: var(--color-background-info);
-    color: var(--color-text-info);
+    background: var(--verde-suave);
+    color: var(--verde-oscuro);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -355,24 +377,24 @@ body {
 }
 
 .tabla-muestras thead th {
-    background: #f8f9fa;
-    color: var(--color-text-secondary);
+    background: transparent;
+    color: var(--color-text-tertiary);
     font-weight: 600;
-    padding: 8px 12px;
+    padding: 10px 12px 14px;
     text-align: left;
-    font-size: 12px;
+    font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--color-border-tertiary);
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid var(--color-border-soft);
 }
 
 .tabla-muestras tbody tr {
-    border-bottom: 1px solid #f1f3f5;
+    border-bottom: 1px solid var(--color-border-soft);
     transition: background 0.15s;
 }
 
 .tabla-muestras tbody tr:hover {
-    background: #f8f9fa;
+    background: var(--verde-suave);
 }
 
 .tabla-muestras tbody tr:last-child {
@@ -380,49 +402,58 @@ body {
 }
 
 .tabla-muestras td {
-    padding: 10px 12px;
+    padding: 14px 12px;
     vertical-align: middle;
 }
 
 .cod-badge {
     font-family: monospace;
     font-size: 12px;
-    background: #f0f2f5;
-    padding: 2px 7px;
-    border-radius: 4px;
-    color: #495057;
+    background: transparent;
+    padding: 0;
+    border-radius: 0;
+    color: #6c757d;
+    font-weight: 600;
 }
 
 .badge-estado {
-    font-size: 11px;
-    padding: 3px 10px;
-    border-radius: 20px;
+    font-size: 11.5px;
+    padding: 0;
+    border-radius: 0;
     font-weight: 500;
     white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: transparent !important;
+}
+
+.badge-estado::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
 }
 
 .badge-pendiente {
-    background: var(--color-background-warning);
     color: var(--color-text-warning);
 }
 
 .badge-proceso {
-    background: var(--color-background-info);
     color: var(--color-text-info);
 }
 
 .badge-informe {
-    background: var(--color-background-success);
     color: var(--color-text-success);
 }
 
 .badge-completo-sin-informe {
-    background: #e2e3e5;
-    color: #495057;
+    color: #6c757d;
 }
 
 .badge-demorada {
-    background: var(--color-background-danger);
     color: var(--color-text-danger);
 }
 
@@ -442,7 +473,7 @@ body {
 
 .btn-accion {
     background: none;
-    border: 1px solid var(--color-border-tertiary);
+    border: 1px solid var(--color-border-soft);
     border-radius: 6px;
     padding: 3px 8px;
     font-size: 13px;
@@ -452,8 +483,8 @@ body {
 }
 
 .btn-accion:hover {
-    background: var(--verde);
-    color: white;
+    background: var(--verde-suave);
+    color: var(--verde-oscuro);
     border-color: var(--verde);
 }
 

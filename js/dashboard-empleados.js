@@ -33,13 +33,6 @@ const hoy = new Date().toLocaleDateString("es-AR", {
 document.getElementById("fecha-hoy").textContent =
     hoy.charAt(0).toUpperCase() + hoy.slice(1);
 
-// ── Cerrar sesión ──
-document.getElementById("logout-btn").addEventListener("click", () => {
-    ["token", "userEmail", "userRole", "userName"].forEach((k) =>
-        localStorage.removeItem(k),
-    );
-    window.location.href = "login.html";
-});
 
 // ── Filtro de tabla y paginación ──
 // Variables para paginar

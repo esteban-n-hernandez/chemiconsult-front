@@ -23,11 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
     initModal();
     initForm();
 
-    document.getElementById('logout-btn').addEventListener('click', () => {
-        ['token', 'userEmail', 'userRole', 'userName'].forEach(k => localStorage.removeItem(k));
-        window.location.href = 'login.html';
-    });
-
     document.getElementById('inputBusqueda')?.addEventListener('keydown', e => {
         if (e.key === 'Enter') buscarClientes();
     });

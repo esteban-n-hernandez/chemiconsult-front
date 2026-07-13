@@ -19,10 +19,10 @@ document.addEventListener("DOMContentLoaded", () => {
             </a>
 
             <a href="task.html" class="${paginaActual === 'task.html' ? 'active' : ''}"> 
-                <i class="bi bi-speedometer2"></i> Tareas
+                <i class="bi bi-list-task"></i> Tareas
             </a>
 
-            <a href="#" class="${paginaActual === 'perfil.html' ? 'active' : ''}">
+            <a href="perfil.html" class="${paginaActual === 'perfil.html' ? 'active' : ''}">
                 <i class="bi bi-person-circle"></i> Perfil
             </a>
 
@@ -30,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <i class="bi bi-file-earmark-medical"></i> Muestras
             </a>
 
-            <a href="panel-tecnico.html" class="${paginaActual === 'configuracion.html' ? 'active' : ''}">
+            <a href="panel-tecnico.html" class="${paginaActual === 'panel-tecnico.html' ? 'active' : ''}">
                 <i class="bi bi-gear-fill"></i> Panel Técnico
             </a>
 
@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <i class="bi bi-people"></i> Clientes
             </a>
             
-            <a href="#" class="${paginaActual === 'facturacion.html' ? 'active' : ''}">
+            <a href="facturacion.html" class="${paginaActual === 'facturacion.html' ? 'active' : ''}">
                 <i class="bi bi-receipt"></i> Facturación
             </a>
 
@@ -64,3 +64,4 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
