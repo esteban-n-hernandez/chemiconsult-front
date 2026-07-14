@@ -22,6 +22,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initModalBaja();
     initModal();
     initForm();
+    initModalAsignar();
+    initModalSucursales();
 
     document.getElementById('inputBusqueda')?.addEventListener('keydown', e => {
         if (e.key === 'Enter') buscarClientes();
@@ -100,6 +102,10 @@ function renderTabla() {
                     <button class="btn-accion" title="Editar"
                             onclick="abrirModalEditar(${c.id})">
                         <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn-accion" title="Sucursales y contactos"
+                            onclick="abrirModalSucursales(${c.id})">
+                        <i class="bi bi-geo-alt"></i>
                     </button>
                     ${btnAsignar}
                    <button class="btn-accion danger" title="Desactivar"
@@ -182,6 +188,9 @@ function initModal() {
 
     document.addEventListener('keydown', e => {
         if (e.key === 'Escape' && overlay.classList.contains('visible')) cerrarModal();
+        if (e.key === 'Escape' && document.getElementById('modalAsignarUsuario').classList.contains('visible')) {
+            cerrarModalAsignar();
+        }
     });
 }
 
@@ -340,12 +349,19 @@ async function submitCliente() {
             throw new Error(err || 'Error al guardar cliente');
         }
 
+        const clienteGuardado = await res.json();
+
         cerrarModal();
         await cargarClientes();
-        mostrarToast(
-            esEdicion ? 'Cliente actualizado correctamente ✓' : 'Cliente creado correctamente ✓',
-            'success'
-        );
+
+        if (esEdicion) {
+            mostrarToast('Cliente actualizado correctamente ✓', 'success');
+        } else {
+            mostrarToast('Cliente creado ✓ — agregá sus sucursales a continuación', 'success');
+            // Encadena el segundo paso del alta: sucursales del cliente recién creado.
+            // Pequeño delay para que se vea el toast antes de abrir el siguiente modal.
+            setTimeout(() => abrirModalSucursales(clienteGuardado.id), 400);
+        }
 
     } catch (err) {
         mostrarToast(err.message || 'Error al guardar cliente', 'danger');
@@ -373,8 +389,138 @@ async function desactivarCliente(id) {
     }
 }
 
-async function asignarUsuario(id) {
-    mostrarToast('Próximamente: asignación de usuario', 'warning');
+// ══════════════════════════════════════════
+//  MODAL ASIGNAR USUARIO
+// ══════════════════════════════════════════
+let clienteAsignandoId = null;
+
+function initModalAsignar() {
+    document.getElementById('modalAsignarClose').addEventListener('click', cerrarModalAsignar);
+    document.getElementById('btnCancelarAsignar').addEventListener('click', cerrarModalAsignar);
+    document.getElementById('formAsignarUsuario').addEventListener('submit', e => {
+        e.preventDefault();
+        confirmarAsignarUsuario();
+    });
+
+    document.getElementById('modalAsignarUsuario').addEventListener('click', e => {
+        if (e.target === document.getElementById('modalAsignarUsuario')) cerrarModalAsignar();
+    });
+
+    // Limpia el error de "no coinciden" apenas se vuelve a tipear
+    document.getElementById('asignarPasswordConfirmar').addEventListener('input', () => {
+        document.getElementById('asignarPasswordConfirmar').classList.remove('error');
+        document.getElementById('errAsignarPasswordConfirmar').classList.remove('visible');
+    });
+}
+
+function asignarUsuario(id) {
+    const cliente = todosLosClientes.find(c => c.id === id);
+    if (!cliente) return;
+
+    clienteAsignandoId = id;
+
+    const nombre = cliente.tipoCliente === 'EMPRESA'
+        ? cliente.razonSocial
+        : `${cliente.nombre ?? ''} ${cliente.apellido ?? ''}`.trim();
+
+    document.getElementById('asignarClienteNombre').textContent = nombre;
+
+    // Sugerencia de username a partir del email (el empleado la puede editar)
+    const sugerido = (cliente.email || '').split('@')[0] || '';
+    document.getElementById('asignarUsername').value = sugerido;
+
+    document.getElementById('asignarPassword').value = '';
+    document.getElementById('asignarPasswordConfirmar').value = '';
+    ocultarErrorServidorAsignar();
+    limpiarErroresAsignar();
+
+    document.getElementById('modalAsignarUsuario').classList.add('visible');
+    document.getElementById('asignarUsername').focus();
+}
+
+function cerrarModalAsignar() {
+    document.getElementById('modalAsignarUsuario').classList.remove('visible');
+    clienteAsignandoId = null;
+}
+
+async function confirmarAsignarUsuario() {
+    limpiarErroresAsignar();
+    ocultarErrorServidorAsignar();
+
+    const username = document.getElementById('asignarUsername').value.trim();
+    const password = document.getElementById('asignarPassword').value;
+    const confirmar = document.getElementById('asignarPasswordConfirmar').value;
+
+    let valido = true;
+    if (!username) {
+        mostrarErrorAsignar('errAsignarUsername', 'asignarUsername');
+        valido = false;
+    }
+    if (!password || password.length < 6) {
+        mostrarErrorAsignar('errAsignarPassword', 'asignarPassword');
+        valido = false;
+    }
+    if (password !== confirmar) {
+        mostrarErrorAsignar('errAsignarPasswordConfirmar', 'asignarPasswordConfirmar');
+        valido = false;
+    }
+    if (!valido) return;
+
+    const btn = document.getElementById('btnConfirmarAsignar');
+    btn.disabled = true;
+    btn.innerHTML = `<i class="bi bi-hourglass-split"></i> Creando...`;
+
+    try {
+        const res = await fetch(`${API_URL}/${clienteAsignandoId}/asignar-usuario`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${TOKEN()}`
+            },
+            body: JSON.stringify({ username, password })
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            // Errores esperables del backend: username ya en uso, cliente ya tiene usuario
+            mostrarErrorServidorAsignar(err || 'No se pudo crear el acceso');
+            return;
+        }
+
+        cerrarModalAsignar();
+        await cargarClientes();
+        mostrarToast('Acceso al sistema creado correctamente ✓', 'success');
+
+    } catch {
+        mostrarErrorServidorAsignar('No se pudo conectar con el servidor. Intentá nuevamente.');
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-check-lg"></i> Crear acceso`;
+    }
+}
+
+function mostrarErrorAsignar(errId, inputId) {
+    document.getElementById(errId)?.classList.add('visible');
+    document.getElementById(inputId)?.classList.add('error');
+}
+
+function limpiarErroresAsignar() {
+    ['errAsignarUsername', 'errAsignarPassword', 'errAsignarPasswordConfirmar'].forEach(id =>
+        document.getElementById(id)?.classList.remove('visible')
+    );
+    ['asignarUsername', 'asignarPassword', 'asignarPasswordConfirmar'].forEach(id =>
+        document.getElementById(id)?.classList.remove('error')
+    );
+}
+
+function mostrarErrorServidorAsignar(mensaje) {
+    const box = document.getElementById('asignarErrorServidor');
+    box.textContent = mensaje;
+    box.style.display = 'block';
+}
+
+function ocultarErrorServidorAsignar() {
+    document.getElementById('asignarErrorServidor').style.display = 'none';
 }
 
 // ══════════════════════════════════════════
@@ -486,4 +632,388 @@ async function confirmarBaja() {
         btn.disabled  = false;
         btn.innerHTML = `<i class="bi bi-person-dash"></i> Desactivar`;
     }
+}
+
+// ══════════════════════════════════════════
+//  MODAL SUCURSALES Y CONTACTOS
+// ══════════════════════════════════════════
+const SUCURSALES_URL = `${API_BASE}/api/clientes`; // /{clienteId}/sucursales, /sucursales, /sucursales/{id}
+const CONTACTOS_URL  = `${API_BASE}/api/clientes`; // /{clienteId}/contactos, /contactos, /contactos/{id}
+
+let clienteSucursalesId = null;   // cliente actualmente abierto en el modal
+let sucursalesDelCliente = [];
+let contactosDelCliente  = [];
+let sucursalEditandoId   = null;
+let contactoEditandoId   = null;
+
+function initModalSucursales() {
+    document.getElementById('modalSucursalesClose').addEventListener('click', cerrarModalSucursales);
+    document.getElementById('btnCerrarSucursalesModal').addEventListener('click', cerrarModalSucursales);
+
+    document.getElementById('modalSucursales').addEventListener('click', e => {
+        if (e.target === document.getElementById('modalSucursales')) cerrarModalSucursales();
+    });
+
+    // Sucursales
+    document.getElementById('btnNuevaSucursal').addEventListener('click', () => abrirFormSucursal(null));
+    document.getElementById('btnCancelarSucursal').addEventListener('click', cerrarFormSucursal);
+    document.getElementById('btnGuardarSucursal').addEventListener('click', guardarSucursal);
+
+    // Contactos
+    document.getElementById('btnNuevoContacto').addEventListener('click', () => abrirFormContacto(null));
+    document.getElementById('btnCancelarContacto').addEventListener('click', cerrarFormContacto);
+    document.getElementById('btnGuardarContacto').addEventListener('click', guardarContacto);
+}
+
+async function abrirModalSucursales(clienteId) {
+    const cliente = todosLosClientes.find(c => c.id === clienteId);
+    if (!cliente) return;
+
+    clienteSucursalesId = clienteId;
+
+    const nombre = cliente.tipoCliente === 'EMPRESA'
+        ? cliente.razonSocial
+        : `${cliente.nombre ?? ''} ${cliente.apellido ?? ''}`.trim();
+    document.getElementById('sucursalesClienteNombre').textContent = nombre;
+
+    cerrarFormSucursal();
+    cerrarFormContacto();
+
+    document.getElementById('modalSucursales').classList.add('visible');
+
+    await Promise.all([cargarSucursales(), cargarContactos()]);
+}
+
+function cerrarModalSucursales() {
+    document.getElementById('modalSucursales').classList.remove('visible');
+    clienteSucursalesId = null;
+}
+
+// ── Sucursales: cargar y renderizar ──
+async function cargarSucursales() {
+    try {
+        const res = await fetch(`${SUCURSALES_URL}/${clienteSucursalesId}/sucursales`, {
+            headers: { 'Authorization': `Bearer ${TOKEN()}` }
+        });
+        if (!res.ok) throw new Error();
+        sucursalesDelCliente = await res.json();
+        renderSucursales();
+    } catch {
+        mostrarToast('Error al cargar sucursales', 'danger');
+    }
+}
+
+function renderSucursales() {
+    const cont = document.getElementById('listaSucursales');
+    const sinDatos = document.getElementById('sinSucursales');
+
+    if (sucursalesDelCliente.length === 0) {
+        cont.innerHTML = '';
+        sinDatos.style.display = 'block';
+        return;
+    }
+    sinDatos.style.display = 'none';
+
+    cont.innerHTML = sucursalesDelCliente.map(s => `
+        <div class="item-card">
+            <div class="item-card-info">
+                <strong>${s.nombre}</strong>
+                <span class="item-card-sub">
+                    ${[s.direccion, s.localidad, formatProvincia(s.provincia)].filter(Boolean).join(' · ') || 'Sin dirección cargada'}
+                </span>
+            </div>
+            <div class="item-card-acciones">
+                <button class="btn-accion" title="Editar" onclick="abrirFormSucursal(${s.id})">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn-accion danger" title="Desactivar" onclick="desactivarSucursal(${s.id})">
+                    <i class="bi bi-trash3"></i>
+                </button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function abrirFormSucursal(id) {
+    sucursalEditandoId = id;
+    const card = document.getElementById('formSucursalCard');
+    const titulo = document.getElementById('formSucursalTitulo');
+
+    limpiarErroresSucursal();
+
+    if (id) {
+        const s = sucursalesDelCliente.find(x => x.id === id);
+        if (!s) return;
+        titulo.textContent = 'Editar sucursal';
+        document.getElementById('sucursalNombre').value = s.nombre || '';
+        document.getElementById('sucursalDireccion').value = s.direccion || '';
+        document.getElementById('sucursalLocalidad').value = s.localidad || '';
+        document.getElementById('sucursalProvincia').value = s.provincia || '';
+    } else {
+        titulo.textContent = 'Nueva sucursal';
+        document.getElementById('sucursalNombre').value = '';
+        document.getElementById('sucursalDireccion').value = '';
+        document.getElementById('sucursalLocalidad').value = '';
+        document.getElementById('sucursalProvincia').value = '';
+    }
+
+    card.classList.remove('d-none');
+    document.getElementById('sucursalNombre').focus();
+}
+
+function cerrarFormSucursal() {
+    document.getElementById('formSucursalCard').classList.add('d-none');
+    sucursalEditandoId = null;
+    limpiarErroresSucursal();
+}
+
+function limpiarErroresSucursal() {
+    document.getElementById('errSucursalNombre')?.classList.remove('visible');
+    document.getElementById('sucursalNombre')?.classList.remove('error');
+}
+
+async function guardarSucursal() {
+    limpiarErroresSucursal();
+
+    const nombre = document.getElementById('sucursalNombre').value.trim();
+    if (!nombre) {
+        document.getElementById('errSucursalNombre').classList.add('visible');
+        document.getElementById('sucursalNombre').classList.add('error');
+        return;
+    }
+
+    const body = {
+        clienteId: clienteSucursalesId,
+        nombre,
+        direccion: document.getElementById('sucursalDireccion').value.trim() || null,
+        localidad: document.getElementById('sucursalLocalidad').value.trim() || null,
+        provincia: document.getElementById('sucursalProvincia').value || null,
+    };
+
+    const esEdicion = sucursalEditandoId !== null;
+    const url = esEdicion
+        ? `${SUCURSALES_URL}/sucursales/${sucursalEditandoId}`
+        : `${SUCURSALES_URL}/sucursales`;
+    const method = esEdicion ? 'PUT' : 'POST';
+
+    const btn = document.getElementById('btnGuardarSucursal');
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${TOKEN()}`
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error(await res.text());
+
+        cerrarFormSucursal();
+        await cargarSucursales();
+        // Los checkboxes de contacto dependen de la lista de sucursales — se refrescan
+        // automáticamente la próxima vez que se abra un form de contacto.
+        mostrarToast(esEdicion ? 'Sucursal actualizada ✓' : 'Sucursal creada ✓', 'success');
+
+    } catch (err) {
+        mostrarToast(err.message || 'Error al guardar la sucursal', 'danger');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function desactivarSucursal(id) {
+    if (!confirm('¿Desactivar esta sucursal? Las muestras ya cargadas con esta sucursal no se ven afectadas.')) return;
+    try {
+        const res = await fetch(`${SUCURSALES_URL}/sucursales/${id}/desactivar`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${TOKEN()}` }
+        });
+        if (!res.ok) throw new Error();
+        await cargarSucursales();
+        mostrarToast('Sucursal desactivada', 'success');
+    } catch {
+        mostrarToast('Error al desactivar la sucursal', 'danger');
+    }
+}
+
+// ── Contactos: cargar y renderizar ──
+async function cargarContactos() {
+    try {
+        const res = await fetch(`${CONTACTOS_URL}/${clienteSucursalesId}/contactos`, {
+            headers: { 'Authorization': `Bearer ${TOKEN()}` }
+        });
+        if (!res.ok) throw new Error();
+        contactosDelCliente = await res.json();
+        renderContactos();
+    } catch {
+        mostrarToast('Error al cargar contactos', 'danger');
+    }
+}
+
+function renderContactos() {
+    const cont = document.getElementById('listaContactos');
+    const sinDatos = document.getElementById('sinContactos');
+
+    if (contactosDelCliente.length === 0) {
+        cont.innerHTML = '';
+        sinDatos.style.display = 'block';
+        return;
+    }
+    sinDatos.style.display = 'none';
+
+    cont.innerHTML = contactosDelCliente.map(c => {
+        const sucursalesNombres = (c.sucursalIds || [])
+            .map(sid => sucursalesDelCliente.find(s => s.id === sid)?.nombre)
+            .filter(Boolean);
+
+        const chipsSucursales = sucursalesNombres.length > 0
+            ? sucursalesNombres.map(n => `<span class="chip-sucursal">${n}</span>`).join('')
+            : '<span class="item-card-sub">Sin sucursales asignadas</span>';
+
+        return `
+            <div class="item-card">
+                <div class="item-card-info">
+                    <strong>${c.nombre}</strong>
+                    <span class="item-card-sub">${[c.email, c.telefono].filter(Boolean).join(' · ') || 'Sin datos de contacto'}</span>
+                    <div class="chips-container">${chipsSucursales}</div>
+                </div>
+                <div class="item-card-acciones">
+                    <button class="btn-accion" title="Editar" onclick="abrirFormContacto(${c.id})">
+                        <i class="bi bi-pencil"></i>
+                    </button>
+                    <button class="btn-accion danger" title="Desactivar" onclick="desactivarContacto(${c.id})">
+                        <i class="bi bi-trash3"></i>
+                    </button>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+function abrirFormContacto(id) {
+    contactoEditandoId = id;
+    const card = document.getElementById('formContactoCard');
+    const titulo = document.getElementById('formContactoTitulo');
+
+    limpiarErroresContacto();
+
+    // Arma los checkboxes de sucursales SIEMPRE fresco (por si se agregó una sucursal recién)
+    const checksCont = document.getElementById('contactoSucursalesCheckboxes');
+    if (sucursalesDelCliente.length === 0) {
+        checksCont.innerHTML = '<span class="item-card-sub">Cargá al menos una sucursal primero.</span>';
+    } else {
+        const seleccionadas = id
+            ? (contactosDelCliente.find(c => c.id === id)?.sucursalIds || [])
+            : [];
+
+        checksCont.innerHTML = sucursalesDelCliente.map(s => `
+            <label class="checkbox-sucursal-item">
+                <input type="checkbox" value="${s.id}" ${seleccionadas.includes(s.id) ? 'checked' : ''}>
+                ${s.nombre}
+            </label>
+        `).join('');
+    }
+
+    if (id) {
+        const c = contactosDelCliente.find(x => x.id === id);
+        if (!c) return;
+        titulo.textContent = 'Editar contacto';
+        document.getElementById('contactoNombre').value = c.nombre || '';
+        document.getElementById('contactoEmail').value = c.email || '';
+        document.getElementById('contactoTelefono').value = c.telefono || '';
+    } else {
+        titulo.textContent = 'Nuevo contacto';
+        document.getElementById('contactoNombre').value = '';
+        document.getElementById('contactoEmail').value = '';
+        document.getElementById('contactoTelefono').value = '';
+    }
+
+    card.classList.remove('d-none');
+    document.getElementById('contactoNombre').focus();
+}
+
+function cerrarFormContacto() {
+    document.getElementById('formContactoCard').classList.add('d-none');
+    contactoEditandoId = null;
+    limpiarErroresContacto();
+}
+
+function limpiarErroresContacto() {
+    document.getElementById('errContactoNombre')?.classList.remove('visible');
+    document.getElementById('contactoNombre')?.classList.remove('error');
+}
+
+async function guardarContacto() {
+    limpiarErroresContacto();
+
+    const nombre = document.getElementById('contactoNombre').value.trim();
+    if (!nombre) {
+        document.getElementById('errContactoNombre').classList.add('visible');
+        document.getElementById('contactoNombre').classList.add('error');
+        return;
+    }
+
+    const sucursalIds = Array.from(
+        document.querySelectorAll('#contactoSucursalesCheckboxes input[type="checkbox"]:checked')
+    ).map(cb => parseInt(cb.value));
+
+    const body = {
+        clienteId: clienteSucursalesId,
+        nombre,
+        email: document.getElementById('contactoEmail').value.trim() || null,
+        telefono: document.getElementById('contactoTelefono').value.trim() || null,
+        sucursalIds
+    };
+
+    const esEdicion = contactoEditandoId !== null;
+    const url = esEdicion
+        ? `${CONTACTOS_URL}/contactos/${contactoEditandoId}`
+        : `${CONTACTOS_URL}/contactos`;
+    const method = esEdicion ? 'PUT' : 'POST';
+
+    const btn = document.getElementById('btnGuardarContacto');
+    btn.disabled = true;
+
+    try {
+        const res = await fetch(url, {
+            method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${TOKEN()}`
+            },
+            body: JSON.stringify(body)
+        });
+        if (!res.ok) throw new Error(await res.text());
+
+        cerrarFormContacto();
+        await cargarContactos();
+        mostrarToast(esEdicion ? 'Contacto actualizado ✓' : 'Contacto creado ✓', 'success');
+
+    } catch (err) {
+        mostrarToast(err.message || 'Error al guardar el contacto', 'danger');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function desactivarContacto(id) {
+    if (!confirm('¿Desactivar este contacto? Dejará de recibir avisos de todas las sucursales.')) return;
+    try {
+        const res = await fetch(`${CONTACTOS_URL}/contactos/${id}/desactivar`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${TOKEN()}` }
+        });
+        if (!res.ok) throw new Error();
+        await cargarContactos();
+        mostrarToast('Contacto desactivado', 'success');
+    } catch {
+        mostrarToast('Error al desactivar el contacto', 'danger');
+    }
+}
+
+function formatProvincia(val) {
+    if (!val) return '';
+    return val.replace(/_/g, ' ').toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
 }
