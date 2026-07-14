@@ -6,25 +6,13 @@
     <title>Mi Portal - CHEMICONSULT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/sidebar.css"/>
     <link rel="stylesheet" href="css/dashboard/dashboard-clientes.css">
 </head>
 <body>
 
 <!-- SIDEBAR -->
-<div class="sidebar">
-    <div class="sidebar-logo">
-        <h2>CHEMICONSULT</h2>
-        <p>Laboratorio de análisis</p>
-    </div>
-
-    <a href="dashboard-cliente.html" class="active"><i class="bi bi-house"></i> Mi portal</a>
-    <a href="#"><i class="bi bi-person-circle"></i> Mi perfil</a>
-
-    <hr class="sidebar-divider">
-    <div class="sidebar-bottom">
-        <a href="#" id="logout-btn"><i class="bi bi-box-arrow-right"></i> Cerrar sesión</a>
-    </div>
-</div>
+<div id="sidebar-container"></div>
 
 <!-- CONTENIDO -->
 <div class="content">
@@ -158,6 +146,7 @@
 </div>
 
 <script src="js/dashboard-clientes.js"></script>
+<script src="js/sidebar.js"></script>
 
 </body>
 </html>

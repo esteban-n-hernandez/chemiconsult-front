@@ -29,109 +29,6 @@ body {
     font-family: 'Segoe UI', sans-serif;
 }
 
-/* ==========================================================================
-   ── Sidebar (Verde plano original + tipografía minimalista actual) ──
-   ========================================================================== */
-.sidebar {
-    width: 240px;
-    background: #5EA504;
-    border-radius: 16px;
-    padding: 2rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    flex-shrink: 0;
-
-    /* Estructura independiente flotante */
-    height: calc(100vh - 4rem);
-    margin: 2rem 0 2rem 2rem;
-
-    /* Sombra ultra sutil y difuminada para que parezca flotar suavemente */
-    box-shadow: 0 12px 30px rgba(94, 165, 4, 0.06);
-}
-
-.sidebar-logo {
-    text-align: left;
-    padding: 0 0.75rem;
-    margin-bottom: 2.5rem;
-}
-
-.sidebar-logo h2 {
-    font-size: 1.1rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: 0.2px;
-    color: #ffffff;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.sidebar-logo h2::before {
-    content: "";
-    width: 9px;
-    height: 9px;
-    border-radius: 3px;
-    background: #ffffff;
-    flex-shrink: 0;
-}
-
-.sidebar-logo p {
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.65);
-    margin: 3px 0 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-/* Enlaces: misma tipografía y espaciado actuales, adaptados al fondo verde */
-.sidebar a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    padding: 0.65rem 0.75rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13.5px;
-    font-weight: 500;
-    border-left: 2px solid transparent;
-    transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
-}
-
-.sidebar a:hover {
-    background: rgba(255, 255, 255, 0.08);
-    color: #ffffff;
-}
-
-.sidebar a.active {
-    background: rgba(255, 255, 255, 0.16);
-    color: #ffffff;
-    font-weight: 600;
-    border-left: 2px solid #ffffff;
-}
-
-.sidebar a i {
-    font-size: 17px;
-    color: rgba(255, 255, 255, 0.75);
-    transition: color 0.15s ease;
-}
-
-.sidebar a:hover i,
-.sidebar a.active i {
-    color: #ffffff;
-}
-
-.sidebar-divider {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    margin: 1.25rem 0.75rem;
-}
-
-.sidebar-bottom {
-    margin-top: auto;
-}
-
 /* ── Contenido con Ajuste Flotante Compensado ── */
 .content {
     flex: 1;
@@ -657,22 +554,6 @@ button.btn-nueva-muestra-btn {
 }
 
 @media (max-width: 768px) {
-    body {
-        flex-direction: column;
-        overflow: auto;
-    }
-
-    .sidebar {
-        width: 100%;
-        flex-direction: row;
-        padding: 0.75rem 1rem;
-        justify-content: space-around;
-    }
-
-    .sidebar-logo, .sidebar-divider {
-        display: none;
-    }
-
     .content {
         padding: 1rem;
     }

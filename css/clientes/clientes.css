@@ -35,68 +35,6 @@ body {
     padding: 0;
 }
 
-.sidebar {
-    width: 240px;
-    min-height: 100vh;
-    background: linear-gradient(180deg, #5EA504 0%, #4a8403 100%);
-    color: white;
-    padding: 1.5rem 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    flex-shrink: 0;
-}
-
-
-.sidebar-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.sidebar-logo h2 {
-    font-size: 1.3rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: 1px;
-}
-
-.sidebar-logo p {
-    font-size: 11px;
-    opacity: 0.75;
-    margin: 2px 0 0;
-}
-
-.sidebar a {
-    color: white;
-    text-decoration: none;
-    padding: 0.65rem 1rem;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 14px;
-    transition: background 0.2s;
-}
-
-.sidebar a:hover,
-.sidebar a.active {
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.sidebar a i {
-    font-size: 18px;
-}
-
-.sidebar-divider {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 0.75rem 0;
-}
-
-.sidebar-bottom {
-    margin-top: auto;
-}
-
 
 /* ══════════════════════════════════════════
    CONTENIDO PRINCIPAL
