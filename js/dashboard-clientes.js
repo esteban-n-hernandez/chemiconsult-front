@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080/api";
+const API_CLIENTES_BASE = `${API_BASE}/api`;
 
 // ── Guard ──
 const rol = (localStorage.getItem("userRole") || "").toUpperCase();
@@ -44,7 +44,7 @@ const POR_PAGINA     = 10;
 
 async function cargarEstudios() {
     try {
-        const res = await fetch(`${API_BASE}/estudios/user/${userId}`, {
+        const res = await fetch(`${API_CLIENTES_BASE}/estudios/user/${userId}`, {
             headers: { "Authorization": `Bearer ${token}` }
         });
 
@@ -176,7 +176,7 @@ const pdfIframe  = document.getElementById("pdfIframe");
 const pdfLoading = document.getElementById("pdfLoading");
 
 function abrirPDF(estudioId, protocolo) {
-    const url = `${API_BASE}/estudios/${estudioId}/resultado`;
+    const url = `${API_CLIENTES_BASE}/estudios/${estudioId}/resultado`;
 
     // Actualizar título y links
     document.getElementById("pdfPanelTitulo").textContent = `Informe ${protocolo}`;

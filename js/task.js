@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:8080/api/task";
+const API_URL = `${API_BASE}/api/task`;
 const token = localStorage.getItem("token");
 const userId = localStorage.getItem("userId");
 const userEmail = localStorage.getItem("userEmail");

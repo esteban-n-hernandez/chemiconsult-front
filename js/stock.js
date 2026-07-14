@@ -1,4 +1,4 @@
-const API_URL = 'http://localhost:8080/api/stock';
+const API_URL = `${API_BASE}/api/stock`;
 
 const rol = (localStorage.getItem('userRole') || '').toUpperCase();
 if (!localStorage.getItem('token') || rol === 'ROLE_CLIENTE') {
