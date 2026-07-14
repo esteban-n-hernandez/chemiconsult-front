@@ -28,87 +28,21 @@ body {
     margin: 0;
 }
 
-/* ── Sidebar Premium Minimalista (Verde Plano Corporativo Puro) ── */
-.sidebar {
-    width: 240px;
-    background: #5EA504;
-    border-radius: 16px;
-    padding: 2.5rem 1.25rem;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    flex-shrink: 0;
-    height: calc(100vh - 4rem);
-    margin: 2rem 0 2rem 2rem;
-    box-shadow: 0 12px 30px rgba(94, 165, 4, 0.06);
-}
-
-.sidebar-logo {
-    text-align: center;
-    margin-bottom: 3rem;
-}
-
-.sidebar-logo h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin: 0;
-    letter-spacing: 0.5px;
-    color: #ffffff;
-}
-
-.sidebar-logo p {
-    font-size: 10px;
-    color: rgba(255, 255, 255, 0.65);
-    margin: 3px 0 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-}
-
-.sidebar a {
-    color: rgba(255, 255, 255, 0.8);
-    text-decoration: none;
-    padding: 0.7rem 0.85rem;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 13.5px;
-    font-weight: 500;
-    transition: all 0.15s ease;
-}
-
-.sidebar a:hover {
-    background: rgba(255, 255, 255, 0.06);
-    color: #ffffff;
-}
-
-.sidebar a.active {
-    background: rgba(255, 255, 255, 0.15);
-    color: #ffffff;
-    font-weight: 600;
-    box-shadow: none;
-}
-
-.sidebar a i {
-    font-size: 18px;
-}
-
-.sidebar-divider {
-    border: none;
-    border-top: 1px solid rgba(255, 255, 255, 0.12);
-    margin: 1.25rem 0;
-}
-
-.sidebar-bottom {
-    margin-top: auto;
-}
-
 /* ── Contenido con Ajuste Flotante Compensado ── */
 .content {
     flex: 1;
-    padding: 2rem 2.5rem 2rem 2rem;
+    padding: 2rem 2.5rem 2rem 2rem; /* Margen derecho compensatorio para equilibrar la barra */
     overflow-y: auto;
     height: 100vh;
+}
+
+
+
+/* ── Contenido ── */
+.content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
 }
 
 /* ── Header ── */
@@ -158,8 +92,8 @@ body {
     width: 38px;
     height: 38px;
     border-radius: 50%;
-    background: var(--color-background-info);
-    color: var(--color-text-info);
+    background: var(--verde-suave);
+    color: var(--verde-oscuro);
     display: flex;
     align-items: center;
     justify-content: center;
