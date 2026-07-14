@@ -776,3 +776,192 @@ body {
     background: #adb5bd;
     cursor: not-allowed;
 }
+
+/* ══════════════════════════════════════════
+   ALERTA DE ERROR DEL SERVIDOR (modal asignar usuario)
+   ══════════════════════════════════════════ */
+.alert-error-servidor {
+    background: #fdecea;
+    color: #b02a37;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    padding: 0.6rem 0.9rem;
+    font-size: 12.5px;
+    margin-top: 0.75rem;
+}
+
+/* ══════════════════════════════════════════
+   MODAL SUCURSALES Y CONTACTOS
+   ══════════════════════════════════════════ */
+.modal-box-lg {
+    max-width: 720px;
+    width: 100%;
+}
+
+.d-none {
+    display: none !important;
+}
+
+.seccion-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+}
+
+.seccion-ayuda {
+    font-size: 12px;
+    color: #6c757d;
+    margin: -0.3rem 0 0.6rem;
+}
+
+.separador-modal {
+    border: none;
+    border-top: 1px solid #e9ecef;
+    margin: 1.5rem 0;
+}
+
+.btn-add-inline {
+    background: #f2f7e9;
+    color: #4a8403;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.8rem;
+    font-size: 12.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-add-inline:hover {
+    background: #e5f0d4;
+}
+
+.lista-sucursales,
+.lista-contactos {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #f8f9fa;
+    border: 1px solid #eee;
+    border-radius: 10px;
+    padding: 0.7rem 0.9rem;
+}
+
+.item-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.item-card-info strong {
+    font-size: 13.5px;
+    color: #1a1a2e;
+}
+
+.item-card-sub {
+    font-size: 12px;
+    color: #6c757d;
+}
+
+.item-card-acciones {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.chips-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin-top: 4px;
+}
+
+.chip-sucursal {
+    background: #eef4ff;
+    color: #2c5aa0;
+    font-size: 10.5px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 12px;
+}
+
+.sin-datos-inline {
+    font-size: 12.5px;
+    color: #adb5bd;
+    text-align: center;
+    padding: 1rem 0;
+}
+
+.form-inline-card {
+    background: #fbfbfb;
+    border: 1px dashed #d0d0d0;
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+}
+
+.form-inline-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 0.5rem;
+}
+
+.btn-cancelar-sm {
+    background: transparent;
+    border: 1px solid #dee2e6;
+    color: #6c757d;
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    font-size: 12.5px;
+    cursor: pointer;
+}
+
+.btn-guardar-sm {
+    background: #5EA504;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    font-size: 12.5px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    cursor: pointer;
+}
+
+.btn-guardar-sm:hover:not(:disabled) {
+    background: #4a8403;
+}
+
+.checkboxes-sucursales {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-height: 140px;
+    overflow-y: auto;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    padding: 0.6rem;
+}
+
+.checkbox-sucursal-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12.5px;
+    cursor: pointer;
+}
