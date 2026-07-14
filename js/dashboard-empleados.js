@@ -1,4 +1,4 @@
-const API_URL = 'https://chemiconsult.onrender.com';
+const API_URL = 'http://localhost:8080';
 
 // ── Guard: solo EMPLEADO e IT ──
 const rol = (localStorage.getItem("userRole") || "").toUpperCase();
@@ -327,7 +327,7 @@ formAlta.addEventListener("submit", async function (e) {
     btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
     try {
-        const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
+        const response = await fetch("http://localhost:8080/api/estudios", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -378,7 +378,7 @@ async function cargarEstudios() {
         "",
     );
 
-    const DEFAULT_API_BASE = "https://chemiconsult.onrender.com";
+    const DEFAULT_API_BASE = "http://localhost:8080";
     const tried = [];
 
     // Helper para intentar una URL concreta
@@ -424,7 +424,7 @@ async function cargarEstudios() {
                     <td colspan="7" class="text-center text-danger">
                         Error al cargar muestras. Se intentaron las rutas: ${tried.join(", ")}.<br>
                         Si tu backend corre en otro puerto, guarda la base en localStorage con:<br>
-                        <code>localStorage.setItem('apiBase','https://chemiconsult.onrender.com')</code>
+                        <code>localStorage.setItem('apiBase','http://localhost:8080')</code>
                     </td>
                 </tr>`;
     }
