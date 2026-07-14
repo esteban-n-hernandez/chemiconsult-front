@@ -1,5 +1,3 @@
-const API_URL = API_BASE;
-
 // ── Guard: solo EMPLEADO e IT ──
 const rol = (localStorage.getItem("userRole") || "").toUpperCase();
 if (!localStorage.getItem("token") || rol === "ROLE_CLIENTE") {
