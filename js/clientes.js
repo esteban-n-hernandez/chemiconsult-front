@@ -1,4 +1,4 @@
-const API_URL = 'https://chemiconsult.onrender.com/api/clientes';
+const API_URL = `${API_BASE}/api/clientes`;
 const TOKEN   = () => localStorage.getItem('token');
 
 let todosLosClientes  = [];

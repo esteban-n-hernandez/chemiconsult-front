@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Stock - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/stock/stock.css"/>
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<div class="content">
+
+    <div class="page-header">
+        <div>
+            <h1>Control de stock</h1>
+            <p>Insumos y reactivos del laboratorio</p>
+        </div>
+        <button class="btn-nuevo-item" id="btnNuevoItem">
+            <i class="bi bi-plus-lg"></i> Nuevo ítem
+        </button>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card verde">
+            <div class="kpi-icon verde"><i class="bi bi-box-seam"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-total">—</h3>
+                <p>Ítems en stock</p>
+            </div>
+        </div>
+        <div class="kpi-card naranja">
+            <div class="kpi-icon naranja"><i class="bi bi-exclamation-triangle"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-medio">—</h3>
+                <p>Nivel medio</p>
+            </div>
+        </div>
+        <div class="kpi-card rojo">
+            <div class="kpi-icon rojo"><i class="bi bi-bell-fill"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-poco">—</h3>
+                <p>Reponer urgente</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h5><i class="bi bi-table me-2" style="color:var(--verde);"></i>Inventario</h5>
+            <div class="filtros">
+                <input type="text" id="inputBusqueda" class="filtro-input" placeholder="Buscar ítem..." autocomplete="off"/>
+                <select id="selectCategoria" class="filtro-select">
+                    <option value="">Todas las categorías</option>
+                    <option value="REACTIVOS">Reactivos</option>
+                    <option value="MATERIALES">Materiales</option>
+                    <option value="DESCARTABLES">Descartables</option>
+                    <option value="EQUIPOS">Equipos</option>
+                    <option value="OTROS">Otros</option>
+                </select>
+                <select id="selectNivel" class="filtro-select">
+                    <option value="">Todos los niveles</option>
+                    <option value="ALTO">Alto</option>
+                    <option value="MEDIO">Medio</option>
+                    <option value="POCO">Poco</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="panel-body" style="padding:0;">
+            <table class="tabla-stock" id="tablaStock">
+                <thead>
+                <tr>
+                    <th>Ítem</th>
+                    <th>Descripción</th>
+                    <th>Categoría</th>
+                    <th>Nivel</th>
+                    <th>Observaciones</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="tablaStockBody">
+                <tr>
+                    <td colspan="6" class="text-center" style="padding:2rem; color:#adb5bd;">Cargando...</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="sin-resultados" id="sinResultados" style="display:none;">
+                <i class="bi bi-box-seam"></i>
+                <p>No se encontraron ítems</p>
+            </div>
+
+            <div class="panel-footer">
+                <small id="infoPaginacion">Mostrando 0 ítems</small>
+                <ul class="paginacion" id="paginacion"></ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL ALTA / EDICIÓN -->
+<div class="modal-overlay" id="modalStock">
+    <div class="modal-box">
+
+        <div class="modal-header">
+            <h5 id="modalTitulo"><i class="bi bi-box-seam"></i> Nuevo ítem</h5>
+            <button class="modal-close" id="modalClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <form id="formStock" novalidate>
+            <div class="modal-body">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" id="inputNombre" class="form-control-custom" placeholder="Ej: Ácido sulfúrico" autocomplete="off"/>
+                        <span class="field-error" id="errNombre">Campo requerido</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría <span class="required">*</span></label>
+                        <select id="inputCategoria" class="form-control-custom">
+                            <option value="">Seleccioná una categoría...</option>
+                            <option value="REACTIVOS">Reactivos</option>
+                            <option value="MATERIALES">Materiales</option>
+                            <option value="DESCARTABLES">Descartables</option>
+                            <option value="EQUIPOS">Equipos</option>
+                            <option value="OTROS">Otros</option>
+                        </select>
+                        <span class="field-error" id="errCategoria">Seleccioná una categoría</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" id="inputDescripcion" class="form-control-custom" placeholder="Ej: H₂SO₄ 98% — frasco 1L" autocomplete="off"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Nivel de stock <span class="required">*</span></label>
+                    <div class="nivel-selector">
+                        <label class="nivel-option" id="labelAlto">
+                            <input type="radio" name="nivel" value="ALTO"/>
+                            <span class="nivel-dot alto"></span>
+                            Alto
+                        </label>
+                        <label class="nivel-option" id="labelMedio">
+                            <input type="radio" name="nivel" value="MEDIO"/>
+                            <span class="nivel-dot medio"></span>
+                            Medio
+                        </label>
+                        <label class="nivel-option" id="labelPoco">
+                            <input type="radio" name="nivel" value="POCO"/>
+                            <span class="nivel-dot poco"></span>
+                            Poco
+                        </label>
+                    </div>
+                    <span class="field-error" id="errNivel">Seleccioná un nivel</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="inputObservaciones" class="form-control-custom textarea-vertical" rows="2"
+                              placeholder="Notas adicionales..."></textarea>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardar">
+                    <i class="bi bi-check-lg"></i> Guardar ítem
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINACIÓN -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h5><i class="bi bi-trash3"></i> Eliminar ítem</h5>
+            <button class="modal-close" id="modalEliminarClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body" style="gap:0.75rem;">
+            <div class="baja-warning-icon"><i class="bi bi-box-seam"></i></div>
+            <p class="baja-mensaje">¿Eliminar <strong id="eliminarItemNombre">—</strong> del inventario?</p>
+            <p class="baja-submensaje">Esta acción no puede revertirse.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
+            <button type="button" class="btn-eliminar" id="btnConfirmarEliminar">
+                <i class="bi bi-trash3"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-confirm" id="toastConfirm">
+    <i id="toastIcon" class="bi bi-check-circle-fill"></i>
+    <span id="toastMsg">Operación realizada</span>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/stock.js"></script>
+</body>
+</html>

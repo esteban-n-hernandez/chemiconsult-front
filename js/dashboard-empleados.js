@@ -1,5 +1,3 @@
-const API_URL = 'https://chemiconsult.onrender.com';
-
 // ── Guard: solo EMPLEADO e IT ──
 const rol = (localStorage.getItem("userRole") || "").toUpperCase();
 if (!localStorage.getItem("token") || rol === "ROLE_CLIENTE") {
@@ -327,7 +325,7 @@ formAlta.addEventListener("submit", async function (e) {
     btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
 
     try {
-        const response = await fetch("https://chemiconsult.onrender.com/api/estudios", {
+        const response = await fetch(`${API_BASE}/api/estudios`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -372,44 +370,12 @@ async function cargarEstudios() {
     tablaBody.innerHTML = `<tr><td colspan="7" class="text-center">Cargando muestras...</td></tr>`;
     const token = localStorage.getItem("token");
 
-    // API_BASE configurable desde localStorage (útil en desarrollo si el backend corre en otro puerto)
-    const API_BASE = (localStorage.getItem("apiBase") || "").replace(
-        /\/$/,
-        "",
-    );
-
-    const DEFAULT_API_BASE = "https://chemiconsult.onrender.com";
-    const tried = [];
-
-    // Helper para intentar una URL concreta
-    async function tryFetch(url) {
-        tried.push(url);
-        return await fetch(url, {
+    try {
+        const resp = await fetch(`${API_BASE}/api/estudios/all`, {
             method: "GET",
             headers: token ? {Authorization: "Bearer " + token} : {},
         });
-    }
 
-    try {
-        const baseEndpoint =
-            (API_BASE ? API_BASE : DEFAULT_API_BASE) + "/api/estudios/all";
-        let resp = await tryFetch(baseEndpoint);
-
-        // Si obtuvimos 404 y no se especificó API_BASE, intentamos algunos puertos comunes de dev
-        if (resp && resp.status === 404 && !API_BASE) {
-            const fallbacks = [API_URL];
-            for (const fb of fallbacks) {
-                try {
-                    resp = await tryFetch(fb + "/api/estudios/all");
-                    console.log("Respuesta lista de muestras", resp);
-                    if (resp && resp.ok) break;
-                } catch (e) {
-                    // Ignorar y seguir probando
-                }
-            }
-        }
-
-        if (!resp) throw new Error("No hubo respuesta del servidor");
         if (!resp.ok) {
             const txt = await resp.text().catch(() => "");
             throw new Error(`HTTP ${resp.status} ${resp.statusText} - ${txt}`);
@@ -422,9 +388,7 @@ async function cargarEstudios() {
         tablaBody.innerHTML = `
                 <tr>
                     <td colspan="7" class="text-center text-danger">
-                        Error al cargar muestras. Se intentaron las rutas: ${tried.join(", ")}.<br>
-                        Si tu backend corre en otro puerto, guarda la base en localStorage con:<br>
-                        <code>localStorage.setItem('apiBase','https://chemiconsult.onrender.com')</code>
+                        Error al cargar muestras.
                     </td>
                 </tr>`;
     }
@@ -662,23 +626,8 @@ function startUploadForId(id, triggerBtn) {
 
 // Subir documento usando fetch + FormData
 async function subirDocumento(id, file, triggerBtn) {
-    const API_BASE = (localStorage.getItem("apiBase") || "").replace(
-        /\/$/,
-        "",
-    );
     const token = localStorage.getItem("token");
-    const endpoint = `/api/estudios/${id}/documento`;
-    const bases = API_BASE
-        ? [API_BASE]
-        : [
-            API_URL,
-            "http://127.0.0.1:8080",
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-        ];
-    const intentadas = [];
 
-    // Opcional: indicar progreso/estados en el botón trigger
     let originalHtml;
     if (triggerBtn) {
         originalHtml = triggerBtn.innerHTML;
@@ -689,39 +638,20 @@ async function subirDocumento(id, file, triggerBtn) {
     try {
         const fd = new FormData();
         fd.append("file", file, file.name);
-        let ultimoError = null;
 
-        for (const base of bases) {
-            const url = `${base}${endpoint}`;
-            intentadas.push(url);
-            try {
-                const resp = await fetch(url, {
-                    method: "POST",
-                    headers: token ? {Authorization: "Bearer " + token} : {},
-                    body: fd,
-                });
+        const resp = await fetch(`${API_BASE}/api/estudios/${id}/documento`, {
+            method: "POST",
+            headers: token ? {Authorization: "Bearer " + token} : {},
+            body: fd,
+        });
 
-                if (!resp.ok) {
-                    // Si no se configuró apiBase y pegamos primero al front, probamos backends comunes
-                    if (!API_BASE && resp.status === 404) continue;
-                    const txt = await resp.text().catch(() => "");
-                    throw new Error(
-                        `HTTP ${resp.status} ${resp.statusText} ${txt}`,
-                    );
-                }
-
-                mostrarToast("Archivo subido correctamente");
-                // recargar la lista para reflejar cambios (archivoUrl/estado)
-                await cargarEstudios();
-                return;
-            } catch (err) {
-                ultimoError = err;
-                if (API_BASE) break; // si está configurado, no hay que adivinar rutas
-            }
+        if (!resp.ok) {
+            const txt = await resp.text().catch(() => "");
+            throw new Error(`HTTP ${resp.status} ${resp.statusText} ${txt}`);
         }
-        throw new Error(
-            `No se pudo subir el archivo. Rutas intentadas: ${intentadas.join(", ")}. Detalle: ${(ultimoError && (ultimoError.message || ultimoError)) || "sin detalle"}`,
-        );
+
+        mostrarToast("Archivo subido correctamente");
+        await cargarEstudios();
     } catch (err) {
         console.error("Error subiendo documento:", err);
         alert("Error subiendo el archivo: " + (err.message || err));
@@ -734,21 +664,7 @@ async function subirDocumento(id, file, triggerBtn) {
 }
 
 async function verResultado(id, triggerBtn) {
-    const API_BASE = (localStorage.getItem("apiBase") || "").replace(
-        /\/$/,
-        "",
-    );
     const token = localStorage.getItem("token");
-    const endpoint = `/api/estudios/${id}/resultado`;
-    const bases = API_BASE
-        ? [API_BASE]
-        : [
-            API_URL,
-            "http://127.0.0.1:8080",
-            "http://localhost:3000",
-            "http://127.0.0.1:3000",
-        ];
-    const intentadas = [];
     let resultadoWindow = null;
 
     let originalHtml;
@@ -760,49 +676,29 @@ async function verResultado(id, triggerBtn) {
 
     try {
         resultadoWindow = window.open("", "_blank");
-        let ultimoError = null;
 
-        for (const base of bases) {
-            const url = `${base}${endpoint}`;
-            intentadas.push(url);
-            try {
-                const resp = await fetch(url, {
-                    method: "GET",
-                    headers: token ? {Authorization: "Bearer " + token} : {},
-                });
+        const resp = await fetch(`${API_BASE}/api/estudios/${id}/resultado`, {
+            method: "GET",
+            headers: token ? {Authorization: "Bearer " + token} : {},
+        });
 
-                if (!resp.ok) {
-                    if (!API_BASE && resp.status === 404) continue;
-                    const txt = await resp.text().catch(() => "");
-                    throw new Error(
-                        `HTTP ${resp.status} ${resp.statusText} ${txt}`,
-                    );
-                }
-
-                const blob = await resp.blob();
-                if (!blob || blob.size === 0) {
-                    throw new Error("El resultado está vacío");
-                }
-
-                const blobUrl = URL.createObjectURL(blob);
-                if (resultadoWindow) {
-                    resultadoWindow.location.href = blobUrl;
-                } else {
-                    window.open(blobUrl, "_blank");
-                }
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
-                return;
-            } catch (err) {
-                ultimoError = err;
-                if (API_BASE) break;
-            }
+        if (!resp.ok) {
+            const txt = await resp.text().catch(() => "");
+            throw new Error(`HTTP ${resp.status} ${resp.statusText} ${txt}`);
         }
-        throw new Error(
-            `No se pudo abrir el resultado. Rutas intentadas: ${intentadas.join(", ")}. Detalle: ${(ultimoError && (ultimoError.message || ultimoError)) || "sin detalle"}`,
-        );
+
+        const blob = await resp.blob();
+        if (!blob || blob.size === 0) throw new Error("El resultado está vacío");
+
+        const blobUrl = URL.createObjectURL(blob);
+        if (resultadoWindow) {
+            resultadoWindow.location.href = blobUrl;
+        } else {
+            window.open(blobUrl, "_blank");
+        }
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 60000);
     } catch (err) {
-        if (resultadoWindow && !resultadoWindow.closed)
-            resultadoWindow.close();
+        if (resultadoWindow && !resultadoWindow.closed) resultadoWindow.close();
         console.error("Error obteniendo resultado:", err);
         alert("Error abriendo resultado: " + (err.message || err));
     } finally {

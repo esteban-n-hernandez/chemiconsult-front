@@ -1,4 +1,4 @@
-const API_URL = "https://chemiconsult.onrender.com/api";
+const API_URL = `${API_BASE}/api`;
 
 document.addEventListener("DOMContentLoaded", () => {
     cargarMetodologias();
