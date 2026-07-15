@@ -13,10 +13,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     await loadTasks();
     setupForm();
     setupDropzones();
-    setupReasignarForm();
 });
 
-// NUEVO: trae la lista de usuarios (empleados) para poblar los selects de asignación
+// Trae la lista de usuarios para poblar los selects de asignación
 async function cargarUsuarios() {
     try {
         const res = await fetch(USERS_URL, {
@@ -26,26 +25,20 @@ async function cargarUsuarios() {
         usuarios = await res.json();
 
         const selectAlta = document.getElementById("asignadoUserId");
-        const selectReasignar = document.getElementById("reasignarUserId");
-
         usuarios.forEach(u => {
             const label = u.username || u.email;
             selectAlta.appendChild(new Option(label, u.id));
-            selectReasignar.appendChild(new Option(label, u.id));
         });
 
-        // Preselecciona al usuario logueado como asignado por defecto (se puede cambiar antes de guardar)
         if (userId) {
             selectAlta.value = userId;
         }
     } catch (e) {
         console.error(e);
-        // No bloquea el resto de la pantalla — los selects quedan con "Sin asignar" solamente
     }
 }
 
 async function loadTasks() {
-    console.log(token);
     try {
         const res = await fetch(API_URL, {
             method: "GET",
@@ -63,56 +56,55 @@ async function loadTasks() {
 function renderBoard() {
     const colTodo = document.getElementById("col-todo");
     const colInProgress = document.getElementById("col-inprogress");
+    const colRevision = document.getElementById("col-revision");
     const colDone = document.getElementById("col-done");
 
     colTodo.innerHTML = "";
     colInProgress.innerHTML = "";
+    colRevision.innerHTML = "";
     colDone.innerHTML = "";
 
     tasks.forEach(task => {
         const card = createTaskCard(task);
         if (task.status === "TODO") colTodo.appendChild(card);
         else if (task.status === "IN_PROGRESS") colInProgress.appendChild(card);
+        else if (task.status === "EN_REVISION") colRevision.appendChild(card);
         else colDone.appendChild(card);
     });
 
     document.getElementById("count-todo").textContent = tasks.filter(t => t.status === "TODO").length;
     document.getElementById("count-inprogress").textContent = tasks.filter(t => t.status === "IN_PROGRESS").length;
+    document.getElementById("count-revision").textContent = tasks.filter(t => t.status === "EN_REVISION").length;
     document.getElementById("count-done").textContent = tasks.filter(t => t.status === "DONE").length;
 }
 
 function createTaskCard(task) {
     const div = document.createElement("div");
 
-    // Convertimos IN_PROGRESS a in_progress para que coincida exactamente con las reglas de CSS
     const statusClass = task.status.toLowerCase().replace("-", "_");
     div.className = `kanban-card ${statusClass}`;
     div.draggable = true;
     div.dataset.id = task.id;
 
-    // FIX: el backend ya manda userName correctamente en todas las respuestas (create/status/get).
-    // Si userName viene vacío es porque la tarea genuinamente no tiene usuario asignado —
-    // ya no debe caer al usuario logueado, eso mostraba el owner equivocado.
     const asignadoNombre = task.userName || "Sin asignar";
     const initials = task.userName ? getInitials(task.userName) : "—";
 
     div.innerHTML = `
-    <div class="kanban-card-body">
-        <div class="kanban-card-title">${escapeHtml(task.title)}</div>
-        <p class="kanban-card-desc">${escapeHtml(task.description || "")}</p>
+    <div class="kanban-card-top">
+        <p class="kanban-card-title">${escapeHtml(task.title)}</p>
     </div>
-    <div class="kanban-card-footer">
-        <div class="kanban-card-actions">
-            <button class="btn btn-link-danger p-0" title="Reasignar" onclick="abrirReasignar(${task.id})">
-                <i class="bi bi-person-plus"></i>
-            </button>
-            <button class="btn btn-link-danger p-0" title="Eliminar" onclick="deleteTask(${task.id})">
-                <i class="bi bi-trash3"></i>
-            </button>
-        </div>
-        <div class="task-creator" title="Asignado a: ${escapeHtml(asignadoNombre)}">
-            <span class="creator-avatar">${escapeHtml(initials)}</span>
-        </div>
+    <p class="kanban-card-desc">${escapeHtml(task.description || "")}</p>
+    <div class="kanban-card-assignee">
+        <span class="creator-avatar">${escapeHtml(initials)}</span>
+        <span class="assignee-name">${escapeHtml(asignadoNombre)}</span>
+    </div>
+    <div class="kanban-card-actions">
+        <button class="btn btn-link-danger" title="Editar" onclick="abrirEditar(${task.id})">
+            <i class="bi bi-pencil"></i>
+        </button>
+        <button class="btn btn-link-danger" title="Eliminar" onclick="deleteTask(${task.id})">
+            <i class="bi bi-trash3"></i>
+        </button>
     </div>
   `;
 
@@ -177,37 +169,80 @@ function setupForm() {
     const modalEl = document.getElementById("taskModal");
     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
 
+    // El botón "+ Nueva tarea" del header debe limpiar el modal antes de abrirlo
+    // (si venía de editar una tarea, hay que resetear el modo)
+    document.querySelector('[data-bs-target="#taskModal"]').addEventListener("click", abrirNuevaTarea);
+
     form.addEventListener("submit", async (e) => {
         e.preventDefault();
+
+        const taskId = document.getElementById("taskId").value;
+        const esEdicion = !!taskId;
 
         const payload = {
             title: document.getElementById("title").value.trim(),
             description: document.getElementById("description").value.trim(),
-            // NUEVO: usuario elegido en el select, en vez de siempre asignar al usuario logueado
             userId: document.getElementById("asignadoUserId").value
                 ? Number(document.getElementById("asignadoUserId").value)
                 : null
         };
 
+        // El estado inicial solo aplica al crear — al editar no se toca (se cambia arrastrando)
+        if (!esEdicion) {
+            payload.status = document.getElementById("status").value;
+        }
+
         try {
-            const res = await fetch(API_URL, {
-                method: "POST",
+            const res = await fetch(esEdicion ? `${API_URL}/${taskId}` : API_URL, {
+                method: esEdicion ? "PUT" : "POST",
                 headers: {"Content-Type": "application/json", 'Authorization': `Bearer ${token}`},
                 body: JSON.stringify(payload)
             });
-            if (!res.ok) throw new Error("No se pudo crear tarea");
+            if (!res.ok) throw new Error(esEdicion ? "No se pudo actualizar la tarea" : "No se pudo crear tarea");
 
-            const created = await res.json();
-            tasks.push(created);
+            const guardada = await res.json();
+            if (esEdicion) {
+                tasks = tasks.map(t => t.id === guardada.id ? guardada : t);
+            } else {
+                tasks.push(guardada);
+            }
             renderBoard();
 
-            form.reset();
             modal.hide();
         } catch (e) {
             console.error(e);
-            alert("Error creando tarea");
+            alert(esEdicion ? "Error actualizando la tarea" : "Error creando tarea");
         }
     });
+}
+
+// Abre el modal en modo "nueva tarea" — limpia cualquier estado de edición previo
+function abrirNuevaTarea() {
+    const form = document.getElementById("taskForm");
+    form.reset();
+    document.getElementById("taskId").value = "";
+    document.getElementById("taskModalTitle").textContent = "Nueva tarea";
+    document.getElementById("taskSubmitBtn").textContent = "Guardar";
+    document.getElementById("statusGroup").style.display = "block";
+    if (userId) document.getElementById("asignadoUserId").value = userId;
+}
+
+// Abre el modal en modo edición, precargado con los datos de la tarea
+function abrirEditar(taskId) {
+    const task = tasks.find(t => t.id === taskId);
+    if (!task) return;
+
+    document.getElementById("taskId").value = task.id;
+    document.getElementById("title").value = task.title || "";
+    document.getElementById("description").value = task.description || "";
+    document.getElementById("asignadoUserId").value = task.userId || "";
+    document.getElementById("taskModalTitle").textContent = "Editar tarea";
+    document.getElementById("taskSubmitBtn").textContent = "Guardar cambios";
+    // El estado no se edita acá (se cambia arrastrando la tarjeta entre columnas)
+    document.getElementById("statusGroup").style.display = "none";
+
+    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("taskModal"));
+    modal.show();
 }
 
 async function deleteTask(id) {
@@ -229,7 +264,6 @@ async function deleteTask(id) {
 function getInitials(nameOrEmail) {
     if (!nameOrEmail) return "??";
 
-    // Si viene en formato email (ej: carlos.mendoza@chemiconsult.com)
     if (nameOrEmail.includes("@")) {
         const namePart = nameOrEmail.split("@")[0];
         const parts = namePart.split(/[\._\-]/);
@@ -239,7 +273,6 @@ function getInitials(nameOrEmail) {
         return namePart.substring(0, 2).toUpperCase();
     }
 
-    // Si viene un nombre completo común (ej: "Carlos Mendoza")
     const parts = nameOrEmail.trim().split(" ");
     if (parts.length >= 2) {
         return (parts[0][0] + parts[1][0]).toUpperCase();
@@ -254,52 +287,4 @@ function escapeHtml(str) {
         .replaceAll(">", "&gt;")
         .replaceAll('"', "&quot;")
         .replaceAll("'", "&#039;");
-}
-// ══════════════════════════════════════════
-//  REASIGNAR TAREA
-// ══════════════════════════════════════════
-function abrirReasignar(taskId) {
-    const task = tasks.find(t => t.id === taskId);
-    if (!task) return;
-
-    document.getElementById("reasignarTaskId").value = taskId;
-    document.getElementById("reasignarUserId").value = task.userId || "";
-
-    const modal = bootstrap.Modal.getOrCreateInstance(document.getElementById("reasignarModal"));
-    modal.show();
-}
-
-function setupReasignarForm() {
-    const form = document.getElementById("reasignarForm");
-    const modalEl = document.getElementById("reasignarModal");
-    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
-
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
-
-        const taskId = document.getElementById("reasignarTaskId").value;
-        const nuevoUserId = document.getElementById("reasignarUserId").value;
-
-        if (!nuevoUserId) {
-            alert("Seleccioná un usuario para reasignar la tarea");
-            return;
-        }
-
-        try {
-            const res = await fetch(`${API_URL}/${taskId}/asignar?userId=${encodeURIComponent(nuevoUserId)}`, {
-                method: "PUT",
-                headers: { 'Authorization': `Bearer ${token}` }
-            });
-            if (!res.ok) throw new Error("No se pudo reasignar la tarea");
-
-            const updated = await res.json();
-            tasks = tasks.map(t => t.id === updated.id ? updated : t);
-            renderBoard();
-
-            modal.hide();
-        } catch (e) {
-            console.error(e);
-            alert("Error al reasignar la tarea");
-        }
-    });
 }

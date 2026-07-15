@@ -24,37 +24,18 @@
 
     <div class="row g-3">
         <!-- Columna Pendiente -->
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div class="kanban-col" data-status="TODO">
                 <div class="kanban-header">
                     <h6 class="m-0">Pendiente</h6>
-                    <span class="badge" id="count-todo">1</span>
+                    <span class="badge" id="count-todo">0</span>
                 </div>
-                <div id="col-todo" class="dropzone">
-
-                    <!-- Tarjeta Hardcodeada de Ejemplo con Usuario -->
-                    <div class="kanban-card todo">
-                        <div class="kanban-card-body">
-                            <h5 class="kanban-card-title">Análisis de aguas residuales</h5>
-                            <p class="kanban-card-desc">Revisión de parámetros microbiológicos según la resolución 241.</p>
-                        </div>
-                        <div class="kanban-card-footer">
-                            <div class="kanban-card-actions">
-                                <button class="btn btn-link-danger p-0" title="Reasignar"><i class="bi bi-person-plus"></i></button>
-                                <button class="btn btn-link-danger p-0" title="Eliminar"><i class="bi bi-trash3"></i></button>
-                            </div>
-                            <div class="task-creator" title="Creado por: Carlos Mendoza">
-                                <span class="creator-avatar">CM</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
+                <div id="col-todo" class="dropzone"></div>
             </div>
         </div>
 
         <!-- Columna En Progreso -->
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div class="kanban-col" data-status="IN_PROGRESS">
                 <div class="kanban-header">
                     <h6 class="m-0">En progreso</h6>
@@ -64,8 +45,19 @@
             </div>
         </div>
 
+        <!-- Columna En Revisión -->
+        <div class="col-12 col-lg-3">
+            <div class="kanban-col" data-status="EN_REVISION">
+                <div class="kanban-header">
+                    <h6 class="m-0">En revisión</h6>
+                    <span class="badge" id="count-revision">0</span>
+                </div>
+                <div id="col-revision" class="dropzone"></div>
+            </div>
+        </div>
+
         <!-- Columna Finalizadas -->
-        <div class="col-12 col-lg-4">
+        <div class="col-12 col-lg-3">
             <div class="kanban-col" data-status="DONE">
                 <div class="kanban-header">
                     <h6 class="m-0">Finalizadas</h6>
@@ -82,10 +74,11 @@
     <div class="modal-dialog">
         <form class="modal-content" id="taskForm">
             <div class="modal-header">
-                <h5 class="modal-title">Nueva tarea</h5>
+                <h5 class="modal-title" id="taskModalTitle">Nueva tarea</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="taskId">
                 <div class="mb-3">
                     <label class="form-label">Título</label>
                     <input type="text" class="form-control" id="title" required>
@@ -100,46 +93,23 @@
                         <option value="">Sin asignar</option>
                     </select>
                 </div>
-                <div class="mb-3">
+                <div class="mb-3" id="statusGroup">
                     <label class="form-label">Estado inicial</label>
                     <select class="form-select" id="status">
                         <option value="TODO">Pendiente</option>
                         <option value="IN_PROGRESS">En progreso</option>
+                        <option value="EN_REVISION">En revisión</option>
                         <option value="DONE">Finalizada</option>
                     </select>
                 </div>
             </div>
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" type="submit">Guardar</button>
+                <button class="btn btn-primary" type="submit" id="taskSubmitBtn">Guardar</button>
             </div>
         </form>
     </div>
 </div>
-
-<!-- Modal reasignar tarea -->
-<div class="modal fade" id="reasignarModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" id="reasignarForm">
-            <div class="modal-header">
-                <h5 class="modal-title">Reasignar tarea</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <input type="hidden" id="reasignarTaskId">
-                <div class="mb-2">
-                    <label class="form-label">Nuevo responsable</label>
-                    <select class="form-select" id="reasignarUserId" required>
-                        <option value="">Seleccionar usuario...</option>
-                    </select>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" type="submit">Reasignar</button>
-            </div>
-        </form>
-    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

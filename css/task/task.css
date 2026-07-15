@@ -4,19 +4,29 @@
 :root {
     --verde: #5EA504;
     --verde-oscuro: #4a8403;
-    --bg-main: #f8fafc;           /* Fondo ultra claro y limpio */
-    --bg-sidebar: #ffffff;        /* Sidebar blanco minimalista */
+    --bg-main: #f8fafc;
+    --bg-sidebar: #ffffff;
 
-    /* Textos y Bordes */
     --text-primary: #0f172a;
     --text-secondary: #64748b;
     --text-muted: #94a3b8;
-    --border-flat: #e2e8f0;       /* Líneas divisorias muy finas */
+    --border-flat: #e2e8f0;
 
-    /* Estados del Tablero (Acentos Sutiles) */
+    /* Estados del Tablero */
     --status-todo: #94a3b8;
     --status-inprogress: #3b82f6;
+    --status-revision: #d97706;
     --status-done: var(--verde);
+
+    /* Fondos suaves para los badges de estado (coherentes con cada color) */
+    --status-todo-bg: #f1f5f9;
+    --status-todo-text: #64748b;
+    --status-inprogress-bg: #eff6ff;
+    --status-inprogress-text: #2563eb;
+    --status-revision-bg: #fffbeb;
+    --status-revision-text: #b45309;
+    --status-done-bg: #f0fdf4;
+    --status-done-text: var(--verde-oscuro);
 }
 
 * {
@@ -48,7 +58,6 @@ body {
     color: var(--text-primary);
 }
 
-/* Botón Plano con Acento */
 .btn-primary {
     background-color: var(--verde) !important;
     border: none !important;
@@ -65,7 +74,7 @@ body {
 }
 
 /* ==========================================================================
-   Tablero Kanban Minimalista (Estilo "Flat")
+   Tablero Kanban — ahora con 4 columnas
    ========================================================================== */
 .kanban-col {
     background: #ffffff;
@@ -87,28 +96,29 @@ body {
 }
 
 .kanban-header h6 {
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     color: var(--text-primary);
     display: flex;
     align-items: center;
     gap: 8px;
+    margin: 0;
 }
 
-/* Pequeño punto indicador cosmético */
 .kanban-header h6::before {
     content: '';
     width: 7px;
     height: 7px;
     border-radius: 50%;
     display: inline-block;
+    flex-shrink: 0;
 }
 
 .kanban-col[data-status="TODO"] .kanban-header h6::before { background: var(--status-todo); }
 .kanban-col[data-status="IN_PROGRESS"] .kanban-header h6::before { background: var(--status-inprogress); }
+.kanban-col[data-status="EN_REVISION"] .kanban-header h6::before { background: var(--status-revision); }
 .kanban-col[data-status="DONE"] .kanban-header h6::before { background: var(--status-done); }
 
-/* Badges numéricos minimalistas */
 .kanban-header .badge {
     background: #f1f5f9 !important;
     color: var(--text-secondary) !important;
@@ -134,31 +144,36 @@ body {
 }
 
 /* ==========================================================================
-   ── Tarjetas Modernas Flotantes con Creador ──
+   Tarjetas — Estilo 3: franja lateral compacta
    ========================================================================== */
 .kanban-card {
     position: relative;
     background: #ffffff;
     border: 1px solid var(--border-flat);
-    border-radius: 8px;
-    padding: 1rem;
+    border-left: 3px solid var(--status-todo);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 14px;
     cursor: grab;
     display: flex;
     flex-direction: column;
-    gap: 12px;
     transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
 }
 
-/* Línea superior sutil en vez de barra lateral tosca */
-.kanban-card.todo        { border-top: 3px solid var(--status-todo); }
-.kanban-card.in_progress { border-top: 3px solid var(--status-inprogress); }
-.kanban-card.done        { border-top: 3px solid var(--status-done); }
+.kanban-card.todo        { border-left-color: var(--status-todo); }
+.kanban-card.in_progress { border-left-color: var(--status-inprogress); }
+.kanban-card.en_revision { border-left-color: var(--status-revision); }
+.kanban-card.done        { border-left-color: var(--status-done); }
 
 .kanban-card:hover {
     border-color: #cbd5e1;
-    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.04);
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
     transform: translateY(-2px);
 }
+/* Preserva el color de la franja incluso en hover (el hover de arriba pisa border-color entero) */
+.kanban-card.todo:hover        { border-left-color: var(--status-todo); }
+.kanban-card.in_progress:hover { border-left-color: var(--status-inprogress); }
+.kanban-card.en_revision:hover { border-left-color: var(--status-revision); }
+.kanban-card.done:hover        { border-left-color: var(--status-done); }
 
 .kanban-card:active {
     cursor: grabbing;
@@ -169,18 +184,28 @@ body {
     transform: scale(0.98);
 }
 
+/* Fila superior: título + avatar */
+.kanban-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
 .kanban-card-title {
-    font-size: 13.5px;
+    font-size: 13px;
     font-weight: 600;
     color: var(--text-primary);
-    margin-bottom: 4px;
     line-height: 1.4;
+    flex: 1;
+    margin: 0;
 }
 
 .kanban-card-desc {
     font-size: 12px;
     color: var(--text-secondary);
-    margin: 0;
+    margin: 0 0 10px;
     line-height: 1.5;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -188,19 +213,25 @@ body {
     overflow: hidden;
 }
 
-/* Footer interno de la tarjeta */
-.kanban-card-footer {
+/* Nombre del asignado visible, con avatar al lado */
+.kanban-card-assignee {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-top: 4px;
-    padding-top: 8px;
-    border-top: 1px dashed #f1f5f9;
+    gap: 6px;
+    margin-bottom: 10px;
 }
 
-/* Botones de acción contextuales en hover */
+.assignee-name {
+    font-size: 11px;
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
 .kanban-card-actions {
     display: flex;
+    justify-content: flex-end;
     gap: 12px;
     opacity: 0;
     transition: opacity 0.2s ease;
@@ -210,31 +241,12 @@ body {
     opacity: 1;
 }
 
-.btn-link-danger {
-    color: var(--text-muted);
-    background: none;
-    border: none;
-    font-size: 13px;
-    transition: color 0.15s ease;
-}
-
-.btn-link-danger:hover {
-    color: #ef4444;
-}
-
-/* Identificador del Creador (Avatar) */
-.task-creator {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-}
-
 .creator-avatar {
-    width: 24px;
-    height: 24px;
+    width: 20px;
+    height: 20px;
     background-color: #f1f5f9;
     color: var(--text-secondary);
-    font-size: 10px;
+    font-size: 9px;
     font-weight: 600;
     border-radius: 50%;
     display: flex;
@@ -243,12 +255,26 @@ body {
     border: 1px solid var(--border-flat);
     letter-spacing: 0.5px;
     cursor: default;
+    flex-shrink: 0;
 }
 
 .kanban-card.done .creator-avatar {
-    background-color: #f0fdf4;
-    color: var(--verde-oscuro);
+    background-color: var(--status-done-bg);
+    color: var(--status-done-text);
     border-color: #bbf7d0;
+}
+
+.btn-link-danger {
+    color: var(--text-muted);
+    background: none;
+    border: none;
+    font-size: 13px;
+    padding: 0;
+    transition: color 0.15s ease;
+}
+
+.btn-link-danger:hover {
+    color: #ef4444;
 }
 
 /* ==========================================================================
