@@ -40,6 +40,7 @@
                         </div>
                         <div class="kanban-card-footer">
                             <div class="kanban-card-actions">
+                                <button class="btn btn-link-danger p-0" title="Reasignar"><i class="bi bi-person-plus"></i></button>
                                 <button class="btn btn-link-danger p-0" title="Eliminar"><i class="bi bi-trash3"></i></button>
                             </div>
                             <div class="task-creator" title="Creado por: Carlos Mendoza">
@@ -94,6 +95,12 @@
                     <textarea class="form-control" id="description" rows="3"></textarea>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Asignar a</label>
+                    <select class="form-select" id="asignadoUserId">
+                        <option value="">Sin asignar</option>
+                    </select>
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Estado inicial</label>
                     <select class="form-select" id="status">
                         <option value="TODO">Pendiente</option>
@@ -105,6 +112,31 @@
             <div class="modal-footer">
                 <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
                 <button class="btn btn-primary" type="submit">Guardar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal reasignar tarea -->
+<div class="modal fade" id="reasignarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <form class="modal-content" id="reasignarForm">
+            <div class="modal-header">
+                <h5 class="modal-title">Reasignar tarea</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="reasignarTaskId">
+                <div class="mb-2">
+                    <label class="form-label">Nuevo responsable</label>
+                    <select class="form-select" id="reasignarUserId" required>
+                        <option value="">Seleccionar usuario...</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-primary" type="submit">Reasignar</button>
             </div>
         </form>
     </div>
