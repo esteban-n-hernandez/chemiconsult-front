@@ -8,7 +8,7 @@ async function cargarMetodologias() {
     try {
         // Buscamos el token de tu JWT (asumiendo que lo guardás en localStorage)
         const token = localStorage.getItem('token');
-        console.log(token);
+
         const response = await fetch(`${API_URL}/metodologias`, {
             method: 'GET',
             headers: {
@@ -60,6 +60,6 @@ function renderizarTablaMetodologias(lista) {
 // Función vacía para prepararla para el futuro
 function eliminarMetodologia(id) {
     if (confirm("¿Estás seguro de eliminar esta metodología?")) {
-        console.log("Acá iría el fetch con método DELETE para el ID:", id);
+        // TODO: implementar DELETE
     }
 }

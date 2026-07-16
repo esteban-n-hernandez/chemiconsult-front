@@ -318,7 +318,6 @@ formAlta.addEventListener("submit", async function (e) {
         parametros: parametros.filter((p) => p.trim() !== ""),
     };
 
-    console.log("📦 Payload a enviar:", payload);
 
     const btnGuardar = document.getElementById("btnGuardar");
     btnGuardar.disabled = true;
@@ -340,7 +339,6 @@ formAlta.addEventListener("submit", async function (e) {
         }
 
         const data = await response.json();
-        console.log("✅ Muestra creada:", data);
 
         cerrarModal();
         mostrarToast(`Muestra ${protocolo} registrada correctamente`);
@@ -412,7 +410,6 @@ function badgeClassParaEstado(estado) {
 }
 
 function mostrarMuestras(estudios) {
-    console.log("📊 Muestras recibidas del backend:", estudios);
     // Normalizar y almacenar en memoria para paginación
     allMuestras = Array.isArray(estudios)
         ? estudios
