@@ -52,9 +52,6 @@ async function cargarEstudios() {
 
         const data = await res.json();
 
-        console.log("Datosss")
-        console.log(JSON.stringify(data))
-
         // Mapear respuesta al formato interno y filtrar solo estudios completados
         todasLasMuestras = data
             .filter(e => e.estado === "Completo") // Solo mostrar estudios completados
