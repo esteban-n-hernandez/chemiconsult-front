@@ -225,6 +225,9 @@ const ITEMS_POR_PAGINA = 20;
 // Snapshot de todas las muestras cargadas (para filtrar/buscar en cliente)
 let todasLasMuestras = [];
 
+// ID del análisis abierto actualmente en el modal de detalle (para guardar resultados)
+let detalleAnalisisId = null;
+
 
 // ============================================================
 // 2. VINCULACIÓN DE EVENTOS (centralizada, sin inline en HTML)
@@ -282,6 +285,17 @@ function vincularEventos() {
     // — Búsqueda por texto —
     document.getElementById("inputBuscarCodigo").addEventListener("input", aplicarFiltrosYBusqueda);
     document.getElementById("inputBuscarCliente").addEventListener("input", aplicarFiltrosYBusqueda);
+
+    // — Guardar resultados de parámetros —
+    document.getElementById("btnGuardarResultados").addEventListener("click", onGuardarResultados);
+
+    // Live re-evaluation of cumple badges as user types a result
+    document.getElementById("detalleParametros").addEventListener("input", e => {
+        if (!e.target.classList.contains("param-resultado-input")) return;
+        e.target.closest(".param-card").querySelectorAll(".badge-cumple[data-tipo]").forEach(badge => {
+            actualizarBadge(badge, e.target.value);
+        });
+    });
 }
 
 
@@ -669,7 +683,7 @@ async function onSubmitMuestra(e) {
         nroProtocolo:       document.getElementById("inputProtocolo").value.trim(),
         fechaIngreso:       document.getElementById("inputFecha").value,
         fechaEntrega:       document.getElementById("inputFechaEntrega").value || null,
-        userId:             parseInt(document.getElementById("inputCliente").value),
+        clienteId:          parseInt(document.getElementById("inputCliente").value),
         idMuestra:          document.getElementById("inputIdMuestra").value.trim(),
         puntoMuestreo:      document.getElementById("inputPuntoMuestreo").value.trim() || null,
         // NUEVO: matrizId en vez de tipoMuestraId (el select ahora lista MATRIZ directo)
@@ -909,9 +923,9 @@ function mostrarToast(mensaje, esError = false) {
     if (!toast || !msg) return;
     msg.textContent = mensaje;
     toast.style.backgroundColor = esError ? "#dc3545" : "";
-    toast.classList.add("show");
+    toast.classList.add("visible");
     setTimeout(() => {
-        toast.classList.remove("show");
+        toast.classList.remove("visible");
         toast.style.backgroundColor = "";
     }, 3500);
 }
@@ -929,6 +943,7 @@ async function obtenerDetalleMuestra(id) {
 }
 
 window.verDetalleMuestra = async function(id) {
+    detalleAnalisisId = id;
     const modal = document.getElementById("modalDetalleMuestra");
     const loading = document.getElementById("detalleLoading");
     const contenido = document.getElementById("detalleContenido");
@@ -956,87 +971,137 @@ function cerrarModalDetalle() {
     document.getElementById("modalDetalleMuestra").classList.remove("visible");
 }
 
+function badgeClassDetalle(estado) {
+    const map = {
+        PENDIENTE: "badge-pendiente",
+        EN_PROCESO: "badge-proceso",
+        COMPLETO_SIN_INFORME: "badge-completo-sin-informe",
+        DEMORADA: "badge-demorada",
+        COMPLETO: "badge-informe",
+    };
+    return "badge-estado " + (map[(estado || "").toUpperCase()] || "");
+}
+
+function labelEstadoDetalle(estado) {
+    const map = {
+        PENDIENTE: "Pendiente",
+        EN_PROCESO: "En proceso",
+        COMPLETO_SIN_INFORME: "Completo sin informe",
+        DEMORADA: "Demorada",
+        COMPLETO: "Completo",
+    };
+    return map[(estado || "").toUpperCase()] || (estado || "—");
+}
+
 function renderizarDetalleMuestra(d) {
     document.getElementById("detalleProtocolo").textContent = d.nroProtocolo || d.idMuestra || `#${d.id}`;
+
+    // Estado badge
+    const estadoEl = document.getElementById("detalleEstado");
+    estadoEl.className = badgeClassDetalle(d.estado);
+    estadoEl.textContent = labelEstadoDetalle(d.estado);
+
     document.getElementById("detalleCliente").textContent = d.cliente || "—";
-    document.getElementById("detalleEstado").innerHTML =
-        `<span class="badge-estado ${(d.estado || '').toLowerCase()}">${d.estado || '—'}</span>`;
     document.getElementById("detalleIdMuestra").textContent = d.idMuestra || "—";
     document.getElementById("detalleMatrizTipo").textContent = d.matrizNombre || "—";
     document.getElementById("detallePuntoMuestreo").textContent = d.puntoMuestreo || "—";
     document.getElementById("detalleFechas").textContent =
         `${formatearFecha(d.fechaIngreso)} → ${d.fechaEntrega ? formatearFecha(d.fechaEntrega) : "sin definir"}`;
 
-    // Observaciones (oculta el bloque si no hay nada que mostrar)
+    // Observaciones
     const wrapObs = document.getElementById("detalleObservacionesWrap");
     if (d.observaciones) {
         document.getElementById("detalleObservaciones").textContent = d.observaciones;
-        wrapObs.style.display = "block";
+        wrapObs.style.display = "";
     } else {
         wrapObs.style.display = "none";
     }
 
-    // Resoluciones aplicadas (chips)
+    // Normativas (chips)
     const contResoluciones = document.getElementById("detalleResoluciones");
     contResoluciones.innerHTML = "";
     if (!d.resolucionesAplicadas || d.resolucionesAplicadas.length === 0) {
-        contResoluciones.innerHTML = '<span class="text-muted small">Sin normativa asociada</span>';
+        contResoluciones.innerHTML = '<span style="color:var(--color-text-tertiary);font-size:13px">Sin normativa asociada</span>';
     } else {
         d.resolucionesAplicadas.forEach(nombre => {
             const chip = document.createElement("span");
-            chip.className = "badge bg-light text-dark border";
+            chip.className = "detalle-chip";
             chip.textContent = nombre;
             contResoluciones.appendChild(chip);
         });
     }
 
-    // Parámetros con resultado y TODOS sus límites en paralelo
+    // Parámetros
     const contParametros = document.getElementById("detalleParametros");
     contParametros.innerHTML = "";
 
     if (!d.parametros || d.parametros.length === 0) {
-        contParametros.innerHTML = '<span class="text-muted small">Sin parámetros cargados.</span>';
+        contParametros.innerHTML = '<span style="color:var(--color-text-tertiary);font-size:13px">Sin parámetros cargados.</span>';
         return;
     }
 
     d.parametros.forEach(p => {
         const card = document.createElement("div");
-        card.className = "parametro-detalle-card border rounded p-2 mb-2";
-
-        const resultado = p.valorResultado != null && p.valorResultado !== ""
-            ? `${p.valorResultado} ${p.unidad || ""}`
-            : '<span class="text-muted">Pendiente</span>';
+        card.className = "param-card";
 
         let limitesHtml = "";
         if (!p.limites || p.limites.length === 0) {
-            limitesHtml = '<span class="text-muted small">Sin límite normativo asociado</span>';
+            limitesHtml = `<div class="param-card-limites"><span style="color:var(--color-text-tertiary);font-size:12px">Sin límite normativo asociado</span></div>`;
         } else {
-            limitesHtml = p.limites.map(l => {
+            const filas = p.limites.map(l => {
                 const textoLimite = formatearLimite(l);
-                const cumpleBadge = l.cumple === null || l.cumple === undefined
-                    ? '<span class="badge bg-secondary">Sin evaluar</span>'
-                    : l.cumple
-                        ? '<span class="badge bg-success">Cumple</span>'
-                        : '<span class="badge bg-danger">No cumple</span>';
+                let badgeClass, badgeText;
+                if (l.cumple === null || l.cumple === undefined) {
+                    badgeClass = "badge-cumple badge-cumple-nd";
+                    badgeText = "Sin evaluar";
+                } else if (l.cumple) {
+                    badgeClass = "badge-cumple badge-cumple-si";
+                    badgeText = "Cumple";
+                } else {
+                    badgeClass = "badge-cumple badge-cumple-no";
+                    badgeText = "No cumple";
+                }
                 return `
-                    <div class="d-flex justify-content-between align-items-center small py-1 border-top">
-                        <span class="text-muted">${l.origenNombre}: <strong>${textoLimite}</strong></span>
-                        ${cumpleBadge}
-                    </div>
-                `;
+                    <div class="param-limite-row">
+                        <span class="param-limite-origen">${l.origenNombre}</span>
+                        <span class="param-limite-valor">${textoLimite}</span>
+                        <span class="${badgeClass}"
+                              data-tipo="${l.tipoLimite || ''}"
+                              data-min="${l.limiteMin ?? ''}"
+                              data-max="${l.limiteMax ?? ''}"
+                        >${badgeText}</span>
+                    </div>`;
             }).join("");
+            limitesHtml = `<div class="param-card-limites">${filas}</div>`;
         }
 
         card.innerHTML = `
-            <div class="d-flex justify-content-between align-items-center">
+            <div class="param-card-header">
                 <div>
-                    <strong>${p.nombre}</strong>
-                    <span class="text-muted small ms-1">(${p.metodologiaNombre || 'Sin metodología'})</span>
+                    <div class="param-card-nombre">${p.nombre} <span class="param-card-unidad">(${p.unidad || "—"})</span></div>
+                    <div class="param-card-metodo">${p.metodologiaNombre || "Sin metodología"}</div>
                 </div>
-                <div class="fw-semibold">${resultado}</div>
+                <div class="param-resultado-wrap">
+                    <input
+                        class="param-resultado-input"
+                        type="text"
+                        data-parametro-id="${p.id}"
+                        value="${p.valorResultado || ''}"
+                        placeholder="Resultado..."
+                    >
+                    <span class="param-resultado-unidad">${p.unidad || ""}</span>
+                </div>
             </div>
-            ${p.observacion ? `<div class="text-muted small fst-italic mt-1">${p.observacion}</div>` : ""}
-            <div class="mt-1">${limitesHtml}</div>
+            <div class="param-obs-wrap">
+                <input
+                    class="param-obs-input"
+                    type="text"
+                    id="obs-param-${p.id}"
+                    value="${p.observacion || ''}"
+                    placeholder="Observación..."
+                >
+            </div>
+            ${limitesHtml}
         `;
         contParametros.appendChild(card);
     });
@@ -1055,6 +1120,79 @@ function formatearLimite(l) {
             return l.limiteTexto || "—";
         default:
             return l.limiteTexto || `${l.limiteMin ?? ''} ${l.limiteMax ?? ''}`.trim() || "—";
+    }
+}
+
+// Updates a badge-cumple element based on a typed result value
+function actualizarBadge(badge, valorStr) {
+    const tipo = badge.dataset.tipo;
+    if (!tipo || tipo === "TEXTO" || !valorStr || !valorStr.trim()) {
+        badge.className = "badge-cumple badge-cumple-nd";
+        badge.textContent = "Sin evaluar";
+        return;
+    }
+    const valor = parseFloat(valorStr.replace(",", ".").trim());
+    if (isNaN(valor)) {
+        badge.className = "badge-cumple badge-cumple-nd";
+        badge.textContent = "Sin evaluar";
+        return;
+    }
+    const min = parseFloat(badge.dataset.min);
+    const max = parseFloat(badge.dataset.max);
+    let cumple;
+    switch (tipo) {
+        case "MAX":   cumple = !isNaN(max) && valor <= max; break;
+        case "MIN":   cumple = !isNaN(min) && valor >= min; break;
+        case "RANGO": cumple = !isNaN(min) && !isNaN(max) && valor >= min && valor <= max; break;
+        default:      cumple = null;
+    }
+    if (cumple === true) {
+        badge.className = "badge-cumple badge-cumple-si";
+        badge.textContent = "Cumple";
+    } else if (cumple === false) {
+        badge.className = "badge-cumple badge-cumple-no";
+        badge.textContent = "No cumple";
+    } else {
+        badge.className = "badge-cumple badge-cumple-nd";
+        badge.textContent = "Sin evaluar";
+    }
+}
+
+async function onGuardarResultados() {
+    if (!detalleAnalisisId) return;
+
+    const inputs = document.querySelectorAll(".param-resultado-input");
+    const resultados = [];
+    inputs.forEach(input => {
+        const parametroId = parseInt(input.dataset.parametroId);
+        const obsInput = document.getElementById(`obs-param-${parametroId}`);
+        resultados.push({
+            parametroId,
+            valorResultado: input.value.trim() || null,
+            observacion: obsInput ? (obsInput.value.trim() || null) : null,
+        });
+    });
+
+    const btn = document.getElementById("btnGuardarResultados");
+    const textoOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Guardando...`;
+
+    try {
+        const resp = await fetchConAuth(`${API_URL}/estudios/${detalleAnalisisId}/resultados`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(resultados),
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        mostrarToast("Resultados guardados correctamente.");
+        cerrarModalDetalle();
+    } catch (err) {
+        console.error("Error guardando resultados:", err);
+        mostrarToast("Error al guardar los resultados.", true);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
     }
 }
 

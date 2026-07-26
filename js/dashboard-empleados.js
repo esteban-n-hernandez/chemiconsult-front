@@ -34,6 +34,7 @@ document.getElementById("fecha-hoy").textContent =
 
 // ── Filtro de tabla y paginación ──
 // Variables para paginar
+let allEstudios = [];
 let allMuestras = [];
 let filteredMuestras = [];
 let currentPage = 1;
@@ -47,6 +48,27 @@ const ESTADOS_VISIBLES = new Set([
 
 function normalizarEstado(estado) {
     return (estado || "").toString().toUpperCase().replace(/\s+/g, "_");
+}
+
+function labelEstado(estado) {
+    const map = {
+        PENDIENTE: "Pendiente",
+        EN_PROCESO: "En proceso",
+        COMPLETO_SIN_INFORME: "Completo sin informe",
+        DEMORADA: "Demorada",
+        COMPLETO: "Completo",
+    };
+    return map[normalizarEstado(estado)] || (estado || "-");
+}
+
+function parseFecha(valor) {
+    if (!valor || valor === "-") return null;
+    if (/^\d{2}\/\d{2}\/\d{4}$/.test(valor)) {
+        const [d, m, y] = valor.split("/");
+        return new Date(y, m - 1, d);
+    }
+    const f = new Date(valor);
+    return isNaN(f.getTime()) ? null : f;
 }
 
 function formatearFechaDMY(valor) {
@@ -80,7 +102,7 @@ function filtrarTabla(estado, btn) {
 }
 
 // ── Gráfico ──
-new Chart(document.getElementById("graficoEstados"), {
+let grafico = new Chart(document.getElementById("graficoEstados"), {
     type: "doughnut",
     data: {
         labels: [
@@ -115,243 +137,471 @@ new Chart(document.getElementById("graficoEstados"), {
 });
 
 // ════════════════════════════════
-//  MODAL ALTA MUESTRA
+//  HELPER AUTENTICADO
 // ════════════════════════════════
-
-const modalOverlay = document.getElementById("modalAltaMuestra");
-const formAlta = document.getElementById("formAltaMuestra");
-
-// ── Abrir / cerrar ──
-function abrirModal() {
-    // Setear fecha de hoy por defecto
-    document.getElementById("inputFecha").value = new Date()
-        .toISOString()
-        .split("T")[0];
-    modalOverlay.classList.add("visible");
-    document.getElementById("inputProtocolo").focus();
+async function fetchDash(url, opts = {}) {
+    const token = localStorage.getItem("token");
+    const headers = { ...(opts.headers || {}), "Authorization": `Bearer ${token}` };
+    const resp = await fetch(url, { ...opts, headers });
+    if (resp.status === 401) window.location.href = "/login.html";
+    return resp;
 }
 
-function cerrarModal() {
-    modalOverlay.classList.remove("visible");
+// ════════════════════════════════
+//  MODAL ALTA MUESTRA (completo)
+// ════════════════════════════════
+const modalMuestra = document.getElementById("modalAltaMuestra");
+const formMuestra  = document.getElementById("formAltaMuestra");
+
+let destinosSeleccionadosDash   = new Set();
+let parametrosPorDestinoCacheDash = new Map();
+let todosLosParametrosCacheDash = [];
+let clientesCargadosDash = false;
+let matricesCargadasDash = false;
+
+function abrirModalMuestra() {
+    modalMuestra.classList.add("visible");
+    document.getElementById("inputFecha").value = new Date().toISOString().slice(0, 10);
+    document.getElementById("inputProtocolo").focus();
+    if (!clientesCargadosDash) cargarClientesDash();
+    if (!matricesCargadasDash) cargarMatricesDash();
+}
+
+function cerrarModalMuestra() {
+    modalMuestra.classList.remove("visible");
     setTimeout(() => {
-        formAlta.reset();
-        limpiarErrores();
-        limpiarParametros();
+        formMuestra.reset();
+        document.getElementById("parametrosLista").innerHTML = "";
+        document.getElementById("parametrosVacio").style.display = "flex";
+        document.getElementById("normativasContainer").innerHTML =
+            '<span class="text-muted small">Seleccioná una matriz para ver las normativas aplicables...</span>';
+        document.getElementById("checkSinNormativa").checked = false;
+        document.getElementById("normativasContainer").classList.remove("disabled-panel");
+        destinosSeleccionadosDash.clear();
+        parametrosPorDestinoCacheDash.clear();
+        cerrarBuscadorDash();
+        document.querySelectorAll("#formAltaMuestra .field-error").forEach(el => el.style.display = "none");
     }, 250);
 }
 
-document
-    .getElementById("modalClose")
-    .addEventListener("click", cerrarModal);
-document
-    .getElementById("btnCancelar")
-    .addEventListener("click", cerrarModal);
+document.getElementById("modalClose").addEventListener("click", cerrarModalMuestra);
+document.getElementById("btnCancelar").addEventListener("click", cerrarModalMuestra);
+modalMuestra.addEventListener("click", e => { if (e.target === modalMuestra) cerrarModalMuestra(); });
 
-// Cerrar al click fuera del box
-modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) cerrarModal();
-});
+async function cargarClientesDash() {
+    const sel = document.getElementById("inputCliente");
+    try {
+        const r = await fetchDash(`${API_BASE}/api/clientes`);
+        if (!r.ok) throw new Error();
+        const clientes = await r.json();
+        sel.innerHTML = '<option value="">Seleccioná un cliente...</option>';
+        clientes.forEach(c => {
+            const opt = document.createElement("option");
+            opt.value = c.id;
+            opt.textContent = c.tipoCliente === "PERSONA_FISICA"
+                ? `${c.nombre || ""} ${c.apellido || ""}`.trim()
+                : (c.razonSocial || c.nombre || c.email);
+            sel.appendChild(opt);
+        });
+        clientesCargadosDash = true;
+    } catch { sel.innerHTML = '<option value="">Sin clientes disponibles</option>'; }
+}
 
-// Cerrar con Escape
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modalOverlay.classList.contains("visible"))
-        cerrarModal();
-});
+async function cargarMatricesDash() {
+    const sel = document.getElementById("inputTipoMuestra");
+    try {
+        const r = await fetchDash(`${API_BASE}/api/matrices`);
+        if (!r.ok) throw new Error();
+        const matrices = await r.json();
+        sel.innerHTML = '<option value="">Seleccioná una matriz...</option>';
+        matrices.filter(m => m.activo).forEach(m => {
+            const opt = document.createElement("option");
+            opt.value = m.id;
+            opt.textContent = m.nombre;
+            sel.appendChild(opt);
+        });
+        matricesCargadasDash = true;
+    } catch { console.warn("No se pudieron cargar matrices"); }
+}
 
-// ── Conectar botón "Nueva muestra" del dashboard ──
-document.querySelectorAll(".btn-nueva-muestra").forEach((btn) => {
-    btn.addEventListener("click", abrirModal);
-});
-
-// ── Parámetros ──
-let parametros = [];
-
-function renderParametros() {
-    const lista = document.getElementById("parametrosLista");
-    const vacio = document.getElementById("parametrosVacio");
-
-    if (parametros.length === 0) {
-        lista.innerHTML = "";
-        vacio.style.display = "block";
+document.getElementById("inputTipoMuestra").addEventListener("change", async function () {
+    const matrizId = this.value;
+    const cont = document.getElementById("normativasContainer");
+    destinosSeleccionadosDash.clear();
+    parametrosPorDestinoCacheDash.clear();
+    recalcularParametrosDash();
+    if (document.getElementById("checkSinNormativa").checked) return;
+    if (!matrizId) {
+        cont.innerHTML = '<span class="text-muted small">Seleccioná una matriz para ver las normativas aplicables...</span>';
         return;
     }
-
-    vacio.style.display = "none";
-    lista.innerHTML = parametros
-        .map(
-            (p, i) => `
-        <div class="parametro-item" data-index="${i}">
-            <input
-                type="text"
-                class="form-control-custom"
-                value="${p}"
-                placeholder="Ej: pH, Turbidez, Coliformes..."
-                oninput="parametros[${i}] = this.value"
-            >
-            <button type="button" class="btn-remove-param" onclick="eliminarParametro(${i})">
-                <i class="bi bi-trash3"></i>
-            </button>
-        </div>
-    `,
-        )
-        .join("");
-}
-
-function eliminarParametro(index) {
-    parametros.splice(index, 1);
-    renderParametros();
-}
-
-function limpiarParametros() {
-    parametros = [];
-    renderParametros();
-}
-
-document.getElementById("btnAddParam").addEventListener("click", () => {
-    parametros.push("");
-    renderParametros();
-    // Focus en el último input agregado
-    const inputs = document.querySelectorAll(".parametro-item input");
-    if (inputs.length) inputs[inputs.length - 1].focus();
-});
-
-// ── Validación ──
-function validarCampo(inputId, errorId, condicion) {
-    const input = document.getElementById(inputId);
-    const error = document.getElementById(errorId);
-    if (condicion) {
-        input.classList.add("error");
-        error.classList.add("visible");
-        return false;
-    }
-    input.classList.remove("error");
-    error.classList.remove("visible");
-    return true;
-}
-
-function limpiarErrores() {
-    [
-        "inputProtocolo",
-        "inputFecha",
-        "inputCliente",
-        "inputIdMuestra",
-        "inputTipo",
-    ].forEach((id) => {
-        document.getElementById(id)?.classList.remove("error");
-    });
-    [
-        "errProtocolo",
-        "errFecha",
-        "errCliente",
-        "errIdMuestra",
-        "errTipo",
-    ].forEach((id) => {
-        document.getElementById(id)?.classList.remove("visible");
-    });
-}
-
-// Limpiar error al escribir
-[
-    "inputProtocolo",
-    "inputFecha",
-    "inputCliente",
-    "inputIdMuestra",
-    "inputTipo",
-].forEach((id) => {
-    document.getElementById(id)?.addEventListener("input", function () {
-        this.classList.remove("error");
-        const errId = "err" + id.replace("input", "");
-        document.getElementById(errId)?.classList.remove("visible");
-    });
-});
-
-// ── Submit ──
-formAlta.addEventListener("submit", async function (e) {
-    e.preventDefault();
-
-    const protocolo = document
-        .getElementById("inputProtocolo")
-        .value.trim();
-    const fecha = document.getElementById("inputFecha").value;
-    const cliente = document.getElementById("inputCliente").value.trim();
-    const idMuestra = document
-        .getElementById("inputIdMuestra")
-        .value.trim();
-    const tipo = document.getElementById("inputTipo").value;
-    const observaciones = document
-        .getElementById("inputObservaciones")
-        .value.trim();
-
-    // Validar
-    const v1 = validarCampo("inputProtocolo", "errProtocolo", !protocolo);
-    const v2 = validarCampo("inputFecha", "errFecha", !fecha);
-    const v3 = validarCampo("inputCliente", "errCliente", !cliente);
-    const v4 = validarCampo("inputIdMuestra", "errIdMuestra", !idMuestra);
-    const v5 = validarCampo("inputTipo", "errTipo", !tipo);
-
-    if (!v1 || !v2 || !v3 || !v4 || !v5) return;
-
-    // Obtener userId del token JWT
-    const token = localStorage.getItem("token");
-    let userId = 0;
+    cont.innerHTML = '<span class="text-muted small">Cargando normativas...</span>';
     try {
-        const payload = JSON.parse(atob(token.split(".")[1]));
-        userId = payload.userID || 0;
-    } catch (e) {
-        console.error("Error extrayendo userId del token:", e);
-    }
+        const r = await fetchDash(`${API_BASE}/api/resoluciones/por-matriz/${matrizId}`);
+        if (!r.ok) throw new Error();
+        const arbol = await r.json();
+        if (!arbol.resoluciones || arbol.resoluciones.length === 0) {
+            cont.innerHTML = '<span class="text-muted small">No hay normativas cargadas para esta matriz.</span>';
+            return;
+        }
+        renderizarNormativasDash(arbol.resoluciones);
+    } catch { cont.innerHTML = '<span class="text-danger small">Error al cargar las normativas.</span>'; }
+});
 
-    // Armar payload según formato del backend
+document.getElementById("checkSinNormativa").addEventListener("change", function () {
+    const cont = document.getElementById("normativasContainer");
+    if (this.checked) {
+        destinosSeleccionadosDash.clear();
+        parametrosPorDestinoCacheDash.clear();
+        cont.innerHTML = '<span class="text-muted small fst-italic">Normativa desactivada — agregá parámetros con el buscador individual.</span>';
+        cont.classList.add("disabled-panel");
+        recalcularParametrosDash();
+    } else {
+        cont.classList.remove("disabled-panel");
+        const matrizId = document.getElementById("inputTipoMuestra").value;
+        if (matrizId) document.getElementById("inputTipoMuestra").dispatchEvent(new Event("change"));
+        else cont.innerHTML = '<span class="text-muted small">Seleccioná una matriz para ver las normativas aplicables...</span>';
+    }
+});
+
+function renderizarNormativasDash(resoluciones) {
+    const cont = document.getElementById("normativasContainer");
+    cont.innerHTML = "";
+    resoluciones.forEach(res => {
+        const bloque = document.createElement("div");
+        bloque.className = "normativa-bloque mb-2 pb-2 border-bottom";
+        const titulo = document.createElement("div");
+        titulo.className = "fw-semibold small mb-1";
+        titulo.textContent = res.nombre;
+        bloque.appendChild(titulo);
+        const wrap = document.createElement("div");
+        wrap.className = "d-flex flex-wrap gap-3";
+        (res.destinos || []).forEach(destino => {
+            parametrosPorDestinoCacheDash.set(destino.id, destino.parametros || []);
+            const div = document.createElement("div");
+            div.className = "form-check";
+            div.innerHTML = `
+                <input class="form-check-input check-destino-dash" type="checkbox"
+                       id="chk-dest-${destino.id}" value="${destino.id}">
+                <label class="form-check-label small" for="chk-dest-${destino.id}">${destino.nombre}</label>
+            `;
+            div.querySelector("input").addEventListener("change", ev => {
+                if (ev.target.checked) destinosSeleccionadosDash.add(destino.id);
+                else destinosSeleccionadosDash.delete(destino.id);
+                recalcularParametrosDash();
+            });
+            wrap.appendChild(div);
+        });
+        bloque.appendChild(wrap);
+        cont.appendChild(bloque);
+    });
+}
+
+function recalcularParametrosDash() {
+    const lista = document.getElementById("parametrosLista");
+    const vacio = document.getElementById("parametrosVacio");
+    const manuales = Array.from(lista.querySelectorAll(".parametro-item-row"))
+        .filter(f => f.dataset.origen === "manual")
+        .map(f => f.dataset.parametroId);
+    lista.innerHTML = "";
+    const unicos = new Map();
+    destinosSeleccionadosDash.forEach(dId =>
+        (parametrosPorDestinoCacheDash.get(dId) || []).forEach(p => unicos.set(p.id, p))
+    );
+    if (unicos.size === 0 && manuales.length === 0) { vacio.style.display = "flex"; return; }
+    vacio.style.display = "none";
+    unicos.forEach(p => agregarParametroDash(p, "norma"));
+    manuales.forEach(id => {
+        const p = todosLosParametrosCacheDash.find(x => String(x.id) === String(id));
+        if (p && !unicos.has(p.id)) agregarParametroDash(p, "manual");
+    });
+}
+
+function agregarParametroDash(parametro, origen = "manual") {
+    const lista = document.getElementById("parametrosLista");
+    document.getElementById("parametrosVacio").style.display = "none";
+    if (lista.querySelector(`[data-parametro-id="${parametro.id}"]`)) return;
+    const fila = document.createElement("div");
+    fila.className = "parametro-item-row d-flex align-items-center justify-content-between p-2 mb-2 border rounded bg-light";
+    fila.dataset.parametroId = parametro.id;
+    fila.dataset.origen = origen;
+    fila.innerHTML = `
+        <div class="d-flex align-items-center" style="gap:12px">
+            <input type="checkbox" class="form-check-input check-parametro"
+                   value="${parametro.id}" id="chk-param-${parametro.id}" checked>
+            <label for="chk-param-${parametro.id}" class="mb-0 fw-semibold" style="cursor:pointer">
+                ${parametro.nombre}
+                <span class="text-muted small">(${parametro.unidad || "—"})</span>
+            </label>
+        </div>
+        <span class="badge bg-secondary" style="font-size:0.8rem">
+            <i class="bi bi-gear me-1"></i>${parametro.metodologia?.nombre || "Sin metodología"}
+        </span>
+    `;
+    lista.appendChild(fila);
+}
+
+document.getElementById("btnAddParam").addEventListener("click", async function () {
+    const cont = document.getElementById("buscadorIndividualContainer");
+    cont.classList.remove("d-none");
+    document.getElementById("inputBuscarParametroIndividual").focus();
+    if (todosLosParametrosCacheDash.length === 0) {
+        try {
+            const r = await fetchDash(`${API_BASE}/api/parametros`);
+            todosLosParametrosCacheDash = await r.json();
+        } catch { console.warn("No se pudieron cargar parámetros"); }
+    }
+});
+
+document.getElementById("btnCerrarBuscadorIndividual").addEventListener("click", cerrarBuscadorDash);
+
+document.getElementById("inputBuscarParametroIndividual").addEventListener("input", function () {
+    const term = this.value.toLowerCase().trim();
+    const res = document.getElementById("resultadosBusquedaIndividual");
+    res.innerHTML = "";
+    if (!term) return;
+    const filtrados = todosLosParametrosCacheDash.filter(p => p.nombre.toLowerCase().includes(term)).slice(0, 10);
+    if (filtrados.length === 0) {
+        res.innerHTML = `<div class="list-group-item text-muted small">Sin resultados</div>`;
+        return;
+    }
+    filtrados.forEach(param => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "list-group-item list-group-item-action py-2";
+        btn.innerHTML = `<strong>${param.nombre}</strong> <span class="text-muted small ms-1">(${param.unidad || "—"})</span>`;
+        btn.addEventListener("click", () => {
+            if (document.getElementById(`chk-param-${param.id}`)) {
+                mostrarToast(`"${param.nombre}" ya está agregado.`);
+                return;
+            }
+            agregarParametroDash(param, "manual");
+            cerrarBuscadorDash();
+        });
+        res.appendChild(btn);
+    });
+});
+
+function cerrarBuscadorDash() {
+    document.getElementById("buscadorIndividualContainer").classList.add("d-none");
+    document.getElementById("inputBuscarParametroIndividual").value = "";
+    document.getElementById("resultadosBusquedaIndividual").innerHTML = "";
+}
+
+formMuestra.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const protocolo = document.getElementById("inputProtocolo").value.trim();
+    const fecha     = document.getElementById("inputFecha").value;
+    const clienteId = document.getElementById("inputCliente").value;
+    const idMuestra = document.getElementById("inputIdMuestra").value.trim();
+    const matrizId  = document.getElementById("inputTipoMuestra").value;
+
+    let ok = true;
+    [
+        [!protocolo, "errProtocolo"],
+        [!fecha,     "errFecha"],
+        [!clienteId, "errCliente"],
+        [!idMuestra, "errIdMuestra"],
+        [!matrizId,  "errTipoMuestra"],
+    ].forEach(([cond, errId]) => {
+        const err = document.getElementById(errId);
+        if (cond) { err.style.display = "block"; ok = false; }
+        else err.style.display = "none";
+    });
+    if (!ok) return;
+
+    const parametrosIds = Array.from(document.querySelectorAll(".check-parametro:checked")).map(cb => parseInt(cb.value));
+    if (parametrosIds.length === 0) { mostrarToast("Seleccioná al menos un parámetro."); return; }
+
     const payload = {
-        id: 0,
-        tipo: tipo,
-        estado: "PENDIENTE",
-        archivo: [],
-        archivoUrl: "",
-        userId: userId,
-        userMail: userEmail || "",
-        protocolo: protocolo,
-        cliente: cliente,
-        idMuestra: idMuestra,
-        fecha: fecha,
-        observaciones: observaciones,
-        parametros: parametros.filter((p) => p.trim() !== ""),
+        nroProtocolo:         protocolo,
+        fechaIngreso:         fecha,
+        fechaEntrega:         document.getElementById("inputFechaEntrega").value || null,
+        clienteId:            parseInt(clienteId),
+        idMuestra,
+        puntoMuestreo:        document.getElementById("inputPuntoMuestreo").value.trim() || null,
+        matrizId:             parseInt(matrizId),
+        resolucionDestinoIds: Array.from(destinosSeleccionadosDash),
+        observaciones:        document.getElementById("inputObservaciones").value.trim() || null,
+        parametrosIds,
     };
 
-
-    const btnGuardar = document.getElementById("btnGuardar");
-    btnGuardar.disabled = true;
-    btnGuardar.innerHTML = `<i class="bi bi-hourglass-split"></i> Guardando...`;
-
+    const btn = document.getElementById("btnGuardar");
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Guardando...`;
     try {
-        const response = await fetch(`${API_BASE}/api/estudios`, {
+        const r = await fetchDash(`${API_BASE}/api/estudios`, {
             method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify(payload),
         });
-
-        if (!response.ok) {
-            const errorData = await response.text();
-            throw new Error(`HTTP ${response.status}: ${errorData}`);
-        }
-
-        const data = await response.json();
-
-        cerrarModal();
-        mostrarToast(`Muestra ${protocolo} registrada correctamente`);
-        
-        // Recargar la tabla de estudios
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        mostrarToast("Muestra registrada correctamente.");
+        cerrarModalMuestra();
         cargarEstudios();
-    } catch (error) {
-        console.error("Error creando muestra:", error);
-        mostrarToast(`❌ Error: ${error.message}`);
+    } catch (err) {
+        mostrarToast(`Error: ${err.message}`);
     } finally {
-        btnGuardar.disabled = false;
-        btnGuardar.innerHTML = `<i class="bi bi-check-lg"></i> Guardar muestra`;
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-check-lg"></i> Guardar muestra`;
     }
+});
+
+document.getElementById("btnAccionNuevaMuestra").addEventListener("click", abrirModalMuestra);
+
+// ════════════════════════════════
+//  MODAL ALTA TAREA
+// ════════════════════════════════
+const modalTarea = document.getElementById("modalAltaTarea");
+const formTarea  = document.getElementById("formAltaTarea");
+let usuariosCacheDash   = [];
+let usuariosCargadosDash = false;
+
+function abrirModalTarea() {
+    modalTarea.classList.add("visible");
+    document.getElementById("tareaTitle").focus();
+    if (!usuariosCargadosDash) cargarUsuariosDash();
+}
+
+function cerrarModalTarea() {
+    modalTarea.classList.remove("visible");
+    setTimeout(() => {
+        formTarea.reset();
+        document.getElementById("errTareaTitle").style.display = "none";
+    }, 250);
+}
+
+document.getElementById("modalTareaClose").addEventListener("click", cerrarModalTarea);
+document.getElementById("btnCancelarTarea").addEventListener("click", cerrarModalTarea);
+modalTarea.addEventListener("click", e => { if (e.target === modalTarea) cerrarModalTarea(); });
+
+async function cargarUsuariosDash() {
+    const sel = document.getElementById("tareaUserId");
+    try {
+        const r = await fetchDash(`${API_BASE}/api/users/asignables`);
+        if (!r.ok) throw new Error();
+        const users = await r.json();
+        users.forEach(u => {
+            const opt = document.createElement("option");
+            opt.value = u.id;
+            opt.textContent = u.nombreCompleto || u.nombre || u.email;
+            sel.appendChild(opt);
+        });
+        usuariosCargadosDash = true;
+    } catch { console.warn("No se pudieron cargar usuarios asignables"); }
+}
+
+formTarea.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const title = document.getElementById("tareaTitle").value.trim();
+    const errTitle = document.getElementById("errTareaTitle");
+    if (!title) { errTitle.style.display = "block"; return; }
+    errTitle.style.display = "none";
+
+    const payload = {
+        title,
+        description: document.getElementById("tareaDescription").value.trim() || null,
+        userId:      parseInt(document.getElementById("tareaUserId").value) || null,
+        status:      document.getElementById("tareaStatus").value,
+    };
+
+    const btn = document.getElementById("btnGuardarTarea");
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Guardando...`;
+    try {
+        const r = await fetchDash(`${API_BASE}/api/task`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        mostrarToast("Tarea creada correctamente.");
+        cerrarModalTarea();
+    } catch (err) {
+        mostrarToast(`Error: ${err.message}`);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-check-lg"></i> Guardar tarea`;
+    }
+});
+
+document.getElementById("btnAccionAltaTarea").addEventListener("click", abrirModalTarea);
+
+// ════════════════════════════════
+//  MODAL ALTA STOCK
+// ════════════════════════════════
+const modalStock = document.getElementById("modalAltaStock");
+const formStock  = document.getElementById("formAltaStock");
+
+function abrirModalStock() {
+    modalStock.classList.add("visible");
+    document.getElementById("stockNombre").focus();
+}
+
+function cerrarModalStock() {
+    modalStock.classList.remove("visible");
+    setTimeout(() => {
+        formStock.reset();
+        ["errStockNombre", "errStockCategoria", "errStockNivel"].forEach(id => {
+            document.getElementById(id).style.display = "none";
+        });
+    }, 250);
+}
+
+document.getElementById("modalStockClose").addEventListener("click", cerrarModalStock);
+document.getElementById("btnCancelarStock").addEventListener("click", cerrarModalStock);
+modalStock.addEventListener("click", e => { if (e.target === modalStock) cerrarModalStock(); });
+
+formStock.addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const nombre    = document.getElementById("stockNombre").value.trim();
+    const categoria = document.getElementById("stockCategoria").value;
+    const nivel     = document.querySelector('input[name="stockNivel"]:checked')?.value || "";
+    let ok = true;
+    if (!nombre)    { document.getElementById("errStockNombre").style.display = "block"; ok = false; }
+    else              document.getElementById("errStockNombre").style.display = "none";
+    if (!categoria) { document.getElementById("errStockCategoria").style.display = "block"; ok = false; }
+    else              document.getElementById("errStockCategoria").style.display = "none";
+    if (!nivel)     { document.getElementById("errStockNivel").style.display = "block"; ok = false; }
+    else              document.getElementById("errStockNivel").style.display = "none";
+    if (!ok) return;
+
+    const payload = {
+        nombre,
+        categoria,
+        descripcion:   document.getElementById("stockDescripcion").value.trim() || null,
+        nivel,
+        observaciones: document.getElementById("stockObservaciones").value.trim() || null,
+    };
+
+    const btn = document.getElementById("btnGuardarStock");
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Guardando...`;
+    try {
+        const r = await fetchDash(`${API_BASE}/api/stock`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+        });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        mostrarToast("Ítem de stock registrado.");
+        cerrarModalStock();
+    } catch (err) {
+        mostrarToast(`Error: ${err.message}`);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-check-lg"></i> Guardar ítem`;
+    }
+});
+
+document.getElementById("btnAccionAltaStock").addEventListener("click", abrirModalStock);
+
+// Escape cierra cualquier modal activo
+document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    if (modalMuestra.classList.contains("visible")) cerrarModalMuestra();
+    if (modalTarea.classList.contains("visible"))   cerrarModalTarea();
+    if (modalStock.classList.contains("visible"))   cerrarModalStock();
 });
 
 // ── Toast ──
@@ -361,6 +611,206 @@ function mostrarToast(msg) {
     toast.classList.add("visible");
     setTimeout(() => toast.classList.remove("visible"), 3500);
 }
+
+function generarAlertas() {
+    const alertasBody = document.getElementById("alertasBody");
+    if (!alertasBody) return;
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const estadosActivos = new Set(["PENDIENTE", "EN_PROCESO", "DEMORADA", "COMPLETO_SIN_INFORME"]);
+
+    // Ordenar activas con fecha por urgencia (más antiguas/próximas primero)
+    const items = allEstudios
+        .filter(m => estadosActivos.has(normalizarEstado(m.estado)))
+        .map(m => ({ ...m, _fecha: parseFecha(m.fecha) }))
+        .filter(m => m._fecha)
+        .sort((a, b) => a._fecha - b._fecha)
+        .reduce((acc, m) => {
+            const dias = Math.ceil((m._fecha - hoy) / 86400000);
+            if (dias > 7) return acc; // solo hasta 7 días adelante
+            let color, etiqueta;
+            if (dias < 0) {
+                color = "rojo";
+                etiqueta = `${Math.abs(dias)}d atrasada`;
+            } else if (dias === 0) {
+                color = "rojo";
+                etiqueta = "Hoy";
+            } else if (dias === 1) {
+                color = "naranja";
+                etiqueta = "Mañana";
+            } else if (dias <= 3) {
+                color = "naranja";
+                etiqueta = `En ${dias} días`;
+            } else {
+                color = "azul";
+                etiqueta = `En ${dias} días`;
+            }
+            acc.push({ color, etiqueta, m });
+            return acc;
+        }, []);
+
+    // Sin fecha de entrega cargada: COMPLETO_SIN_INFORME pendientes de informe
+    allEstudios
+        .filter(m => normalizarEstado(m.estado) === "COMPLETO_SIN_INFORME" && !parseFecha(m.fecha))
+        .slice(0, 2)
+        .forEach(m => items.push({ color: "naranja", etiqueta: "Sin informe", m }));
+
+    if (items.length === 0) {
+        alertasBody.innerHTML = `
+            <div class="alerta-vacio">
+                <i class="bi bi-calendar-check"></i>
+                Sin entregas próximas
+            </div>`;
+        return;
+    }
+
+    alertasBody.innerHTML = items.slice(0, 8).map(({ color, etiqueta, m }) => `
+        <div class="alerta-item">
+            <div class="alerta-dot ${color}"></div>
+            <div class="alerta-texto">
+                <p><strong>${m.codigo}</strong></p>
+                <span>${m.cliente} · ${m.tipo}</span>
+            </div>
+            <span class="alerta-fecha ${color}">${etiqueta}</span>
+        </div>
+    `).join("");
+}
+
+// ════════════════════════════════
+//  VER DETALLE
+// ════════════════════════════════
+async function verDetalle(id) {
+    const token = localStorage.getItem("token");
+    try {
+        const resp = await fetch(`${API_BASE}/api/estudios/${id}/detalle`, {
+            headers: token ? { Authorization: "Bearer " + token } : {},
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const d = await resp.json();
+        poblarModalDetalle(d);
+        document.getElementById("modalDetalle").classList.add("visible");
+    } catch (err) {
+        console.error("Error cargando detalle:", err);
+        mostrarToast("Error al cargar el detalle");
+    }
+}
+
+function poblarModalDetalle(d) {
+    const badge = document.getElementById("detalleEstadoBadge");
+    badge.className = badgeClassParaEstado(d.estado);
+    badge.textContent = labelEstado(d.estado);
+
+    document.getElementById("detalleProtocolo").textContent = d.nroProtocolo || "—";
+    document.getElementById("detalleIdMuestra").textContent = d.idMuestra || "—";
+    document.getElementById("detalleCliente").textContent = d.cliente || "—";
+    document.getElementById("detalleMatriz").textContent = d.matrizNombre || "—";
+    document.getElementById("detallePunto").textContent = d.puntoMuestreo || "—";
+    document.getElementById("detalleFechaIngreso").textContent = formatearFechaDMY(d.fechaIngreso) || "—";
+    document.getElementById("detalleFechaEntrega").textContent = formatearFechaDMY(d.fechaEntrega) || "—";
+    document.getElementById("detalleObservaciones").textContent = d.observaciones || "Sin observaciones";
+
+    const paramEl = document.getElementById("detalleParametros");
+    if (d.parametros && d.parametros.length > 0) {
+        paramEl.innerHTML = d.parametros.map(p =>
+            `<span class="detalle-tag detalle-tag-verde">${p.nombre}${p.unidad ? ` (${p.unidad})` : ""}</span>`
+        ).join("");
+    } else {
+        paramEl.innerHTML = `<span style="color:var(--color-text-tertiary);font-size:13px">Sin parámetros</span>`;
+    }
+
+    const resSection = document.getElementById("detalleResolucionesSection");
+    const resEl = document.getElementById("detalleResoluciones");
+    if (d.resolucionesAplicadas && d.resolucionesAplicadas.length > 0) {
+        resSection.style.display = "";
+        resEl.innerHTML = d.resolucionesAplicadas.map(r =>
+            `<span class="detalle-tag detalle-tag-azul">${r}</span>`
+        ).join("");
+    } else {
+        resSection.style.display = "none";
+    }
+}
+
+const modalDetalle = document.getElementById("modalDetalle");
+document.getElementById("modalDetalleClose").addEventListener("click", () => modalDetalle.classList.remove("visible"));
+document.getElementById("btnDetalleClose").addEventListener("click", () => modalDetalle.classList.remove("visible"));
+modalDetalle.addEventListener("click", e => { if (e.target === modalDetalle) modalDetalle.classList.remove("visible"); });
+
+// ════════════════════════════════
+//  AVANZAR ESTADO
+// ════════════════════════════════
+const SIGUIENTE_ESTADO = {
+    PENDIENTE: "EN_PROCESO",
+    EN_PROCESO: "COMPLETO_SIN_INFORME",
+    DEMORADA: "EN_PROCESO",
+};
+
+async function avanzarEstado(id, estadoActual, btn) {
+    const siguiente = SIGUIENTE_ESTADO[estadoActual];
+    if (!siguiente) return;
+
+    const token = localStorage.getItem("token");
+    const originalHtml = btn ? btn.innerHTML : null;
+    if (btn) { btn.disabled = true; btn.innerHTML = `<i class="bi bi-hourglass-split"></i>`; }
+
+    try {
+        const resp = await fetch(`${API_BASE}/api/estudios/${id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                ...(token ? { Authorization: "Bearer " + token } : {}),
+            },
+            body: JSON.stringify({ estado: siguiente }),
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        mostrarToast(`Estado actualizado: ${labelEstado(siguiente)}`);
+        await cargarEstudios();
+    } catch (err) {
+        console.error("Error avanzando estado:", err);
+        mostrarToast("Error al actualizar el estado");
+        if (btn) { btn.disabled = false; btn.innerHTML = originalHtml; }
+    }
+}
+
+// ════════════════════════════════
+//  ELIMINAR
+// ════════════════════════════════
+const modalEliminar = document.getElementById("modalEliminar");
+document.getElementById("modalEliminarClose").addEventListener("click", () => modalEliminar.classList.remove("visible"));
+document.getElementById("btnCancelarEliminar").addEventListener("click", () => modalEliminar.classList.remove("visible"));
+modalEliminar.addEventListener("click", e => { if (e.target === modalEliminar) modalEliminar.classList.remove("visible"); });
+
+function pedirConfirmacionEliminar(id, codigo) {
+    document.getElementById("modalEliminarMsg").textContent =
+        `¿Estás seguro de que querés eliminar la muestra ${codigo}? Esta acción no se puede deshacer.`;
+    document.getElementById("btnConfirmarEliminar").dataset.id = id;
+    modalEliminar.classList.add("visible");
+}
+
+document.getElementById("btnConfirmarEliminar").addEventListener("click", async function () {
+    const id = this.dataset.id;
+    const token = localStorage.getItem("token");
+    this.disabled = true;
+    this.innerHTML = `<i class="bi bi-hourglass-split"></i> Eliminando...`;
+
+    try {
+        const resp = await fetch(`${API_BASE}/api/estudios/${id}`, {
+            method: "DELETE",
+            headers: token ? { Authorization: "Bearer " + token } : {},
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        modalEliminar.classList.remove("visible");
+        mostrarToast("Muestra eliminada correctamente");
+        await cargarEstudios();
+    } catch (err) {
+        console.error("Error eliminando muestra:", err);
+        mostrarToast("Error al eliminar la muestra");
+    } finally {
+        this.disabled = false;
+        this.innerHTML = `<i class="bi bi-trash3"></i> Eliminar`;
+    }
+});
 
 async function cargarEstudios() {
     const tablaBody = document.getElementById("tablaMuestrasBody");
@@ -410,85 +860,127 @@ function badgeClassParaEstado(estado) {
 }
 
 function mostrarMuestras(estudios) {
-    // Normalizar y almacenar en memoria para paginación
-    allMuestras = Array.isArray(estudios)
-        ? estudios
-            .map((est) => ({
-                id: est.id || est._id || est.codigo || est.protocolo || null,
-                codigo: est.protocolo || est.codigo || est.id || "-",
-                cliente:
-                    est.cliente || est.clienteNombre || est.customer || "-",
-                tipo:
-                    est.tipo || est.tipoAnalisis || est.tipo_de_analisis || "-",
-                estado: est.estado || est.status || "-",
-                tieneInforme: (est.estado || est.status || "").toString().toUpperCase() === "COMPLETO",
-                fechaAlta: formatearFechaDMY(
-                    est.fechaAlta ||
-                    est.fecha_alta ||
-                    est.fechaCreacion ||
-                    est.fecha_creacion ||
-                    est.createdDate ||
-                    est.createdAt ||
-                    est.fechaDeAlta ||
-                    "-",
-                ),
-                fecha:
-                    est.fechaEntrega ||
-                    est.fecha_entrega ||
-                    est.deliveryDate ||
-                    est.fecha ||
-                    "-",
-            }))
-            .filter((m) => ESTADOS_VISIBLES.has(normalizarEstado(m.estado)))
+    const mapped = Array.isArray(estudios)
+        ? estudios.map((est) => ({
+            id: est.id || est._id || est.codigo || est.protocolo || null,
+            codigo: est.protocolo || est.codigo || est.id || "-",
+            cliente: est.cliente || est.clienteNombre || est.customer || "-",
+            tipo: est.tipo || est.tipoAnalisis || est.tipo_de_analisis || "-",
+            estado: est.estado || est.status || "-",
+            tieneInforme: (est.estado || est.status || "").toString().toUpperCase() === "COMPLETO",
+            fechaAlta: formatearFechaDMY(
+                est.fechaAlta || est.fecha_alta || est.fechaCreacion ||
+                est.fecha_creacion || est.createdDate || est.createdAt ||
+                est.fechaDeAlta || "-",
+            ),
+            fecha: est.fechaEntrega || est.fecha_entrega || est.deliveryDate || est.fecha || "-",
+        }))
         : [];
 
-    // Si se desea mostrar un total fijo para demostración, poner en localStorage.demoTotal = '40'
+    // Dataset completo (incluye COMPLETO) para KPIs y alertas
+    allEstudios = mapped;
+    // Solo activas para la tabla
+    allMuestras = mapped.filter((m) => ESTADOS_VISIBLES.has(normalizarEstado(m.estado)));
+
     const demoTotal = parseInt(localStorage.getItem("demoTotal") || "0");
     if (demoTotal > allMuestras.length) {
-        // clonar registros hasta alcanzar demoTotal (solo para UI demo)
         const clones = [];
         let idx = 0;
         while (allMuestras.length + clones.length < demoTotal) {
             const source = allMuestras[idx % allMuestras.length] || {
-                codigo: `DEM-${idx + 1}`,
-                cliente: "Demo",
-                tipo: "—",
-                estado: "PENDIENTE",
-                fechaAlta: "-",
-                fecha: "-",
+                codigo: `DEM-${idx + 1}`, cliente: "Demo", tipo: "—",
+                estado: "PENDIENTE", fechaAlta: "-", fecha: "-",
             };
             const clone = Object.assign({}, source);
             clone.codigo = `${clone.codigo}-D${idx + 1}`;
             clones.push(clone);
             idx++;
-            // safety break
             if (idx > 1000) break;
         }
         allMuestras = allMuestras.concat(clones);
     }
+
     filteredMuestras = [...allMuestras];
     currentPage = 1;
     actualizarKPIs();
+    generarAlertas();
     renderPage();
 }
 
 function actualizarKPIs() {
-    // Calcular KPIs desde allMuestras (todos los registros)
-    const totalMuestras = allMuestras.length;
-    const pendientes = allMuestras.filter(m => normalizarEstado(m.estado) === "PENDIENTE").length;
-    const demoradas = allMuestras.filter(m => normalizarEstado(m.estado) === "DEMORADA").length;
-    const informesEmitidos = allMuestras.filter(m => m.tieneInforme).length;
+    const pendientes        = allEstudios.filter(m => normalizarEstado(m.estado) === "PENDIENTE").length;
+    const enProceso         = allEstudios.filter(m => normalizarEstado(m.estado) === "EN_PROCESO").length;
+    const demoradas         = allEstudios.filter(m => normalizarEstado(m.estado) === "DEMORADA").length;
+    const completoSinInforme= allEstudios.filter(m => normalizarEstado(m.estado) === "COMPLETO_SIN_INFORME").length;
+    const activas           = pendientes + enProceso + demoradas + completoSinInforme;
 
-    // Actualizar elementos en el DOM
-    const elKpiMuestras = document.getElementById("kpi-muestras-activas");
-    const elKpiPendientes = document.getElementById("kpi-pendientes");
-    const elKpiDemoradas = document.getElementById("kpi-demoradas");
-    const elKpiInformes = document.getElementById("kpi-informes-emitidos");
+    const hoy     = new Date();
+    const en7dias = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
+    const vencenProximo = allEstudios.filter(m => {
+        if (normalizarEstado(m.estado) === "COMPLETO") return false;
+        const f = parseFecha(m.fecha);
+        return f && f >= hoy && f <= en7dias;
+    }).length;
 
-    if (elKpiMuestras) elKpiMuestras.textContent = totalMuestras;
-    if (elKpiPendientes) elKpiPendientes.textContent = pendientes;
-    if (elKpiDemoradas) elKpiDemoradas.textContent = demoradas;
-    if (elKpiInformes) elKpiInformes.textContent = informesEmitidos;
+    const elMuestras    = document.getElementById("kpi-muestras-activas");
+    const elMuestrasSub = document.getElementById("kpi-muestras-sub");
+    const elDemoradas   = document.getElementById("kpi-demoradas");
+    const elDemoradasSub= document.getElementById("kpi-demoradas-sub");
+
+    if (elMuestras) elMuestras.textContent = activas;
+    if (elMuestrasSub) {
+        elMuestrasSub.innerHTML = vencenProximo > 0
+            ? `<i class="bi bi-clock"></i> ${vencenProximo} vencen esta semana`
+            : `<i class="bi bi-check2"></i> Sin vencimientos próximos`;
+    }
+    if (elDemoradas) elDemoradas.textContent = demoradas;
+    if (elDemoradasSub) {
+        elDemoradasSub.innerHTML = demoradas > 0
+            ? `<i class="bi bi-arrow-right"></i> <a href="muestras.html">Ver muestras</a>`
+            : `<i class="bi bi-check2"></i> Sin demoradas`;
+    }
+
+    if (grafico) {
+        grafico.data.datasets[0].data = [pendientes, enProceso, completoSinInforme, demoradas];
+        grafico.update();
+    }
+}
+
+async function cargarTareasKPI() {
+    try {
+        const r = await fetchDash(`${API_BASE}/api/task`);
+        if (!r.ok) return;
+        const tareas = await r.json();
+        const todo       = tareas.filter(t => t.status === "TODO").length;
+        const enProgreso = tareas.filter(t => t.status === "IN_PROGRESS").length;
+
+        const el    = document.getElementById("kpi-tareas");
+        const elSub = document.getElementById("kpi-tareas-sub");
+        if (el) el.textContent = todo;
+        if (elSub) {
+            elSub.innerHTML = enProgreso > 0
+                ? `<i class="bi bi-arrow-right-circle"></i> ${enProgreso} en progreso`
+                : `<i class="bi bi-check2"></i> Ninguna en progreso`;
+        }
+    } catch { /* no bloquea el dashboard */ }
+}
+
+async function cargarStockKPI() {
+    try {
+        const r = await fetchDash(`${API_BASE}/api/stock`);
+        if (!r.ok) return;
+        const items = await r.json();
+        const bajos = items.filter(i => i.nivel === "BAJO").length;
+
+        const el    = document.getElementById("kpi-stock");
+        const elSub = document.getElementById("kpi-stock-sub");
+        if (el) el.textContent = bajos;
+        if (elSub) {
+            elSub.innerHTML = bajos > 0
+                ? `<i class="bi bi-exclamation-triangle"></i> ${bajos} items con nivel bajo`
+                : `<i class="bi bi-check2"></i> Stock sin alertas`;
+        }
+    } catch { /* no bloquea el dashboard */ }
 }
 
 function renderPage() {
@@ -511,14 +1003,30 @@ function renderPage() {
         filteredMuestras.slice(start, end).forEach((m) => {
             const badgeClass = badgeClassParaEstado(m.estado);
             const acciones = [];
-            // Solo mostrar botón "Ver" si realmente hay informe disponible
-            if (m.tieneInforme) {
+            const estadoNorm = normalizarEstado(m.estado);
+
+            acciones.push(
+                `<button class="btn-accion btn-detalle" data-id="${m.id}" title="Ver detalles"><i class="bi bi-eye"></i></button>`,
+            );
+
+            const AVANZAR_MAP = {
+                PENDIENTE: { label: "Iniciar análisis", icono: "bi-play-circle" },
+                EN_PROCESO: { label: "Marcar completo", icono: "bi-check2-circle" },
+                DEMORADA: { label: "Reactivar", icono: "bi-arrow-counterclockwise" },
+            };
+            if (AVANZAR_MAP[estadoNorm]) {
+                const av = AVANZAR_MAP[estadoNorm];
                 acciones.push(
-                    `<button class="btn-accion btn-ver" data-id="${m.id}" title="Ver"><i class="bi bi-eye"></i></button>`,
+                    `<button class="btn-accion btn-avanzar" data-id="${m.id}" data-estado="${estadoNorm}" title="${av.label}"><i class="bi ${av.icono}"></i></button>`,
                 );
             }
+
             acciones.push(
                 `<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`,
+            );
+
+            acciones.push(
+                `<button class="btn-accion btn-eliminar" data-id="${m.id}" data-codigo="${m.codigo}" title="Eliminar"><i class="bi bi-trash3"></i></button>`,
             );
 
             const row = `
@@ -526,7 +1034,7 @@ function renderPage() {
                         <td><span class="cod-badge">${m.codigo}</span></td>
                         <td>${m.cliente}</td>
                         <td>${m.tipo}</td>
-                        <td><span class="${badgeClass}">${m.estado}</span></td>
+                        <td><span class="${badgeClass}">${labelEstado(m.estado)}</span></td>
                         <td>${m.fechaAlta || "-"}</td>
                         <td>${m.fecha}</td>
                         <td>${acciones.join(" ")}</td>
@@ -706,22 +1214,134 @@ async function verResultado(id, triggerBtn) {
     }
 }
 
-// Delegación de clicks en botones de subir (se aplica después de renderizado)
+// Delegación de clicks en los botones de la tabla
 document.addEventListener("click", function (e) {
+    const btnDetalle = e.target.closest(".btn-detalle");
+    if (btnDetalle) {
+        const id = btnDetalle.getAttribute("data-id");
+        if (id) verDetalle(id);
+        return;
+    }
+
+    const btnAvanzar = e.target.closest(".btn-avanzar");
+    if (btnAvanzar) {
+        const id = btnAvanzar.getAttribute("data-id");
+        const estado = btnAvanzar.getAttribute("data-estado");
+        if (id && estado) avanzarEstado(id, estado, btnAvanzar);
+        return;
+    }
+
+    const btnEliminar = e.target.closest(".btn-eliminar");
+    if (btnEliminar) {
+        const id = btnEliminar.getAttribute("data-id");
+        const codigo = btnEliminar.getAttribute("data-codigo");
+        if (id) pedirConfirmacionEliminar(id, codigo);
+        return;
+    }
+
     const btnVer = e.target.closest(".btn-ver");
     if (btnVer) {
         const id = btnVer.getAttribute("data-id");
-        if (!id) return alert("ID de muestra desconocido");
-        verResultado(id, btnVer);
+        if (id) verResultado(id, btnVer);
         return;
     }
 
     const btnSubir = e.target.closest(".btn-subir");
-    if (!btnSubir) return;
-    const id = btnSubir.getAttribute("data-id");
-    if (!id) return alert("ID de muestra desconocido");
-    startUploadForId(id, btnSubir);
+    if (btnSubir) {
+        const id = btnSubir.getAttribute("data-id");
+        if (id) startUploadForId(id, btnSubir);
+    }
 });
 
 // Cargar al iniciar
 cargarEstudios();
+cargarTareasKPI();
+cargarStockKPI();
+
+// ════════════════════════════════
+//  PANEL VISIBILITY MANAGER
+// ════════════════════════════════
+const DP_KEY = "chemiconsult_hidden_panels";
+
+const DP_META = {
+    // paneles
+    alertas:       { type: "panel", icon: "bi-calendar-check",  label: "Próximas entregas" },
+    acciones:      { type: "panel", icon: "bi-lightning-charge", label: "Acciones rápidas" },
+    grafico:       { type: "panel", icon: "bi-pie-chart",        label: "Distribución" },
+    // KPI cards
+    muestras:      { type: "kpi",   icon: "bi-flask",            label: "Muestras activas" },
+    tareas:        { type: "kpi",   icon: "bi-list-check",       label: "Tareas pendientes" },
+    stock:         { type: "kpi",   icon: "bi-box-seam",         label: "Stock bajo" },
+    demoradas:     { type: "kpi",   icon: "bi-clock-history",    label: "Demoradas" },
+};
+
+function dpLoad() {
+    try { return JSON.parse(localStorage.getItem(DP_KEY) || "[]"); }
+    catch { return []; }
+}
+
+function dpSave(hidden) {
+    localStorage.setItem(DP_KEY, JSON.stringify(hidden));
+}
+
+function dpRender() {
+    const hidden = dpLoad();
+    const bar = document.getElementById("dpRestoreBar");
+    if (!bar) return;
+
+    Object.keys(DP_META).forEach(id => {
+        const meta = DP_META[id];
+        const sel = meta.type === "kpi"
+            ? `.kpi-card[data-kpi="${id}"]`
+            : `[data-panel="${id}"]`;
+        const el = document.querySelector(sel);
+        if (el) el.classList.toggle("dp-hidden", hidden.includes(id));
+    });
+
+    if (hidden.length === 0) {
+        bar.style.display = "none";
+        bar.innerHTML = "";
+        return;
+    }
+
+    bar.style.display = "flex";
+    bar.innerHTML =
+        `<span class="dp-restore-bar-label">Ocultos:</span>` +
+        hidden.map(id => {
+            const m = DP_META[id];
+            if (!m) return "";
+            return `<button class="dp-restore-chip" data-restore="${id}">
+                        <i class="bi ${m.icon}"></i>${m.label}
+                        <i class="bi bi-eye" style="font-size:11px;opacity:.7"></i>
+                    </button>`;
+        }).join("");
+
+    bar.querySelectorAll("[data-restore]").forEach(btn =>
+        btn.addEventListener("click", () => {
+            dpSave(dpLoad().filter(id => id !== btn.dataset.restore));
+            dpRender();
+        })
+    );
+}
+
+document.querySelectorAll(".dp-toggle").forEach(btn =>
+    btn.addEventListener("click", () => {
+        const id = btn.dataset.panel;
+        const hidden = dpLoad();
+        if (!hidden.includes(id)) hidden.push(id);
+        dpSave(hidden);
+        dpRender();
+    })
+);
+
+document.querySelectorAll(".dp-kpi-close").forEach(btn =>
+    btn.addEventListener("click", () => {
+        const id = btn.dataset.kpi;
+        const hidden = dpLoad();
+        if (!hidden.includes(id)) hidden.push(id);
+        dpSave(hidden);
+        dpRender();
+    })
+);
+
+dpRender();

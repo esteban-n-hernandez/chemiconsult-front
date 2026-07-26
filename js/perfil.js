@@ -1,4 +1,4 @@
-const API_URL = API_BASE;
+const API_URL = `${API_BASE}/api`;
 
 document.addEventListener("DOMContentLoaded", () => {
     pintarFechaHoy();

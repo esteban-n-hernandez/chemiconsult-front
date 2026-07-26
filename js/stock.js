@@ -65,7 +65,7 @@ async function cargarItems() {
 function actualizarKpis() {
     document.getElementById('kpi-total').textContent = items.length;
     document.getElementById('kpi-medio').textContent = items.filter(i => i.nivel === 'MEDIO').length;
-    document.getElementById('kpi-poco').textContent  = items.filter(i => i.nivel === 'POCO').length;
+    document.getElementById('kpi-poco').textContent  = items.filter(i => i.nivel === 'BAJO').length;
 }
 
 // ── Filtros ──────────────────────────────────────────────────────────────────
@@ -93,14 +93,14 @@ selectNivel.addEventListener('change', aplicarFiltros);
 
 // ── Tabla ────────────────────────────────────────────────────────────────────
 const CATEGORIA_LABEL = {
-    REACTIVOS: 'Reactivos', MATERIALES: 'Materiales',
-    DESCARTABLES: 'Descartables', EQUIPOS: 'Equipos', OTROS: 'Otros'
+    REACTIVOS: 'Reactivos', SOLVENTES: 'Solventes',
+    MATERIAL_MUESTREO: 'Material Muestreo', MATERIAL_VIDRIO: 'Material Vidrio', OTROS: 'Otros'
 };
 
 const NIVEL_BADGE = {
     ALTO:  '<span class="badge-nivel badge-alto">Alto</span>',
     MEDIO: '<span class="badge-nivel badge-medio">Medio</span>',
-    POCO:  '<span class="badge-nivel badge-poco">Poco</span>',
+    BAJO:  '<span class="badge-nivel badge-poco">Bajo</span>',
 };
 
 function renderTabla() {
