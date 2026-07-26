@@ -9,6 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/sidebar.css"/>
     <link rel="stylesheet" href="css/panel/panel-tecnico.css">
+    <link rel="stylesheet" href="css/ui.css">
     <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO"></script>
 </head>
 <body>
@@ -80,7 +81,10 @@
             </div>
             <div class="panel-custom">
                 <div class="panel-header-custom">
-                    <h5><i class="bi bi-table text-primary"></i> Resoluciones Registradas</h5>
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Resoluciones Registradas</h5>
+                        <input type="text" id="filtroResoluciones" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
                 </div>
                 <div class="panel-body-custom" style="padding:0;">
                     <table class="tabla-config">
@@ -91,10 +95,9 @@
                             <th>Acción</th>
                         </tr>
                         </thead>
-                        <tbody id="tablaResolucionesBody">
-                        <!-- Inyección dinámica con JS -->
-                        </tbody>
+                        <tbody id="tablaResolucionesBody"></tbody>
                     </table>
+                    <div class="tabla-paginador" id="paginadorResoluciones"></div>
                 </div>
             </div>
         </div>
@@ -129,7 +132,10 @@
             </div>
             <div class="panel-custom">
                 <div class="panel-header-custom">
-                    <h5><i class="bi bi-table text-primary"></i> Lista de Parámetros</h5>
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Lista de Parámetros</h5>
+                        <input type="text" id="filtroParametros" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
                 </div>
                 <div class="panel-body-custom" style="padding:0;">
                     <table class="tabla-config">
@@ -140,10 +146,9 @@
                             <th>Acción</th>
                         </tr>
                         </thead>
-                        <tbody id="tablaParametrosBody">
-                        <!-- Inyección dinámica con JS -->
-                        </tbody>
+                        <tbody id="tablaParametrosBody"></tbody>
                     </table>
+                    <div class="tabla-paginador" id="paginadorParametros"></div>
                 </div>
             </div>
         </div>
@@ -178,7 +183,10 @@
             </div>
             <div class="panel-custom">
                 <div class="panel-header-custom">
-                    <h5><i class="bi bi-table text-primary"></i> Metodologías Habilitadas</h5>
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Metodologías Habilitadas</h5>
+                        <input type="text" id="filtroMetodologias" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
                 </div>
                 <div class="panel-body-custom" style="padding:0;">
                     <table class="tabla-config">
@@ -190,10 +198,9 @@
                             <th>Acción</th>
                         </tr>
                         </thead>
-                        <tbody id="tablaMetodologiasBody">
-                        <!-- Inyección dinámica con JS -->
-                        </tbody>
+                        <tbody id="tablaMetodologiasBody"></tbody>
                     </table>
+                    <div class="tabla-paginador" id="paginadorMetodologias"></div>
                 </div>
             </div>
         </div>
@@ -211,6 +218,7 @@
     }
 </script>
 <script src="js/config.js"></script>
+<script src="js/ui.js"></script>
 <script src="js/sidebar.js"></script>
 <script src="js/panel-tecnico.js"></script>
 </body>

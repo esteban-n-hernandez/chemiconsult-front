@@ -384,7 +384,8 @@ async function submitCliente() {
 //  ACCIONES
 // ══════════════════════════════════════════
 async function desactivarCliente(id) {
-    if (!confirm('¿Desactivar este cliente?')) return;
+    const ok = await UI.confirmar({ titulo: '¿Desactivar este cliente?', subtexto: 'El cliente dejará de ser visible en el sistema.', textoConfirmar: 'Desactivar', tipo: 'warning' });
+    if (!ok) return;
     try {
         const res = await fetch(`${API_URL}/${id}/desactivar`, {
             method:  'PATCH',
@@ -884,7 +885,8 @@ async function guardarSucursal() {
 }
 
 async function desactivarSucursal(id) {
-    if (!confirm('¿Desactivar esta sucursal? Las muestras ya cargadas con esta sucursal no se ven afectadas.')) return;
+    const ok = await UI.confirmar({ titulo: '¿Desactivar esta sucursal?', subtexto: 'Las muestras ya cargadas no se ven afectadas.', textoConfirmar: 'Desactivar', tipo: 'warning' });
+    if (!ok) return;
     try {
         const res = await fetch(`${SUCURSALES_URL}/sucursales/${id}/desactivar`, {
             method: 'PATCH',
@@ -1059,7 +1061,8 @@ async function guardarContacto() {
 }
 
 async function desactivarContacto(id) {
-    if (!confirm('¿Desactivar este contacto? Dejará de recibir avisos de todas las sucursales.')) return;
+    const ok = await UI.confirmar({ titulo: '¿Desactivar este contacto?', subtexto: 'Dejará de recibir avisos de todas las sucursales.', textoConfirmar: 'Desactivar', tipo: 'warning' });
+    if (!ok) return;
     try {
         const res = await fetch(`${CONTACTOS_URL}/contactos/${id}/desactivar`, {
             method: 'PATCH',

@@ -1159,7 +1159,7 @@ async function subirDocumento(id, file, triggerBtn) {
         await cargarEstudios();
     } catch (err) {
         console.error("Error subiendo documento:", err);
-        alert("Error subiendo el archivo: " + (err.message || err));
+        mostrarToast("Error al subir el archivo.", 'danger');
     } finally {
         if (triggerBtn) {
             triggerBtn.disabled = false;
@@ -1205,7 +1205,7 @@ async function verResultado(id, triggerBtn) {
     } catch (err) {
         if (resultadoWindow && !resultadoWindow.closed) resultadoWindow.close();
         console.error("Error obteniendo resultado:", err);
-        alert("Error abriendo resultado: " + (err.message || err));
+        mostrarToast("Error al abrir el resultado.", 'danger');
     } finally {
         if (triggerBtn) {
             triggerBtn.disabled = false;

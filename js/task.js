@@ -94,7 +94,7 @@ async function loadTasks() {
         renderBoard();
     } catch (e) {
         console.error(e);
-        alert("Error cargando tareas");
+        mostrarToast("Error cargando tareas", 'danger');
     }
 }
 
@@ -222,7 +222,7 @@ async function updateTaskStatus(task, newStatus) {
         renderBoard();
     } catch (e) {
         console.error(e);
-        alert("Error actualizando estado");
+        mostrarToast("Error actualizando estado", 'danger');
     }
 }
 
@@ -274,7 +274,7 @@ function setupForm() {
             modal.hide();
         } catch (e) {
             console.error(e);
-            alert(esEdicion ? "Error actualizando la tarea" : "Error creando tarea");
+            mostrarToast(esEdicion ? "Error actualizando la tarea" : "Error creando tarea", 'danger');
         }
     });
 }
@@ -310,7 +310,8 @@ function abrirEditar(taskId) {
 }
 
 async function deleteTask(id) {
-    if (!confirm("¿Eliminar tarea?")) return;
+    const ok = await UI.confirmar({ titulo: '¿Eliminar tarea?', subtexto: 'Esta acción no se puede deshacer.', textoConfirmar: 'Eliminar', tipo: 'danger' });
+    if (!ok) return;
     try {
         const res = await fetch(`${API_URL}/${id}`, {
             method: "DELETE",
@@ -321,7 +322,7 @@ async function deleteTask(id) {
         renderBoard();
     } catch (e) {
         console.error(e);
-        alert("Error eliminando tarea");
+        mostrarToast("Error eliminando tarea", 'danger');
     }
 }
 
@@ -336,14 +337,15 @@ async function archiveTask(id) {
         renderBoard();
     } catch (e) {
         console.error(e);
-        alert("Error archivando tarea");
+        mostrarToast("Error archivando tarea", 'danger');
     }
 }
 
 async function archiveAllDone() {
     const doneTasks = tasks.filter(t => t.status === "DONE");
     if (doneTasks.length === 0) return;
-    if (!confirm(`¿Archivar las ${doneTasks.length} tareas finalizadas?`)) return;
+    const ok = await UI.confirmar({ titulo: `¿Archivar ${doneTasks.length} tareas finalizadas?`, subtexto: 'Las tareas se moverán al historial y no estarán en el tablero.', textoConfirmar: 'Archivar', tipo: 'warning' });
+    if (!ok) return;
     try {
         const res = await fetch(`${API_URL}/archive-all-done`, {
             method: "PUT",
@@ -354,7 +356,7 @@ async function archiveAllDone() {
         renderBoard();
     } catch (e) {
         console.error(e);
-        alert("Error archivando tareas");
+        mostrarToast("Error archivando tareas", 'danger');
     }
 }
 
@@ -481,7 +483,7 @@ async function restoreTask(id) {
         renderArchivedPage();
     } catch (e) {
         console.error(e);
-        alert("Error restaurando tarea");
+        mostrarToast("Error restaurando tarea", 'danger');
     }
 }
 
