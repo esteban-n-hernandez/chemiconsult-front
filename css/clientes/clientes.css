@@ -375,14 +375,13 @@ body {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.45);
-    backdrop-filter: blur(3px);
     z-index: 1000;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.25s ease;
+    transition: opacity 0.15s ease;
 }
 
 .modal-overlay.visible {
@@ -398,12 +397,12 @@ body {
     max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-    transform: translateY(20px) scale(0.98);
-    transition: transform 0.25s ease;
+    transform: translateY(10px);
+    transition: transform 0.18s cubic-bezier(0.2, 0, 0, 1);
 }
 
 .modal-overlay.visible .modal-box {
-    transform: translateY(0) scale(1);
+    transform: translateY(0);
 }
 
 .modal-header {

@@ -28,17 +28,6 @@ body {
     margin: 0;
 }
 
-/* ── Contenido con Ajuste Flotante Compensado ── */
-.content {
-    flex: 1;
-    padding: 2rem 2.5rem 2rem 2rem; /* Margen derecho compensatorio para equilibrar la barra */
-    overflow-y: auto;
-    height: 100vh;
-}
-
-
-
-/* ── Contenido ── */
 .content {
     flex: 1;
     padding: 2rem;
