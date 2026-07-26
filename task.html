@@ -20,7 +20,18 @@
 <div class="container-fluid py-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h3 class="page-title m-0">Tareas</h3>
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal">+ Nueva tarea</button>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#archivedModal">
+                <i class="bi bi-archive"></i> Archivo
+            </button>
+            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal">+ Nueva tarea</button>
+        </div>
+    </div>
+
+    <!-- Filtro por persona -->
+    <div id="kb-filter-bar" class="kb-filter">
+        <span class="kb-filter-label">Ver</span>
+        <button class="kb-pill active" data-u="*" onclick="kbFilter(this)">Todos</button>
     </div>
 
     <div class="row g-3">
@@ -62,7 +73,12 @@
             <div class="kanban-col" data-status="DONE">
                 <div class="kanban-header">
                     <h6 class="m-0">Finalizadas</h6>
-                    <span class="badge" id="count-done">0</span>
+                    <div class="d-flex align-items-center gap-2">
+                        <span class="badge" id="count-done">0</span>
+                        <button class="btn btn-link-secondary btn-sm p-0" title="Archivar todas las finalizadas" onclick="archiveAllDone()">
+                            <i class="bi bi-archive"></i>
+                        </button>
+                    </div>
                 </div>
                 <div id="col-done" class="dropzone"></div>
             </div>
@@ -89,6 +105,10 @@
                     <textarea class="form-control" id="description" rows="3"></textarea>
                 </div>
                 <div class="mb-3">
+                    <label class="form-label">Fecha límite <span class="text-muted fw-normal" style="font-size:12px;">(opcional)</span></label>
+                    <input type="date" class="form-control" id="dueDate">
+                </div>
+                <div class="mb-3">
                     <label class="form-label">Asignar a</label>
                     <select class="form-select" id="asignadoUserId">
                         <option value="">Sin asignar</option>
@@ -109,6 +129,69 @@
                 <button class="btn btn-primary" type="submit" id="taskSubmitBtn">Guardar</button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- Modal archivo -->
+<div class="modal fade" id="archivedModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content archive-modal-content">
+            <div class="archive-modal-header">
+                <div class="archive-header-left">
+                    <div class="archive-icon-wrap">
+                        <i class="bi bi-archive"></i>
+                    </div>
+                    <div>
+                        <h5 class="archive-title">Tareas archivadas</h5>
+                        <span class="archive-subtitle" id="archivedCount"></span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="archive-modal-body">
+                <!-- Buscador -->
+                <div class="archive-search-wrap">
+                    <i class="bi bi-search archive-search-icon"></i>
+                    <input type="text" id="archivedSearch" class="archive-search-input" placeholder="Buscar por título…" oninput="onArchivedSearch(this.value)">
+                </div>
+
+                <!-- Estado vacío -->
+                <div id="archivedEmpty" class="archive-empty" style="display:none;">
+                    <i class="bi bi-archive" style="font-size:2rem; opacity:.25;"></i>
+                    <p class="mt-2 mb-0">No hay tareas archivadas todavía</p>
+                </div>
+
+                <!-- Tabla -->
+                <div id="archivedTableWrap" style="display:none;">
+                    <table class="archive-table">
+                        <thead>
+                            <tr>
+                                <th>Título</th>
+                                <th>Asignada a</th>
+                                <th>Completada</th>
+                                <th>Archivada</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="archivedTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="archive-modal-footer">
+                <div class="archive-pagination" id="archivedPagination" style="display:none;">
+                    <button class="archive-page-btn" id="prevPage" onclick="changePage(-1)">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <span class="archive-page-info" id="pageInfo">1 / 1</span>
+                    <button class="archive-page-btn" id="nextPage" onclick="changePage(1)">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
     </div>
 </div>
 

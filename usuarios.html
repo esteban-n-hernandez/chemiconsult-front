@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Usuarios - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/clientes/clientes.css">
+    <script src="js/auth.js" data-roles="ROLE_IT"></script>
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<div class="content">
+
+    <div class="page-header">
+        <div>
+            <h1>Usuarios</h1>
+            <p>Gestión de accesos del sistema</p>
+        </div>
+        <button class="btn-nuevo-cliente" id="btnNuevoUsuario">
+            <i class="bi bi-person-plus-fill"></i> Nuevo usuario
+        </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card-filtros">
+        <div class="filtros-row">
+            <input type="text" id="inputBusqueda" placeholder="Buscar por nombre o email...">
+            <select id="selectRol">
+                <option value="">Todos los roles</option>
+                <option value="ROLE_IT">IT</option>
+                <option value="ROLE_EMPLEADO">Empleado</option>
+            </select>
+            <button class="btn-buscar" onclick="buscarUsuarios()">
+                <i class="bi bi-search"></i> Buscar
+            </button>
+            <button class="btn-limpiar" onclick="limpiarFiltros()">
+                <i class="bi bi-x-circle"></i> Limpiar
+            </button>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="panel">
+        <table class="tabla-clientes">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Rol</th>
+                <th>Acciones</th>
+            </tr>
+            </thead>
+            <tbody id="tablaUsuarios"></tbody>
+        </table>
+
+        <div class="sin-resultados" id="sinResultados" style="display:none;">
+            <i class="bi bi-people"></i>
+            <p>No se encontraron usuarios</p>
+        </div>
+
+        <div class="panel-footer">
+            <small id="infoPaginacion">Mostrando 0 usuarios</small>
+            <ul class="paginacion" id="paginacion"></ul>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL — Nuevo / Editar Usuario
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalUsuario">
+    <div class="modal-box modal-box-sm">
+
+        <div class="modal-header">
+            <h5 id="modalUsuarioTitulo"><i class="bi bi-person-plus"></i> Nuevo usuario</h5>
+            <button class="modal-close" id="modalUsuarioClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <form id="formUsuario" novalidate>
+            <div class="modal-body">
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Nombre de usuario <span class="required">*</span></label>
+                    <input type="text" class="form-control-custom" id="uNombre" placeholder="ej: jperez" autocomplete="off">
+                    <span class="field-error" id="errUNombre">Campo requerido</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Email <span class="required">*</span></label>
+                    <input type="email" class="form-control-custom" id="uEmail" placeholder="jperez@chemiconsult.com" autocomplete="off">
+                    <span class="field-error" id="errUEmail">Email requerido</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1rem;" id="grupoPasword">
+                    <label>Contraseña <span class="required">*</span></label>
+                    <input type="password" class="form-control-custom" id="uPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                    <span class="field-error" id="errUPassword">Mínimo 6 caracteres</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:1rem;" id="grupoConfirmarPassword">
+                    <label>Confirmar contraseña <span class="required">*</span></label>
+                    <input type="password" class="form-control-custom" id="uPasswordConfirmar" placeholder="Repetir contraseña" autocomplete="new-password">
+                    <span class="field-error" id="errUPasswordConfirmar">Las contraseñas no coinciden</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Rol <span class="required">*</span></label>
+                    <select class="form-control-custom" id="uRol">
+                        <option value="ROLE_EMPLEADO">Empleado</option>
+                        <option value="ROLE_IT">IT</option>
+                    </select>
+                </div>
+
+                <div class="alert-error-servidor" id="usuarioErrorServidor" style="display:none;margin-top:0.75rem;"></div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelarUsuario">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardarUsuario">
+                    <i class="bi bi-check-lg"></i> Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL — Reset Contraseña
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalResetPassword">
+    <div class="modal-box modal-box-sm">
+
+        <div class="modal-header">
+            <h5><i class="bi bi-key"></i> Restablecer contraseña</h5>
+            <button class="modal-close" id="modalResetClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <form id="formReset" novalidate>
+            <div class="modal-body">
+                <p class="baja-submensaje" style="margin-bottom:0.75rem;">
+                    Usuario: <strong id="resetUsuarioNombre">—</strong>
+                </p>
+
+                <div class="form-group" style="margin-bottom:1rem;">
+                    <label>Nueva contraseña <span class="required">*</span></label>
+                    <input type="password" class="form-control-custom" id="resetPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password">
+                    <span class="field-error" id="errResetPassword">Mínimo 6 caracteres</span>
+                </div>
+
+                <div class="form-group" style="margin-bottom:0;">
+                    <label>Confirmar contraseña <span class="required">*</span></label>
+                    <input type="password" class="form-control-custom" id="resetPasswordConfirmar" placeholder="Repetir contraseña" autocomplete="new-password">
+                    <span class="field-error" id="errResetPasswordConfirmar">Las contraseñas no coinciden</span>
+                </div>
+
+                <div class="alert-error-servidor" id="resetErrorServidor" style="display:none;margin-top:0.75rem;"></div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelarReset">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnConfirmarReset">
+                    <i class="bi bi-key"></i> Restablecer
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     MODAL — Confirmar Eliminar
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalEliminarUsuario">
+    <div class="modal-box modal-box-sm">
+
+        <div class="modal-header">
+            <h5><i class="bi bi-exclamation-triangle"></i> Eliminar usuario</h5>
+            <button class="modal-close" id="modalEliminarClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <div class="modal-body" style="gap:0.75rem;">
+            <div class="baja-warning-icon"><i class="bi bi-person-x"></i></div>
+            <p class="baja-mensaje">
+                ¿Eliminar a <strong id="eliminarUsuarioNombre">—</strong>?
+            </p>
+            <p class="baja-submensaje">
+                Esta acción es permanente. Si el usuario es un cliente, eliminarlo desde acá puede dejar inconsistencias.
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
+            <button type="button" class="btn-desactivar" id="btnConfirmarEliminar">
+                <i class="bi bi-person-x"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast-confirm" id="toastConfirm">
+    <i id="toastIcon"></i>
+    <span id="toastMsg">Operación realizada</span>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="js/usuarios.js"></script>
+</body>
+</html>

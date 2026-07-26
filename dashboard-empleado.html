@@ -6,6 +6,8 @@
     <title>Dashboard - CHEMICONSULT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/sidebar.css"/>
     <link rel="stylesheet" href="css/dashboard/dashboard-empleados.css"/>
@@ -40,51 +42,60 @@
 
     <!-- KPI Cards -->
     <div class="kpi-grid">
-        <div class="kpi-card verde">
-            <div class="kpi-icon verde"><i class="bi bi-flask"></i></div>
-            <div class="kpi-data">
-                <h3 id="kpi-muestras-activas">—</h3>
-                <p>Muestras activas</p>
+        <div class="kpi-card verde" data-kpi="muestras">
+            <button class="dp-kpi-close" data-kpi="muestras" title="Ocultar"><i class="bi bi-x"></i></button>
+            <div class="kpi-top">
+                <div class="kpi-icon verde"><i class="bi bi-flask"></i></div>
+                <span class="kpi-badge">activas</span>
             </div>
+            <div class="kpi-number" id="kpi-muestras-activas">—</div>
+            <div class="kpi-label">Muestras activas</div>
+            <div class="kpi-sub" id="kpi-muestras-sub"></div>
         </div>
-        <div class="kpi-card azul">
-            <div class="kpi-icon azul"><i class="bi bi-hourglass-split"></i></div>
-            <div class="kpi-data">
-                <h3 id="kpi-pendientes">—</h3>
-                <p>Pendientes de análisis</p>
+        <div class="kpi-card azul" data-kpi="tareas">
+            <button class="dp-kpi-close" data-kpi="tareas" title="Ocultar"><i class="bi bi-x"></i></button>
+            <div class="kpi-top">
+                <div class="kpi-icon azul"><i class="bi bi-list-check"></i></div>
+                <span class="kpi-badge">pendientes</span>
             </div>
+            <div class="kpi-number" id="kpi-tareas">—</div>
+            <div class="kpi-label">Tareas pendientes</div>
+            <div class="kpi-sub" id="kpi-tareas-sub"></div>
         </div>
-        <div class="kpi-card naranja">
-            <div class="kpi-icon naranja">
-                <i class="bi bi-clock-history"></i>
+        <div class="kpi-card naranja" data-kpi="stock">
+            <button class="dp-kpi-close" data-kpi="stock" title="Ocultar"><i class="bi bi-x"></i></button>
+            <div class="kpi-top">
+                <div class="kpi-icon naranja"><i class="bi bi-box-seam"></i></div>
+                <span class="kpi-badge">revisar</span>
             </div>
-            <div class="kpi-data">
-                <h3 id="kpi-demoradas">—</h3>
-                <p>Demoradas</p>
-            </div>
+            <div class="kpi-number" id="kpi-stock">—</div>
+            <div class="kpi-label">Items con stock bajo</div>
+            <div class="kpi-sub" id="kpi-stock-sub"></div>
         </div>
-        <div class="kpi-card rojo">
-            <div class="kpi-icon rojo kpi-icon-highlight">
-                <i class="bi bi-check2-circle"></i>
+        <div class="kpi-card rojo" data-kpi="demoradas">
+            <button class="dp-kpi-close" data-kpi="demoradas" title="Ocultar"><i class="bi bi-x"></i></button>
+            <div class="kpi-top">
+                <div class="kpi-icon rojo"><i class="bi bi-clock-history"></i></div>
+                <span class="kpi-badge">demoradas</span>
             </div>
-            <div class="kpi-data">
-                <h3 id="kpi-informes-emitidos">—</h3>
-                <p>Informes emitidos</p>
-            </div>
+            <div class="kpi-number" id="kpi-demoradas">—</div>
+            <div class="kpi-label">Muestras demoradas</div>
+            <div class="kpi-sub" id="kpi-demoradas-sub"></div>
         </div>
     </div>
+
+    <!-- Restore bar paneles ocultos -->
+    <div id="dpRestoreBar" class="dp-restore-bar"></div>
 
     <!-- Fila central -->
     <div class="main-row">
         <!-- Tabla de muestras -->
+        <div data-panel="tabla" class="dp-cell">
         <div class="panel">
             <div class="panel-header">
                 <h5>
                     <i class="bi bi-list-check me-2 panel-title-icon-green"></i>Cola de trabajo — Muestras activas
                 </h5>
-                <button class="btn btn-sm btn-success btn-nueva-muestra btn-nueva-muestra-btn">
-                    <i class="bi bi-plus-lg"></i> Nueva muestra
-                </button>
             </div>
             <div class="panel-body">
                 <div class="filtros">
@@ -140,95 +151,69 @@
                 </div>
             </div>
         </div>
+        </div><!-- /data-panel="tabla" -->
 
-        <!-- Alertas -->
+        <!-- Próximas entregas -->
+        <div data-panel="alertas" class="dp-cell">
         <div class="panel">
             <div class="panel-header">
                 <h5>
-                    <i class="bi bi-bell me-2 panel-title-icon-orange"></i>Alertas
-                    operativas
+                    <i class="bi bi-calendar-check me-2 panel-title-icon-orange"></i>Próximas entregas
                 </h5>
+                <button class="dp-toggle" data-panel="alertas" title="Ocultar panel"><i class="bi bi-eye-slash"></i></button>
             </div>
-            <div class="panel-body">
-                <div class="alerta-item">
-                    <div class="alerta-dot rojo"></div>
-                    <div class="alerta-texto">
-                        <p><strong>CHQ-2026-014</strong> — vencida hace 2 días</p>
-                        <span>Juan Pérez · Agua potable</span>
-                    </div>
-                </div>
-                <div class="alerta-item">
-                    <div class="alerta-dot rojo"></div>
-                    <div class="alerta-texto">
-                        <p><strong>CHQ-2026-008</strong> — sin movimiento 5 días</p>
-                        <span>Empresa Norte SA · Efluente</span>
-                    </div>
-                </div>
-                <div class="alerta-item">
-                    <div class="alerta-dot naranja"></div>
-                    <div class="alerta-texto">
-                        <p><strong>CHQ-2026-011</strong> — informe no enviado</p>
-                        <span>María Gómez · Agua de pozo</span>
-                    </div>
-                </div>
-                <div class="alerta-item">
-                    <div class="alerta-dot naranja"></div>
-                    <div class="alerta-texto">
-                        <p><strong>CHQ-2026-013</strong> — vence en 3 días</p>
-                        <span>Empresa Sur SA · Efluente</span>
-                    </div>
-                </div>
-                <div class="alerta-item">
-                    <div class="alerta-dot verde"></div>
-                    <div class="alerta-texto">
-                        <p>5 informes emitidos esta semana</p>
-                        <span>Buen ritmo de trabajo 🎉</span>
-                    </div>
+            <div class="panel-body" id="alertasBody">
+                <div class="alerta-loading">
+                    <span class="spinner-border spinner-border-sm me-2"></span> Cargando...
                 </div>
             </div>
         </div>
+        </div><!-- /data-panel="alertas" -->
     </div>
 
     <!-- Fila inferior -->
     <div class="bottom-row">
         <!-- Acciones rápidas -->
+        <div data-panel="acciones" class="dp-cell">
         <div class="panel">
             <div class="panel-header">
                 <h5>
                     <i class="bi bi-lightning-charge me-2 panel-title-icon-green"></i
                     >Acciones rápidas
                 </h5>
+                <button class="dp-toggle" data-panel="acciones" title="Ocultar panel"><i class="bi bi-eye-slash"></i></button>
             </div>
             <div class="panel-body">
                 <div class="acciones-grid">
-                    <a class="accion-card btn-nueva-muestra">
-                        <i class="bi bi-plus-circle"></i>
+                    <a class="accion-card" id="btnAccionNuevaMuestra">
+                        <i class="bi bi-flask"></i>
                         Nueva muestra
                     </a>
-                    <a href="#" class="accion-card">
-                        <i class="bi bi-upload"></i>
-                        Cargar resultados
+                    <a class="accion-card" id="btnAccionAltaTarea">
+                        <i class="bi bi-kanban"></i>
+                        Alta tarea
                     </a>
-                    <a href="#" class="accion-card">
-                        <i class="bi bi-file-earmark-arrow-up"></i>
-                        Emitir informe
-                    </a>
-                    <a href="#" class="accion-card">
-                        <i class="bi bi-receipt"></i>
-                        Generar factura
+                    <a class="accion-card" id="btnAccionAltaStock">
+                        <i class="bi bi-box-seam"></i>
+                        Alta stock
                     </a>
                 </div>
             </div>
         </div>
+        </div><!-- /data-panel="acciones" -->
 
         <!-- Gráfico -->
+        <div data-panel="grafico" class="dp-cell">
         <div class="panel">
             <div class="panel-header">
                 <h5>
                     <i class="bi bi-pie-chart me-2 panel-title-icon-green"></i
                     >Distribución de muestras
                 </h5>
-                <span class="panel-subtitle">Este mes</span>
+                <div class="dp-panel-header-right">
+                    <span class="panel-subtitle">Este mes</span>
+                    <button class="dp-toggle" data-panel="grafico" title="Ocultar panel"><i class="bi bi-eye-slash"></i></button>
+                </div>
             </div>
             <div class="panel-body">
                 <div class="chart-wrapper">
@@ -254,139 +239,280 @@
                 </div>
             </div>
         </div>
+        </div><!-- /data-panel="grafico" -->
     </div>
 </div>
 
-<!-- MODAL ALTA MUESTRA -->
+<!-- MODAL ALTA MUESTRA (completo) -->
 <div class="modal-overlay" id="modalAltaMuestra">
     <div class="modal-box">
         <div class="modal-header">
             <h5><i class="bi bi-flask"></i> Alta de muestra</h5>
-            <button class="modal-close" id="modalClose">
-                <i class="bi bi-x-lg"></i>
-            </button>
+            <button class="modal-close" id="modalClose"><i class="bi bi-x-lg"></i></button>
         </div>
-
         <form id="formAltaMuestra" novalidate>
             <div class="modal-body">
-                <!-- Fila 1: Protocolo + Fecha -->
-                <div class="form-row">
+                <!-- Fila 1: Protocolo + Fechas -->
+                <div class="form-row form-row-3">
                     <div class="form-group">
                         <label>N° Protocolo <span class="required">*</span></label>
-                        <input
-                                type="text"
-                                id="inputProtocolo"
-                                class="form-control-custom"
-                                placeholder="CHQ-2026-001"
-                                autocomplete="off"
-                        />
-                        <span class="field-error" id="errProtocolo"
-                        >Campo requerido</span
-                        >
+                        <input type="text" id="inputProtocolo" class="form-control-custom" placeholder="CHQ-2026-001" autocomplete="off"/>
+                        <span class="field-error" id="errProtocolo">Campo requerido</span>
                     </div>
                     <div class="form-group">
                         <label>Fecha de ingreso <span class="required">*</span></label>
-                        <input
-                                type="date"
-                                id="inputFecha"
-                                class="form-control-custom"
-                        />
+                        <input type="date" id="inputFecha" class="form-control-custom"/>
                         <span class="field-error" id="errFecha">Campo requerido</span>
                     </div>
-
                     <div class="form-group">
                         <label>Fecha estimada de entrega</label>
-                        <input
-                                type="date"
-                                id="inputFechaEntrega"
-                                class="form-control-custom"
-                        />
+                        <input type="date" id="inputFechaEntrega" class="form-control-custom"/>
                     </div>
                 </div>
-
-                <!-- Fila 2: Cliente + ID Muestra -->
-                <div class="form-row">
+                <!-- Fila 2: Cliente + ID Muestra + Punto -->
+                <div class="form-row form-row-3">
                     <div class="form-group">
                         <label>Cliente <span class="required">*</span></label>
-                        <input
-                                type="text"
-                                id="inputCliente"
-                                class="form-control-custom"
-                                placeholder="Nombre o razón social"
-                                autocomplete="off"
-                        />
-                        <span class="field-error" id="errCliente">Campo requerido</span>
+                        <select id="inputCliente" class="form-control-custom">
+                            <option value="">Seleccioná un cliente...</option>
+                        </select>
+                        <span class="field-error" id="errCliente">Seleccioná un cliente</span>
                     </div>
                     <div class="form-group">
                         <label>ID de muestra <span class="required">*</span></label>
-                        <input
-                                type="text"
-                                id="inputIdMuestra"
-                                class="form-control-custom"
-                                placeholder="Ej: M-001"
-                                autocomplete="off"
-                        />
-                        <span class="field-error" id="errIdMuestra"
-                        >Campo requerido</span
-                        >
+                        <input type="text" id="inputIdMuestra" class="form-control-custom" placeholder="Ej: M-001" autocomplete="off"/>
+                        <span class="field-error" id="errIdMuestra">Campo requerido</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Punto de muestreo</label>
+                        <input type="text" id="inputPuntoMuestreo" class="form-control-custom" placeholder="Ej: Pozo norte..." autocomplete="off"/>
                     </div>
                 </div>
-
-                <!-- Tipo de análisis -->
-                <div class="form-group">
-                    <label>Tipo de análisis <span class="required">*</span></label>
-                    <select id="inputTipo" class="form-control-custom">
-                        <option value="">Seleccioná un tipo...</option>
-                        <option>Agua potable</option>
-                        <option>Agua de pozo</option>
-                        <option>Agua residual</option>
-                        <option>Efluente industrial</option>
-                        <option>Efluente cloacal</option>
-                        <option>Suelo agrícola</option>
-                        <option>Otro</option>
-                    </select>
-                    <span class="field-error" id="errTipo">Seleccioná un tipo</span>
+                <!-- Fila 3: Matriz -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Matriz <span class="required">*</span></label>
+                        <select id="inputTipoMuestra" class="form-control-custom">
+                            <option value="">Seleccioná una matriz...</option>
+                        </select>
+                        <span class="field-error" id="errTipoMuestra">Seleccioná un tipo</span>
+                    </div>
                 </div>
-
+                <!-- Normativas -->
+                <div class="form-group">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
+                        <label class="fw-bold mb-0" style="text-transform:none;font-size:13px">Normativa / Destino de vuelco</label>
+                        <div class="form-check mb-0">
+                            <input class="form-check-input" type="checkbox" id="checkSinNormativa">
+                            <label class="form-check-label small" for="checkSinNormativa">No aplica ninguna normativa</label>
+                        </div>
+                    </div>
+                    <div id="normativasContainer" class="normativas-panel border rounded p-2 bg-white">
+                        <span class="text-muted small">Seleccioná una matriz para ver las normativas aplicables...</span>
+                    </div>
+                </div>
                 <!-- Parámetros -->
                 <div class="form-group">
                     <div class="parametros-header">
                         <label>Parámetros a analizar</label>
                         <button type="button" class="btn-add-param" id="btnAddParam">
-                            <i class="bi bi-plus-lg"></i> Agregar
+                            <i class="bi bi-plus-lg"></i> Agregar individual
                         </button>
                     </div>
-
+                    <!-- Buscador individual -->
+                    <div id="buscadorIndividualContainer" class="d-none mb-2 p-2 border rounded bg-white shadow-sm position-relative">
+                        <div class="input-group input-group-sm mb-1">
+                            <span class="input-group-text bg-white border-end-0"><i class="bi bi-search text-muted"></i></span>
+                            <input type="text" id="inputBuscarParametroIndividual" class="form-control form-control-sm border-start-0" placeholder="Nombre del parámetro..." autocomplete="off">
+                            <button class="btn btn-outline-secondary btn-sm" type="button" id="btnCerrarBuscadorIndividual"><i class="bi bi-x-lg"></i></button>
+                        </div>
+                        <div id="resultadosBusquedaIndividual" class="list-group position-absolute start-0 end-0 mx-2 shadow" style="max-height:200px;overflow-y:auto;top:100%;z-index:10"></div>
+                    </div>
                     <div class="parametros-lista" id="parametrosLista"></div>
-
-                    <div class="parametros-vacio" id="parametrosVacio">
+                    <div class="parametros-vacio" id="parametrosVacio" style="display:flex">
                         <i class="bi bi-list-ul param-empty-icon"></i>
-                        Ningún parámetro agregado todavía
+                        Seleccioná un destino de vuelco o agregá parámetros manualmente
                     </div>
                 </div>
-
                 <!-- Observaciones -->
                 <div class="form-group">
                     <label>Observaciones</label>
-                    <textarea
-                            id="inputObservaciones"
-                            class="form-control-custom textarea-vertical"
-                            rows="2"
-                            placeholder="Notas adicionales sobre la muestra..."
-                    ></textarea>
+                    <textarea id="inputObservaciones" class="form-control-custom textarea-vertical" rows="2" placeholder="Notas adicionales..."></textarea>
                 </div>
             </div>
-            <!-- /modal-body -->
-
             <div class="modal-footer">
-                <button type="button" class="btn-cancelar" id="btnCancelar">
-                    Cancelar
-                </button>
+                <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
                 <button type="submit" class="btn-guardar" id="btnGuardar">
                     <i class="bi bi-check-lg"></i> Guardar muestra
                 </button>
             </div>
         </form>
+    </div>
+</div>
+
+<!-- MODAL ALTA TAREA -->
+<div class="modal-overlay" id="modalAltaTarea">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h5><i class="bi bi-kanban"></i> Nueva tarea</h5>
+            <button class="modal-close" id="modalTareaClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <form id="formAltaTarea" novalidate>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Título <span class="required">*</span></label>
+                    <input type="text" id="tareaTitle" class="form-control-custom" placeholder="Título de la tarea..." autocomplete="off"/>
+                    <span class="field-error" id="errTareaTitle">Campo requerido</span>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="tareaDescription" class="form-control-custom textarea-vertical" rows="3" placeholder="Descripción de la tarea..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Asignar a</label>
+                        <select id="tareaUserId" class="form-control-custom">
+                            <option value="">Sin asignar</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Estado inicial</label>
+                        <select id="tareaStatus" class="form-control-custom">
+                            <option value="TODO">Pendiente</option>
+                            <option value="IN_PROGRESS">En progreso</option>
+                            <option value="EN_REVISION">En revisión</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelarTarea">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardarTarea">
+                    <i class="bi bi-check-lg"></i> Guardar tarea
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL ALTA STOCK -->
+<div class="modal-overlay" id="modalAltaStock">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h5><i class="bi bi-box-seam"></i> Nuevo ítem de stock</h5>
+            <button class="modal-close" id="modalStockClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <form id="formAltaStock" novalidate>
+            <div class="modal-body">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" id="stockNombre" class="form-control-custom" placeholder="Ej: Ácido sulfúrico" autocomplete="off"/>
+                        <span class="field-error" id="errStockNombre">Campo requerido</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría <span class="required">*</span></label>
+                        <select id="stockCategoria" class="form-control-custom">
+                            <option value="">Seleccioná una categoría...</option>
+                            <option value="REACTIVOS">Reactivos</option>
+                            <option value="SOLVENTES">Solventes</option>
+                            <option value="MATERIAL_MUESTREO">Material Muestreo</option>
+                            <option value="MATERIAL_VIDRIO">Material Vidrio</option>
+                            <option value="OTROS">Otros</option>
+                        </select>
+                        <span class="field-error" id="errStockCategoria">Seleccioná una categoría</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <input type="text" id="stockDescripcion" class="form-control-custom" placeholder="Ej: H₂SO₄ 98% — frasco 1L" autocomplete="off"/>
+                </div>
+                <div class="form-group">
+                    <label>Nivel de stock <span class="required">*</span></label>
+                    <div class="nivel-selector">
+                        <label class="nivel-option">
+                            <input type="radio" name="stockNivel" value="ALTO"/>
+                            <span class="nivel-dot alto"></span> Alto
+                        </label>
+                        <label class="nivel-option">
+                            <input type="radio" name="stockNivel" value="MEDIO"/>
+                            <span class="nivel-dot medio"></span> Medio
+                        </label>
+                        <label class="nivel-option">
+                            <input type="radio" name="stockNivel" value="BAJO"/>
+                            <span class="nivel-dot poco"></span> Bajo
+                        </label>
+                    </div>
+                    <span class="field-error" id="errStockNivel">Seleccioná un nivel</span>
+                </div>
+                <div class="form-group">
+                    <label>Observaciones</label>
+                    <textarea id="stockObservaciones" class="form-control-custom textarea-vertical" rows="2" placeholder="Notas adicionales..."></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnCancelarStock">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnGuardarStock">
+                    <i class="bi bi-check-lg"></i> Guardar ítem
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL DETALLE MUESTRA -->
+<div class="modal-overlay" id="modalDetalle">
+    <div class="modal-box modal-box-detalle">
+        <div class="modal-header">
+            <h5><i class="bi bi-eye"></i> Detalle de muestra</h5>
+            <button class="modal-close" id="modalDetalleClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <div id="detalleEstadoBadge" class="badge-estado" style="margin-bottom:.5rem"></div>
+            <div class="detalle-grid">
+                <div class="detalle-campo"><label>Protocolo</label><span id="detalleProtocolo">—</span></div>
+                <div class="detalle-campo"><label>ID Muestra</label><span id="detalleIdMuestra">—</span></div>
+                <div class="detalle-campo"><label>Cliente</label><span id="detalleCliente">—</span></div>
+                <div class="detalle-campo"><label>Matriz</label><span id="detalleMatriz">—</span></div>
+                <div class="detalle-campo"><label>Punto de muestreo</label><span id="detallePunto">—</span></div>
+                <div class="detalle-campo"><label>Fecha ingreso</label><span id="detalleFechaIngreso">—</span></div>
+                <div class="detalle-campo"><label>Fecha entrega</label><span id="detalleFechaEntrega">—</span></div>
+            </div>
+            <div class="detalle-campo">
+                <label>Observaciones</label>
+                <span id="detalleObservaciones" class="detalle-obs">—</span>
+            </div>
+            <div class="detalle-seccion">
+                <label class="detalle-seccion-titulo">Parámetros a analizar</label>
+                <div id="detalleParametros" class="detalle-tags"></div>
+            </div>
+            <div class="detalle-seccion" id="detalleResolucionesSection">
+                <label class="detalle-seccion-titulo">Resoluciones aplicadas</label>
+                <div id="detalleResoluciones" class="detalle-tags"></div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnDetalleClose">Cerrar</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINAR -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h5 style="color:#dc3545"><i class="bi bi-trash3"></i> Eliminar muestra</h5>
+            <button class="modal-close" id="modalEliminarClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <p id="modalEliminarMsg" style="font-size:14px;color:#1a1a2e;margin:0;line-height:1.5"></p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
+            <button type="button" class="btn-eliminar-confirm" id="btnConfirmarEliminar">
+                <i class="bi bi-trash3"></i> Eliminar
+            </button>
+        </div>
     </div>
 </div>
 

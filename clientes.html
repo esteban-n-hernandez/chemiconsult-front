@@ -42,6 +42,11 @@
                 <option value="PERSONA_FISICA">Persona Física</option>
                 <option value="EMPRESA">Empresa</option>
             </select>
+            <select id="selectEstado">
+                <option value="activos">Solo activos</option>
+                <option value="inactivos">Solo inactivos</option>
+                <option value="todos">Todos</option>
+            </select>
             <button class="btn-buscar" onclick="buscarClientes()">
                 <i class="bi bi-search"></i> Buscar
             </button>
@@ -319,6 +324,43 @@
 
 
 <!-- ══════════════════════════════════════════
+     MODAL — Confirmar Reactivar
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modalConfirmarReactivar">
+    <div class="modal-box modal-box-sm">
+
+        <div class="modal-header">
+            <h5><i class="bi bi-person-check"></i> Reactivar Cliente</h5>
+            <button class="modal-close" id="modalReactivarClose">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+
+        <div class="modal-body" style="gap:0.75rem;">
+            <div class="baja-warning-icon">
+                <i class="bi bi-person-check" style="color:#198754"></i>
+            </div>
+            <p class="baja-mensaje">
+                ¿Reactivar a
+                <strong id="reactivarClienteNombre">—</strong>?
+            </p>
+            <p class="baja-submensaje">
+                El cliente volverá a estar activo y podrá acceder al sistema si tiene usuario asignado.
+            </p>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarReactivar">Cancelar</button>
+            <button type="button" class="btn-guardar" id="btnConfirmarReactivar">
+                <i class="bi bi-person-check"></i> Reactivar
+            </button>
+        </div>
+
+    </div>
+</div>
+
+
+<!-- ══════════════════════════════════════════
      MODAL — Sucursales y Contactos
 ══════════════════════════════════════════ -->
 <div class="modal-overlay" id="modalSucursales">
@@ -480,13 +522,6 @@
                 <p class="baja-submensaje" style="margin-bottom: 0.5rem;">
                     Cliente: <strong id="asignarClienteNombre">—</strong>
                 </p>
-
-                <div class="form-group" style="margin-bottom: 1rem;">
-                    <label>Nombre de usuario <span class="required">*</span></label>
-                    <input type="text" class="form-control-custom" id="asignarUsername"
-                           placeholder="ej: jperez" autocomplete="off">
-                    <span class="field-error" id="errAsignarUsername">Campo requerido</span>
-                </div>
 
                 <div class="form-group" style="margin-bottom: 1rem;">
                     <label>Contraseña provisoria <span class="required">*</span></label>

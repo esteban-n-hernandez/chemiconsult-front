@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const paginaActual = pathname.substring(pathname.lastIndexOf("/") + 1) || "dashboard-empleado.html";
     const rol = (localStorage.getItem("userRole") || "").toUpperCase();
     const esCliente = rol === "ROLE_CLIENTE";
+    const esIT      = rol === "ROLE_IT";
 
     const link = (href, icon, label) => `
         <a href="${href}" class="${paginaActual === href ? 'active' : ''}">
@@ -20,6 +21,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ${link('stock.html',              'bi-box-seam',     'Stock')}
         ${link('panel-tecnico.html',      'bi-gear-fill',    'Panel Técnico')}
         ${link('facturacion.html',        'bi-receipt',      'Facturación')}
+        ${esIT ? link('usuarios.html', 'bi-shield-lock', 'Usuarios') : ''}
         ${link('perfil.html',             'bi-person-circle','Perfil')}
     `;
 

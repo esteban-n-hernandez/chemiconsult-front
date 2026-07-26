@@ -1,0 +1,706 @@
+/* VARIABLES DE COLOR Y RECURSOS */
+:root {
+    --color-green-main: rgba(117, 189, 6, 0.78);
+    --color-green-hover: #5EA504;
+    --color-black: #000000;
+    --color-gray-dark: #2F2F2F;
+    --color-gray-medium: #CCCCCC;
+    --color-white: #FFFFFF;
+
+    /* Iconos */
+    --icon-ambiental: url('https://cdn-icons-png.flaticon.com/512/5495/5495928.png');
+    --icon-higiene: url('https://cdn-icons-png.flaticon.com/512/949/949333.png');
+    --icon-calidad: url('https://cdn-icons-png.flaticon.com/512/4866/4866974.png');
+    --icon-farma: url('https://cdn-icons-png.flaticon.com/512/387/387557.png');
+    --icon-alimentaria: url('https://cdn-icons-png.flaticon.com/512/4939/4939099.png');
+    --icon-mision: url('https://cdn-icons-png.flaticon.com/512/3233/3233474.png');
+    --icon-vision: url('https://cdn-icons-png.flaticon.com/512/1934/1934044.png');
+}
+
+/* GLOBAL RESET / AJUSTES */
+html, body {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+* {
+    box-sizing: border-box;
+    max-width: 100%;
+}
+
+ul {
+    margin: 0;
+    padding-left: 1.5rem;
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+/* HEADER Y NAVBAR */
+.header-bg {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+}
+
+.bg-img {
+    width: 100%;
+    height: 100vh;
+    object-fit: cover;
+}
+
+.dark-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 1;
+}
+
+.header-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.5rem 1rem;
+    text-align: center;
+    z-index: 2;
+}
+
+.overlay-logo {
+    width: 500px;
+    height: auto;
+}
+
+.overlay-text {
+    color: #fff;
+    font-weight: 600;
+    font-size: 2rem;
+    text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+    margin: 0;
+}
+
+.navbar-toggler {
+    border: none;
+}
+
+.navbar-toggler-icon {
+    filter: invert(0.5);
+}
+
+.navbar-brand {
+    margin: 0 auto;
+}
+
+.logo-navbar {
+    max-height: 60px;
+    height: auto;
+}
+
+/* TITULOS / TEXTOS / BOTONES */
+.custom-underline-border {
+    position: relative;
+    display: inline-block;
+    color: #333;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding-bottom: 0.5rem;
+    margin-bottom: 2rem;
+}
+
+.custom-underline-border::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 4px;
+    background-color: var(--color-green-hover);
+    border-radius: 2px;
+}
+
+.texto-destacado {
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.btn-grad {
+    /*  background-image: linear-gradient(to right, #5EA504, #7cd832);*/
+    background: #5EA504FF;
+    color: white;
+    border: none;
+    border-radius: 30px;
+    padding: 0.6rem 2rem;
+    font-weight: 600;
+    transition: 0.3s ease;
+}
+
+.btn-grad:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+}
+
+/* SECCIÓN SERVICIOS */
+#section-servicios {
+    position: relative;
+    z-index: 1;
+}
+
+#section-servicios h3 {
+    color: #fff; /* Texto blanco */
+    font-weight: 700;
+    font-size: 3rem;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+    text-transform: uppercase;
+    text-align: center;
+    position: relative;
+    z-index: 3;
+}
+
+#section-servicios ul,
+#section-servicios p {
+    position: relative;
+    z-index: 2;
+}
+
+.servicio-banner,
+.carousel,
+.carousel-inner,
+.carousel-item {
+    position: relative;
+    z-index: 5;
+}
+
+.servicio-banner {
+    position: relative;
+    height: 300px;
+    overflow: hidden;
+}
+
+.banner-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(60%);
+}
+
+.banner-overlay {
+    position: absolute; /* Para aparecer encima de la imagen */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 2;
+    color: #fff;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
+}
+
+/*  Bullets visibles y verdes */
+#section-servicios ul {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: #333;
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+#section-servicios li {
+    color: #2d2d2d;
+    margin-bottom: 0.4rem;
+}
+
+#section-servicios ul li::marker {
+    color: #37b24d;
+}
+
+/* CARRUSEL CLIENTES  */
+.carousel-inner img {
+    height: 350px;
+    object-fit: cover;
+}
+
+/* QUIÉNES SOMOS + MISIÓN/VISIÓN: fondo en blanco (por defecto) */
+#section-quienes-somos,
+#section-mision-vision {
+    background-color: #ffffff; /* dejar blanco nuevamente */
+    border-radius: 10px;
+}
+
+#section-quienes-somos .container {
+    padding: 2rem 1rem;
+}
+
+/* Asegurar títulos legibles */
+#section-quienes-somos h2.custom-underline-border,
+#section-mision-vision h2.custom-underline-border {
+    color: #333;
+}
+
+#section-clientes {
+    background-color: #fff;
+}
+
+#section-clientes img {
+    max-height: 80px;
+    object-fit: contain;
+    transition: transform 0.5s ease, filter 0.5s ease;
+}
+
+#section-clientes img:hover {
+    transform: scale(1.08);
+}
+
+/* LOGOS LEGALES / CONTACTO  */
+.logos-contacto .logo-item {
+    text-align: center;
+}
+
+.logos-contacto .logo-item img {
+    max-height: 70px;
+    object-fit: contain;
+    margin-bottom: 5px;
+}
+
+.logos-contacto .logo-item p {
+    font-size: 0.9rem;
+    color: #333;
+    margin: 0;
+}
+
+/* FOOTER  */
+.footer {
+    border-top: 3px solid var(--color-green-hover);
+    background-color: #fff;
+    color: #000;
+}
+
+.footer a {
+    color: #000;
+    transition: color 0.3s ease;
+}
+
+.footer a:hover {
+    color: var(--color-green-hover);
+}
+
+.footer h5 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+    color: #000;
+}
+
+.footer ul li {
+    color: #000;
+}
+
+/* WHATSAPP BUTTON  */
+.whatsapp-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    z-index: 1000;
+}
+
+.whatsapp-icon img {
+    width: 100%;
+    height: auto;
+    animation: bounce 1.5s infinite;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    z-index: 10 !important; /* por encima de overlays e imagenes */
+    width: 5%; /* ancho visible sin cubrir todo el borde */
+    opacity: 0.8; /* un poco translúcido */
+    transition: opacity 0.3s ease;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    opacity: 1;
+}
+
+/* CAPTCHA STYLING */
+.captcha-box {
+    background-color: rgba(161, 213, 82, 0.05); /* leve tono verde translúcido */
+    border: 1px solid var(--color-green-main);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.captcha-img {
+    border: 1px solid var(--color-gray-medium);
+    border-radius: 6px;
+    padding: 4px;
+    background-color: var(--color-white);
+    width: 180px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.btn-refresh {
+    background: none;
+    border: none;
+    color: var(--color-green-hover);
+    font-weight: 600;
+    cursor: pointer;
+    transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-refresh:hover {
+    color: var(--color-black);
+    transform: scale(1.1);
+}
+
+.contact-form .form-control {
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    transition: border-color 0.3s ease;
+}
+
+.contact-form .form-control:focus {
+    border-color: var(--color-green-hover);
+    box-shadow: 0 0 0 0.15rem rgba(185, 153, 225, 0.25);
+}
+
+
+/* Asegurar que los íconos sean visibles sobre fondos claros */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    filter: invert(1) drop-shadow(0 0 3px rgba(0, 0, 0, 0.6));
+}
+
+
+/* PRICING SECTION */
+#section-pricing {
+    background-color: #f8f9fa;
+}
+
+.pricing-card {
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.75rem 1.25rem 1.25rem;
+    text-align: center;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+.pricing-card:hover {
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.09);
+    transform: translateY(-3px);
+}
+
+.pricing-card--featured {
+    border: 2px solid #5EA504;
+    position: relative;
+}
+
+.pricing-badge {
+    display: inline-block;
+    background-color: #5EA504;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 12px;
+    border-radius: 20px;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.pricing-card-icon {
+    color: #5EA504;
+    margin-bottom: 14px;
+}
+
+.pricing-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    margin-bottom: 8px;
+}
+
+.pricing-card-text {
+    font-size: 13px;
+    color: #666;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+}
+
+.btn-pricing-modal {
+    background: transparent;
+    border: 2px solid #5EA504;
+    color: black;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+}
+
+.btn-pricing-modal:hover {
+    background: #5EA504;
+    color: #ffffff;
+}
+
+/* PRICING MODAL */
+.pricing-modal-content {
+    border-radius: 14px;
+    border: none;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.pricing-modal-content .modal-title {
+    font-size: 20px;
+    color: #1a1a1a;
+}
+
+.pricing-modal-desc {
+    font-size: 14px;
+    color: #555;
+    line-height: 1.6;
+}
+
+.pricing-modal-label {
+    font-size: 13px;
+    color: #1a1a1a;
+}
+
+.pricing-modal-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.pricing-modal-list li {
+    font-size: 13px;
+    color: #444;
+    padding: 5px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.pricing-modal-list li::before {
+    content: "✓";
+    color: #5EA504;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.pricing-modal-price-box {
+    background: #f4faea;
+    border: 1px solid #d4edbd;
+    border-radius: 10px;
+    padding: 1rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+}
+
+.pricing-modal-precio-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #5EA504;
+    font-weight: 600;
+}
+
+.pricing-modal-precio {
+    font-size: 22px;
+    font-weight: 700;
+    color: #3a7003;
+}
+
+.pricing-modal-nota {
+    font-size: 12px;
+    color: #777;
+    margin: 4px 0 0;
+}
+
+.pricing-modal-content .modal-footer {
+    justify-content: center;
+}
+
+.pricing-modal-content .modal-footer .btn-grad {
+    padding: 8px 28px;
+    font-size: 13px;
+}
+.btn-pricing-wpp {
+    display: block;
+    padding: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    background: #25D366;
+    color: #ffffff;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s;
+    text-align: center;
+}
+
+.btn-pricing-wpp:hover {
+    background: #1ebe5d;
+    color: #ffffff;
+}
+
+/* ======================================================
+   RESPONSIVE
+====================================================== */
+@media (max-width: 992px) {
+    .overlay-logo {
+        width: 400px;
+        height: auto;
+    }
+}
+
+@media (max-width: 768px) {
+
+    #carousel-ambiental-div,
+    #carousel-seguridad-div,
+    #carousel-qa-div,
+    #carousel-farma-div,
+    #carousel-seguridad-alimentaria-div {
+        display: none;
+    }
+
+    .footer {
+        text-align: center;
+    }
+
+
+    .footer .container {
+        flex-direction: column; /* Apila los divs verticalmente */
+        align-items: center; /* Centra los elementos */
+        gap: 2rem; /* Espacio entre secciones */
+        text-align: center; /* Centra textos y listas */
+    }
+
+    .footer .footer-logo,
+    .footer .datos-contacto,
+    .footer .footer-social,
+    .footer .footer-horarios {
+        width: 100%; /* Ocupa todo el ancho disponible */
+    }
+
+    .footer .datos-contacto ul,
+    .footer .footer-horarios ul {
+        padding-left: 0; /* Ajusta el padding de las listas */
+    }
+
+    .overlay-logo {
+        width: 350px;
+    }
+
+    .overlay-text {
+        font-size: 2rem;
+    }
+
+    .header-overlay {
+        gap: 0.4rem;
+        padding: 0.25rem 0.5rem;
+        top: 60%;
+        transform: translate(-50%, -60%);
+    }
+
+    .overlay-text-servicios {
+        font-size: 1.6rem;
+    }
+
+    .carousel img {
+        height: 250px;
+    }
+
+    #section-clientes img {
+        max-height: 60px;
+    }
+
+    .logos-contacto .logo-item img {
+        max-height: 55px;
+    }
+}
+
+[id^="section-"] {
+    scroll-margin-top: 90px; /* ajusta según la altura real de tu navbar */
+}
+
+/* Ícono de WhatsApp oculto por defecto */
+.whatsapp-icon {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    z-index: 1000;
+    display: none; /* 👈 Oculto por defecto */
+}
+
+.whatsapp-icon img {
+    width: 100%;
+    height: auto;
+    animation: bounce 1.5s infinite;
+}
+
+.dropdown-menu {
+    min-width: 15rem;
+}
+
+.scroll-effect {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.scroll-effect.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.pricing-card-img {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    margin-bottom: 1rem;
+}
+
+.pricing-text ol {
+    padding-left: 1.5rem;
+    margin: 1rem 0;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: red;
+}
+
+.btn-nav-pricing {
+    display: inline-block;
+    background-color: #5EA504;
+    color: #ffffff !important;
+    font-weight: 600;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-nav-pricing:hover {
+    background-color: #4a8403;
+    transform: scale(1.04);
+    color: #ffffff !important;
+}
