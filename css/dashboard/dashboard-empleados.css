@@ -159,7 +159,7 @@ body {
     flex-shrink: 0;
 }
 
-.kpi-icon.verde  { background: #eef7e0; color: #5EA504; }
+.kpi-icon.verde  { background: #eef7e0; color: #2d6b0a; }
 .kpi-icon.azul   { background: #eff6ff; color: #3b82f6; }
 .kpi-icon.naranja { background: #fffbeb; color: #f59e0b; }
 .kpi-icon.rojo   { background: #fef2f2; color: #ef4444; }
@@ -377,21 +377,25 @@ body {
 }
 
 .tabla-muestras thead th {
-    background: transparent;
-    color: var(--color-text-tertiary);
+    background: white;
+    color: #1d4a07;
     font-weight: 600;
-    padding: 10px 12px 14px;
+    padding: 10px 12px;
     text-align: left;
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0.6px;
-    border-bottom: 1px solid var(--color-border-soft);
+    border-bottom: 2px solid var(--verde);
 }
 
 .tabla-muestras tbody tr {
     border-bottom: 1px solid var(--color-border-soft);
     border-left: 3px solid transparent;
     transition: background 0.15s;
+}
+
+.tabla-muestras tbody tr:nth-child(even) td {
+    background: #f6fdf1;
 }
 
 .tabla-muestras tbody tr[data-estado="PENDIENTE"] { border-left-color: var(--color-text-warning); }
@@ -416,52 +420,52 @@ body {
 .cod-badge {
     font-family: var(--font-mono);
     font-size: 12px;
-    background: transparent;
-    padding: 0;
-    border-radius: 0;
-    color: #6c757d;
-    font-weight: 600;
+    background: #edf7e0;
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: #2d6b0a;
+    border: 1px solid #c5e6a0;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 .badge-estado {
-    font-size: 11.5px;
-    padding: 0;
-    border-radius: 0;
-    font-weight: 500;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 600;
     white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: transparent !important;
-}
-
-.badge-estado::before {
-    content: "";
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: currentColor;
-    flex-shrink: 0;
+    border: 1px solid transparent;
 }
 
 .badge-pendiente {
-    color: var(--color-text-warning);
+    background: #fef9e7;
+    color: #856404;
+    border-color: #fcd34d;
 }
 
 .badge-proceso {
-    color: var(--color-text-info);
+    background: #e8f0fe;
+    color: #1a56db;
+    border-color: #93c5fd;
 }
 
 .badge-informe {
-    color: var(--color-text-success);
+    background: #dcfce7;
+    color: #166534;
+    border-color: #6ee7b7;
 }
 
 .badge-completo-sin-informe {
-    color: #6c757d;
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
 }
 
 .badge-demorada {
-    color: var(--color-text-danger);
+    background: #fde8e8;
+    color: #991b1b;
+    border-color: #fca5a5;
 }
 
 .fecha-ok {

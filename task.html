@@ -19,20 +19,33 @@
 
 <!-- CONTENIDO PRINCIPAL -->
 <div class="container-fluid py-4">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h3 class="page-title m-0">Tareas</h3>
-        <div class="d-flex gap-2">
-            <button class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#archivedModal">
-                <i class="bi bi-archive"></i> Archivo
-            </button>
-            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#taskModal">+ Nueva tarea</button>
+    <div class="page-header">
+        <div>
+            <h1>Tareas</h1>
+            <p id="fecha-hoy"></p>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <p class="header-user-name" id="header-nombre">—</p>
+                <p class="header-user-role" id="header-rol">—</p>
+            </div>
+            <div class="avatar-circle" id="header-avatar">--</div>
         </div>
     </div>
-
-    <!-- Filtro por persona -->
-    <div id="kb-filter-bar" class="kb-filter">
-        <span class="kb-filter-label">Ver</span>
-        <button class="kb-pill active" data-u="*" onclick="kbFilter(this)">Todos</button>
+    <!-- Filtro + acciones en la misma fila -->
+    <div class="kb-toolbar">
+        <div id="kb-filter-bar" class="kb-filter">
+            <span class="kb-filter-label">Ver</span>
+            <button class="kb-pill active" data-u="*" onclick="kbFilter(this)">Todos</button>
+        </div>
+        <div class="kb-toolbar-actions">
+            <button class="btn-kb btn-kb-outline" data-bs-toggle="modal" data-bs-target="#archivedModal">
+                <i class="bi bi-archive"></i> Archivo
+            </button>
+            <button class="btn-kb btn-kb-solid" data-bs-toggle="modal" data-bs-target="#taskModal">
+                <i class="bi bi-plus-lg"></i> Nueva tarea
+            </button>
+        </div>
     </div>
 
     <div class="row g-3">

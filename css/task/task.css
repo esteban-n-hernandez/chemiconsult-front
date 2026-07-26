@@ -34,7 +34,9 @@
 }
 
 body {
-    background: var(--bg-main);
+    background-color: #f0f2f5;
+    background-image: radial-gradient(rgba(26,26,46,.04) 1px, transparent 1px);
+    background-size: 5px 5px;
     display: flex;
     height: 100vh;
     overflow: hidden;
@@ -326,12 +328,26 @@ body {
 .dl-soon           { background: #eff6ff; color: #2563eb; }
 .dl-ok             { background: #f1f5f9; color: var(--text-secondary); }
 
+/* ── Toolbar: filtro + acciones ── */
+.kb-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    gap: 8px;
+}
+
+.kb-toolbar-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+}
+
 /* ── Filtro personas ── */
 .kb-filter {
     display: flex;
     align-items: center;
     gap: 6px;
-    margin-bottom: 16px;
     flex-wrap: wrap;
 }
 
@@ -350,22 +366,22 @@ body {
     gap: 5px;
     padding: 4px 12px;
     border-radius: 20px;
-    border: 1px solid var(--border-flat);
+    border: 1px solid #daeacd;
     background: #ffffff;
     font-size: 12px;
     font-family: inherit;
-    color: var(--text-secondary);
+    color: var(--verde);
     cursor: pointer;
     transition: all .15s ease;
     font-weight: 500;
     white-space: nowrap;
 }
 
-.kb-pill:hover { border-color: #cbd5e1; color: var(--text-primary); }
+.kb-pill:hover { border-color: var(--verde); background: #f3fbe8; }
 
 .kb-pill.active {
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    background: var(--verde);
+    border-color: var(--verde);
     color: #ffffff;
 }
 
@@ -373,8 +389,8 @@ body {
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background: #e2e8f0;
-    color: var(--text-secondary);
+    background: #c5e6a0;
+    color: var(--verde-oscuro);
     font-size: 8px;
     font-weight: 700;
     display: inline-flex;
@@ -383,7 +399,36 @@ body {
     flex-shrink: 0;
 }
 
-.kb-pill.active .kb-pill-av { background: rgba(255,255,255,.2); color: #ffffff; }
+.kb-pill.active .kb-pill-av { background: rgba(255,255,255,.25); color: #ffffff; }
+
+.btn-kb {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 13px;
+    font-size: 12px;
+    font-weight: 500;
+    font-family: inherit;
+    border-radius: 7px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all .18s ease;
+    white-space: nowrap;
+}
+
+.btn-kb-outline {
+    background: white;
+    border-color: #daeacd;
+    color: var(--verde);
+}
+.btn-kb-outline:hover { background: var(--verde); border-color: var(--verde); color: white; }
+
+.btn-kb-solid {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: white;
+}
+.btn-kb-solid:hover { background: var(--verde-oscuro); border-color: var(--verde-oscuro); }
 
 .kanban-card.kb-hidden { display: none; }
 

@@ -10,6 +10,7 @@ let draggedTaskId = null;
 let activeFilterUser = '*';
 
 document.addEventListener("DOMContentLoaded", async () => {
+    inicializarHeader();
     await cargarUsuarios();
     await loadTasks();
     setupForm();

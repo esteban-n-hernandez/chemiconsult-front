@@ -10,6 +10,7 @@ const ITEMS_POR_PAGINA = 10;
 //  INIT
 // ══════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
+    inicializarHeader();
     cargarUsuarios();
     initModalUsuario();
     initModalReset();

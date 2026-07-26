@@ -2,6 +2,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const container = document.getElementById("sidebar-container");
     if (!container) return;
 
+    // Widget de mensajería — solo para empleados/IT, no para clientes
+    const rolActual = (localStorage.getItem("userRole") || "").toUpperCase();
+    if (rolActual !== "ROLE_CLIENTE" && !document.getElementById("chatFab")) {
+        const chatScript = document.createElement("script");
+        chatScript.src = "js/chat.js";
+        document.body.appendChild(chatScript);
+    }
+
     if (!document.querySelector('link[href*="bootstrap-icons"]')) {
         const biLink = document.createElement("link");
         biLink.rel = "stylesheet";
@@ -91,4 +99,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     applySidebarCollapse();
 });
+
+function inicializarHeader() {
+    const nombre = localStorage.getItem('userName') || localStorage.getItem('userEmail') || 'Usuario';
+    const rol = (localStorage.getItem('userRole') || '').toUpperCase();
+    const iniciales = nombre.split(' ').map(p => p[0]).join('').substring(0, 2).toUpperCase();
+    const hoy = new Date().toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+    const el = id => document.getElementById(id);
+    if (el('header-nombre')) el('header-nombre').textContent = nombre;
+    if (el('header-rol'))    el('header-rol').textContent    = rol === 'ROLE_IT' ? 'IT' : 'Empleado';
+    if (el('header-avatar')) el('header-avatar').textContent = iniciales;
+    if (el('fecha-hoy'))     el('fecha-hoy').textContent     = hoy.charAt(0).toUpperCase() + hoy.slice(1);
+}
 

@@ -289,6 +289,9 @@ function vincularEventos() {
     // — Guardar resultados de parámetros —
     document.getElementById("btnGuardarResultados").addEventListener("click", onGuardarResultados);
 
+    // — Generar informe PDF —
+    document.getElementById("btnGenerarInforme").addEventListener("click", onGenerarInforme);
+
     // Live re-evaluation of cumple badges as user types a result
     document.getElementById("detalleParametros").addEventListener("input", e => {
         if (!e.target.classList.contains("param-resultado-input")) return;
@@ -827,10 +830,10 @@ function renderizarTablaMuestras(lista) {
         const fila = document.createElement("tr");
         const codigo = m.nroProtocolo || m.idMuestra || m.id || "S/N";
         fila.innerHTML = `
-            <td><strong>${codigo}</strong></td>
+            <td><span class="cod-badge">${codigo}</span></td>
             <td>${m.cliente || '—'}</td>
             <td>${m.matrizNombre || m.tipoAnalisis || '—'}</td>
-            <td><span class="badge-estado ${(m.estado || '').toLowerCase()}">${m.estado || '—'}</span></td>
+            <td><span class="${badgeClassDetalle(m.estado)}">${labelEstadoDetalle(m.estado)}</span></td>
             <td>${formatearFecha(m.fechaIngreso)}</td>
             <td>${formatearFecha(m.fechaEntrega)}</td>
             <td>
@@ -995,6 +998,10 @@ function labelEstadoDetalle(estado) {
 
 function renderizarDetalleMuestra(d) {
     document.getElementById("detalleProtocolo").textContent = d.nroProtocolo || d.idMuestra || `#${d.id}`;
+
+    // El botón "Generar informe" se oculta si la muestra ya está COMPLETO
+    const btnGenerar = document.getElementById("btnGenerarInforme");
+    btnGenerar.style.display = (d.estado === "COMPLETO") ? "none" : "";
 
     // Estado badge
     const estadoEl = document.getElementById("detalleEstado");
@@ -1196,8 +1203,74 @@ async function onGuardarResultados() {
     }
 }
 
+async function onGenerarInforme() {
+    if (!detalleAnalisisId) return;
+
+    const inputs = document.querySelectorAll(".param-resultado-input");
+    const vacios = [];
+    inputs.forEach(input => {
+        const vacio = !input.value || !input.value.trim();
+        input.style.borderColor = vacio ? "#dc3545" : "";
+        input.style.background  = vacio ? "#fff5f5" : "";
+        if (vacio) {
+            const card = input.closest(".param-card");
+            const nombreEl = card?.querySelector(".param-card-nombre");
+            const nombre = nombreEl
+                ? (nombreEl.childNodes[0]?.textContent?.trim() || nombreEl.textContent.split("(")[0].trim())
+                : `#${input.dataset.parametroId}`;
+            vacios.push(nombre);
+        }
+    });
+
+    if (vacios.length > 0) {
+        const msg = vacios.length <= 3
+            ? `Faltan resultados en: ${vacios.join(", ")}.`
+            : `${vacios.length} parámetros sin resultado. Completá todos los campos antes de generar el informe.`;
+        mostrarToast(msg, true);
+        return;
+    }
+
+    const btn = document.getElementById("btnGenerarInforme");
+    const textoOriginal = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner-border spinner-border-sm me-1"></span> Generando...`;
+
+    try {
+        const resp = await fetchConAuth(`${API_URL}/estudios/${detalleAnalisisId}/generar-informe`, {
+            method: "POST"
+        });
+
+        if (!resp.ok) {
+            const err = await resp.json().catch(() => ({}));
+            throw new Error(err.message || `Error HTTP ${resp.status}`);
+        }
+
+        // Descarga el PDF directamente en el navegador
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `informe-${detalleAnalisisId}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        mostrarToast("Informe generado y descargado correctamente.");
+        cerrarModalDetalle();
+        await cargarMuestrasActivas();
+
+    } catch (err) {
+        console.error("Error generando informe:", err);
+        mostrarToast(`Error al generar el informe: ${err.message}`, true);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = textoOriginal;
+    }
+}
+
 function init() {
-    establecerFechaHoy();
+    inicializarHeader();
     cargarClientes();
     cargarMatrices();
     cargarMuestrasActivas();

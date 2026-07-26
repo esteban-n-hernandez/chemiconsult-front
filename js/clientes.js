@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = 'login.html';
     }
 
+    inicializarHeader();
     cargarClientes();
     initModalBaja();
     initModalReactivar();

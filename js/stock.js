@@ -293,4 +293,5 @@ function mostrarToast(msg, tipo = 'success') {
 }
 
 // ── Init ─────────────────────────────────────────────────────────────────────
+inicializarHeader();
 cargarItems();

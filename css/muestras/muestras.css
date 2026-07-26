@@ -12,6 +12,8 @@
     --color-background-warning: #fff3cd;
     --color-background-danger: #f8d7da;
     --color-border-tertiary: #dee2e6;
+    --font-body: 'Work Sans', 'Segoe UI', sans-serif;
+    --font-mono: 'Space Mono', monospace;
 }
 
 * {
@@ -23,7 +25,7 @@ body {
     display: flex;
     height: 100vh;
     overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: var(--font-body);
 }
 
 
@@ -54,40 +56,6 @@ body {
     margin: 2px 0 0;
 }
 
-.header-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-user-info {
-    text-align: right;
-}
-
-.header-user-name {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.header-user-role {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    margin: 0;
-}
-
-.avatar-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--verde-suave);
-    color: var(--verde-oscuro);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 13px;
-}
 
 /* ── Sistema de Navegación por Filtros/Pestañas ── */
 .filtros-tabs {
@@ -214,80 +182,114 @@ body {
 .tabla-muestras {
     width: 100%;
     font-size: 13px;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
 }
 
 .tabla-muestras thead th {
-    background: #f8f9fa;
-    color: var(--color-text-secondary);
+    background: white;
+    color: #1d4a07;
     font-weight: 600;
-    padding: 8px 12px;
+    padding: 10px 12px;
     text-align: left;
-    font-size: 12px;
+    font-size: 11.5px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-bottom: 1px solid var(--color-border-tertiary);
+    letter-spacing: 0.6px;
+    border-bottom: 2px solid var(--verde);
 }
 
 .tabla-muestras tbody tr {
-    border-bottom: 1px solid #f1f3f5;
-    transition: background 0.15s;
+    transition: background 0.13s;
 }
 
-.tabla-muestras tbody tr:hover {
-    background: #f8f9fa;
+.tabla-muestras tbody tr:nth-child(even) td {
+    background: #f6fdf1;
 }
 
-.tabla-muestras tbody tr:last-child {
+.tabla-muestras tbody tr:hover td {
+    background: #e8f5da;
+}
+
+.tabla-muestras tbody tr:last-child td {
     border-bottom: none;
 }
 
 .tabla-muestras td {
     padding: 10px 12px;
     vertical-align: middle;
+    border-bottom: 1px solid #edf2e8;
 }
 
+.tabla-muestras .btn-light {
+    background: white;
+    border: 1px solid #daeacd;
+    color: var(--verde);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+.tabla-muestras .btn-light:hover {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: white;
+}
 
 .cod-badge {
-    font-family: monospace;
+    font-family: var(--font-mono);
     font-size: 12px;
-    background: #f0f2f5;
-    padding: 2px 7px;
-    border-radius: 4px;
-    color: #495057;
+    background: #edf7e0;
+    padding: 3px 8px;
+    border-radius: 5px;
+    color: #2d6b0a;
+    border: 1px solid #c5e6a0;
+    font-weight: 700;
+    letter-spacing: 0.3px;
 }
 
 .badge-estado {
     font-size: 11px;
     padding: 3px 10px;
     border-radius: 20px;
-    font-weight: 500;
+    font-weight: 600;
     white-space: nowrap;
+    border: 1px solid transparent;
 }
 
 .badge-pendiente {
-    background: var(--color-background-warning);
-    color: var(--color-text-warning);
+    background: #fef9e7;
+    color: #856404;
+    border-color: #fcd34d;
 }
 
 .badge-proceso {
-    background: var(--color-background-info);
-    color: var(--color-text-info);
+    background: #e8f0fe;
+    color: #1a56db;
+    border-color: #93c5fd;
 }
 
 .badge-informe {
-    background: var(--color-background-success);
-    color: var(--color-text-success);
+    background: #dcfce7;
+    color: #166534;
+    border-color: #6ee7b7;
 }
 
 .badge-completo-sin-informe {
-    background: #e2e3e5;
-    color: #495057;
+    background: #f1f5f9;
+    color: #475569;
+    border-color: #cbd5e1;
 }
 
 .badge-demorada {
-    background: var(--color-background-danger);
-    color: var(--color-text-danger);
+    background: #fde8e8;
+    color: #991b1b;
+    border-color: #fca5a5;
 }
 
 .fecha-ok {
