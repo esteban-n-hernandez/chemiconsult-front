@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Parametros a analizar - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
+    <link rel="stylesheet" href="css/cola-analisis.css"/>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="COLA_ANALISIS"></script>
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<div class="content">
+
+    <div class="page-header">
+        <div>
+            <h1>Parametros a analizar</h1>
+            <p id="fecha-hoy">Gestión de parámetros asignados</p>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <p class="header-user-name" id="header-nombre">—</p>
+                <p class="header-user-role" id="header-rol">—</p>
+            </div>
+            <div class="avatar-circle" id="header-avatar">--</div>
+        </div>
+    </div>
+
+    <!-- Filtro por empleado -->
+    <div class="mc-user-filter-bar" id="mcUserFilterBar">
+        <span class="mc-user-filter-label">Ver</span>
+        <div class="mc-user-pills" id="mcUserPills">
+            <!-- pills generadas por JS -->
+        </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="mc-stats-row" id="mcStats" style="display:none">
+        <div class="mc-stat-chip mc-stat-pendiente">
+            <i class="bi bi-hourglass-split"></i>
+            <span id="statPendientes">0</span> Pendiente
+        </div>
+        <div class="mc-stat-chip mc-stat-analizado">
+            <i class="bi bi-check2-circle"></i>
+            <span id="statAnalizado">0</span> Analizado
+        </div>
+        <div class="mc-stat-chip mc-stat-confirmado">
+            <i class="bi bi-patch-check"></i>
+            <span id="statConfirmado">0</span> Confirmado
+        </div>
+        <div class="mc-stat-chip mc-stat-repetir">
+            <i class="bi bi-arrow-repeat"></i>
+            <span id="statRepetir">0</span> Repetir
+        </div>
+    </div>
+
+    <!-- Toolbar -->
+    <div class="mc-toolbar">
+        <div class="mc-search-wrap">
+            <i class="bi bi-search mc-search-icon"></i>
+            <input type="text" id="mcSearch" class="mc-search" placeholder="Buscar parámetro o muestra…"/>
+        </div>
+        <div class="mc-filter-btns">
+            <button class="mc-filter-btn active" data-filtro="todos">Todos</button>
+            <button class="mc-filter-btn" data-filtro="PENDIENTE">Pendiente</button>
+            <button class="mc-filter-btn" data-filtro="ANALIZADO">Analizado</button>
+            <button class="mc-filter-btn" data-filtro="REPETIR"> Repetir</button>
+        </div>
+        <button class="mc-btn-refresh" id="mcRefresh" title="Actualizar">
+            <i class="bi bi-arrow-clockwise"></i>
+        </button>
+    </div>
+
+    <!-- Lista de parámetros -->
+    <div id="mcLista"></div>
+
+    <!-- Empty -->
+    <div class="mc-empty" id="mcEmpty" style="display:none">
+        <i class="bi bi-check2-all"></i>
+        <p>Sin parámetros asignados</p>
+    </div>
+
+</div>
+
+<!-- Dropdown estado análisis -->
+<div id="mcEstadoDrop" class="mc-estado-drop" style="display:none;">
+    <button class="mc-estado-opt pendiente" data-estado="PENDIENTE">
+        <span class="mc-estado-dot"></span> Pendiente
+    </button>
+    <button class="mc-estado-opt analizado" data-estado="ANALIZADO">
+        <span class="mc-estado-dot"></span> Analizado
+    </button>
+    <button class="mc-estado-opt confirmado" data-estado="CONFIRMADO">
+        <span class="mc-estado-dot"></span> Confirmado
+    </button>
+    <button class="mc-estado-opt repetir" data-estado="REPETIR">
+        <span class="mc-estado-dot"></span> Repetir
+    </button>
+</div>
+
+<script src="js/sidebar.js"></script>
+<script src="js/cola-analisis.js"></script>
+</body>
+</html>

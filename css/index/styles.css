@@ -7,14 +7,6 @@
     --color-gray-medium: #CCCCCC;
     --color-white: #FFFFFF;
 
-    /* Iconos */
-    --icon-ambiental: url('https://cdn-icons-png.flaticon.com/512/5495/5495928.png');
-    --icon-higiene: url('https://cdn-icons-png.flaticon.com/512/949/949333.png');
-    --icon-calidad: url('https://cdn-icons-png.flaticon.com/512/4866/4866974.png');
-    --icon-farma: url('https://cdn-icons-png.flaticon.com/512/387/387557.png');
-    --icon-alimentaria: url('https://cdn-icons-png.flaticon.com/512/4939/4939099.png');
-    --icon-mision: url('https://cdn-icons-png.flaticon.com/512/3233/3233474.png');
-    --icon-vision: url('https://cdn-icons-png.flaticon.com/512/1934/1934044.png');
 }
 
 /* GLOBAL RESET / AJUSTES */
@@ -33,6 +25,15 @@ ul {
     padding-left: 1.5rem;
     list-style-type: disc;
     list-style-position: outside;
+}
+
+/* NAVBAR PRINCIPAL */
+.navbar-main {
+    border-bottom: 3px solid #5EA504;
+}
+
+.navbar-main-inner {
+    position: relative;
 }
 
 /* HEADER Y NAVBAR */
@@ -102,6 +103,40 @@ ul {
     height: auto;
 }
 
+/* UTILIDADES GENERALES */
+.texto-centrado {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.7;
+}
+
+.text-shadow {
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.55);
+}
+
+/* PORTAL CLIENTES (botón navbar desktop) */
+.btn-portal {
+    position: absolute;
+    right: 1rem;
+    background-color: var(--color-green-hover);
+    color: #fff;
+    font-size: 0.85rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-portal:hover {
+    background-color: #4a8403;
+    color: #fff;
+    transform: scale(1.04);
+}
+
 /* TITULOS / TEXTOS / BOTONES */
 .custom-underline-border {
     position: relative;
@@ -145,6 +180,11 @@ ul {
 .btn-grad:hover {
     transform: scale(1.03);
     opacity: 0.9;
+}
+
+/* LISTA DE SERVICIOS */
+.service-list {
+    max-width: 500px;
 }
 
 /* SECCIÓN SERVICIOS */
@@ -276,6 +316,19 @@ ul {
     margin: 0;
 }
 
+/* CONTACTO / FORMULARIO */
+.como-comprar {
+    max-width: 600px;
+}
+
+.contact-form {
+    max-width: 600px;
+}
+
+.contact-form textarea {
+    height: 120px;
+}
+
 /* FOOTER  */
 .footer {
     border-top: 3px solid var(--color-green-hover);
@@ -302,21 +355,33 @@ ul {
     color: #000;
 }
 
-/* WHATSAPP BUTTON  */
-.whatsapp-icon {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    z-index: 1000;
+.footer-wpp-link {
+    color: inherit;
+    text-decoration: none;
 }
 
-.whatsapp-icon img {
-    width: 100%;
-    height: auto;
-    animation: bounce 1.5s infinite;
+/* FOOTER LOGO */
+.footer-logo-img {
+    width: 200px;
 }
+
+/* FOOTER SOCIAL ICONS */
+.footer-social-link {
+    display: inline-flex;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.footer-social-link:hover {
+    transform: scale(1.15);
+    opacity: 0.85;
+}
+
+.footer-social-icon {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
 
 .carousel-control-prev,
 .carousel-control-next {
@@ -333,35 +398,11 @@ ul {
 
 /* CAPTCHA STYLING */
 .captcha-box {
-    background-color: rgba(161, 213, 82, 0.05); /* leve tono verde translúcido */
+    background-color: rgba(161, 213, 82, 0.05);
     border: 1px solid var(--color-green-main);
     border-radius: 12px;
     padding: 1.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-}
-
-.captcha-img {
-    border: 1px solid var(--color-gray-medium);
-    border-radius: 6px;
-    padding: 4px;
-    background-color: var(--color-white);
-    width: 180px;
-    height: 60px;
-    object-fit: contain;
-}
-
-.btn-refresh {
-    background: none;
-    border: none;
-    color: var(--color-green-hover);
-    font-weight: 600;
-    cursor: pointer;
-    transition: color 0.3s ease, transform 0.2s ease;
-}
-
-.btn-refresh:hover {
-    color: var(--color-black);
-    transform: scale(1.1);
 }
 
 .contact-form .form-control {
@@ -402,42 +443,6 @@ ul {
     transform: translateY(-3px);
 }
 
-.pricing-card--featured {
-    border: 2px solid #5EA504;
-    position: relative;
-}
-
-.pricing-badge {
-    display: inline-block;
-    background-color: #5EA504;
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 600;
-    padding: 3px 12px;
-    border-radius: 20px;
-    margin-bottom: 12px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.pricing-card-icon {
-    color: #5EA504;
-    margin-bottom: 14px;
-}
-
-.pricing-card-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #1a1a1a;
-    margin-bottom: 8px;
-}
-
-.pricing-card-text {
-    font-size: 13px;
-    color: #666;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-}
 
 .btn-pricing-modal {
     background: transparent;
@@ -542,24 +547,6 @@ ul {
     padding: 8px 28px;
     font-size: 13px;
 }
-.btn-pricing-wpp {
-    display: block;
-    padding: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    background: #25D366;
-    color: #ffffff;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    transition: background 0.15s;
-    text-align: center;
-}
-
-.btn-pricing-wpp:hover {
-    background: #1ebe5d;
-    color: #ffffff;
-}
 
 /* ======================================================
    RESPONSIVE
@@ -581,31 +568,7 @@ ul {
         display: none;
     }
 
-    .footer {
-        text-align: center;
-    }
-
-
-    .footer .container {
-        flex-direction: column; /* Apila los divs verticalmente */
-        align-items: center; /* Centra los elementos */
-        gap: 2rem; /* Espacio entre secciones */
-        text-align: center; /* Centra textos y listas */
-    }
-
-    .footer .footer-logo,
-    .footer .datos-contacto,
-    .footer .footer-social,
-    .footer .footer-horarios {
-        width: 100%; /* Ocupa todo el ancho disponible */
-    }
-
-    .footer .datos-contacto ul,
-    .footer .footer-horarios ul {
-        padding-left: 0; /* Ajusta el padding de las listas */
-    }
-
-    .overlay-logo {
+.overlay-logo {
         width: 350px;
     }
 
@@ -620,10 +583,7 @@ ul {
         transform: translate(-50%, -60%);
     }
 
-    .overlay-text-servicios {
-        font-size: 1.6rem;
-    }
-
+    
     .carousel img {
         height: 250px;
     }
@@ -641,21 +601,34 @@ ul {
     scroll-margin-top: 90px; /* ajusta según la altura real de tu navbar */
 }
 
-/* Ícono de WhatsApp oculto por defecto */
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-8px); }
+}
+
+/* Ícono flotante de WhatsApp */
 .whatsapp-icon {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
+    bottom: 60px;
+    right: 80px;
     width: 60px;
     height: 60px;
     z-index: 1000;
-    display: none; /* 👈 Oculto por defecto */
+    display: none;
+    animation: bounce 1.5s infinite;
+    transition: transform 0.2s ease;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25));
 }
 
 .whatsapp-icon img {
     width: 100%;
-    height: auto;
-    animation: bounce 1.5s infinite;
+    height: 100%;
+    object-fit: contain;
+}
+
+.whatsapp-icon:hover {
+    animation: none;
+    transform: scale(1.1);
 }
 
 .dropdown-menu {
@@ -685,7 +658,7 @@ ul {
     margin: 1rem 0;
     line-height: 1.6;
     font-size: 1rem;
-    color: red;
+    color: #333;
 }
 
 .btn-nav-pricing {
@@ -703,4 +676,121 @@ ul {
     background-color: #4a8403;
     transform: scale(1.04);
     color: #ffffff !important;
+}
+
+/* ======================================================
+   BANNER DE COOKIES
+====================================================== */
+#cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 9999;
+    background: #fff;
+    border-top: 3px solid var(--color-green-hover);
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.10);
+    transform: translateY(100%);
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    display: none;
+}
+
+#cookie-banner.visible {
+    display: block;
+    transform: translateY(0);
+}
+
+.cookie-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 1rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.cookie-icon {
+    font-size: 2rem;
+    flex-shrink: 0;
+    color: var(--color-green-hover);
+}
+
+.cookie-body {
+    flex: 1;
+    min-width: 220px;
+}
+
+.cookie-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 0.2rem;
+}
+
+.cookie-text {
+    font-size: 0.82rem;
+    color: #555;
+    margin: 0;
+    line-height: 1.5;
+}
+
+.cookie-text a {
+    color: var(--color-green-hover);
+    text-decoration: underline;
+}
+
+.cookie-actions {
+    display: flex;
+    gap: 0.6rem;
+    flex-shrink: 0;
+    align-items: center;
+}
+
+.cookie-btn-secondary {
+    background: transparent;
+    border: 1.5px solid #ccc;
+    color: #555;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 7px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+}
+
+.cookie-btn-secondary:hover {
+    border-color: #888;
+    color: #222;
+}
+
+.cookie-btn-primary {
+    background: var(--color-green-hover);
+    border: none;
+    color: #fff;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 7px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s;
+    white-space: nowrap;
+}
+
+.cookie-btn-primary:hover {
+    background-color: #4a8403;
+    transform: scale(1.03);
+}
+
+@media (max-width: 600px) {
+    .cookie-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+    .cookie-actions {
+        width: 100%;
+        justify-content: flex-end;
+    }
 }

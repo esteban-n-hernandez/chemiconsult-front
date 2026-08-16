@@ -1,30 +1,95 @@
-/* ═══════════════════════════════════════════════
-   ui.css — Toast + Confirm Modal compartido
-   ═══════════════════════════════════════════════ */
+/* ==========================================================================
+   ui.css — Componentes compartidos entre módulos
+   ========================================================================== */
 
-/* ── Toast ── */
-#ui-toast {
+/* ── Panel ── */
+.panel {
+    background: var(--bg-surface);
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,.06);
+    overflow: hidden;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--color-border-tertiary);
+}
+
+.panel-header h5 {
+    font-size: 15px;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text-main);
+}
+
+.panel-body { padding: 1rem 1.25rem; }
+
+.panel-title-icon-green  { color: var(--verde); }
+.panel-title-icon-orange { color: #fd7e14; }
+
+.panel-subtitle {
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+/* ── Toast de confirmación ── */
+.toast-confirm {
     position: fixed;
-    top: 24px;
-    right: 24px;
-    z-index: 9999;
-    background: white;
+    bottom: 2rem;
+    right: 2rem;
+    background: #1a1a2e;
+    color: #fff;
+    padding: 0.85rem 1.25rem;
     border-radius: 10px;
-    padding: 12px 18px;
+    font-size: 13px;
     display: flex;
     align-items: center;
     gap: 10px;
-    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.13);
-    font-size: 13.5px;
-    font-weight: 500;
-    color: #1a1a2e;
-    transform: translateY(-20px);
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    z-index: 2000;
+    transform: translateY(80px);
     opacity: 0;
+    transition: all .3s ease;
     pointer-events: none;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    border-left: 4px solid transparent;
-    max-width: 340px;
-    font-family: 'Segoe UI', sans-serif;
+}
+
+.toast-confirm.visible {
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.toast-confirm i                 { font-size: 18px; }
+.toast-confirm i.success,
+.toast-confirm.success i         { color: #7cd832; }
+.toast-confirm i.danger,
+.toast-confirm.error i           { color: #ff6b6b; }
+.toast-confirm i.warning         { color: #ffc107; }
+
+/* ── Toast global inyectado por ui.js ── */
+#ui-toast {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: #1a1a2e;
+    color: #fff;
+    padding: .85rem 1.25rem;
+    border-radius: 10px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
+    z-index: 2500;
+    transform: translateY(80px);
+    opacity: 0;
+    transition: all .3s ease;
+    pointer-events: none;
 }
 
 #ui-toast.visible {
@@ -33,85 +98,72 @@
     pointer-events: auto;
 }
 
-#ui-toast.success { border-color: #5EA504; }
-#ui-toast.danger  { border-color: #dc3545; }
-#ui-toast.warning { border-color: #f0a500; }
+#ui-toast-icon                   { font-size: 18px; }
+#ui-toast.success #ui-toast-icon { color: #7cd832; }
+#ui-toast.danger  #ui-toast-icon { color: #ff6b6b; }
+#ui-toast.warning #ui-toast-icon { color: #ffc107; }
 
-#ui-toast i {
-    font-size: 16px;
-    flex-shrink: 0;
-}
-
-#ui-toast.success i { color: #5EA504; }
-#ui-toast.danger  i { color: #dc3545; }
-#ui-toast.warning i { color: #f0a500; }
-
-/* ── Confirm Overlay ── */
+/* ── Confirm Modal inyectado por ui.js ── */
 #ui-confirm-overlay {
     position: fixed;
     inset: 0;
-    background: rgba(10, 15, 30, 0.45);
-    z-index: 10000;
+    background: rgba(0,0,0,.45);
+    z-index: 3000;
     display: flex;
     align-items: center;
     justify-content: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.2s ease;
-    backdrop-filter: blur(2px);
-    -webkit-backdrop-filter: blur(2px);
+    transition: opacity .15s ease;
 }
 
 #ui-confirm-overlay.visible {
     opacity: 1;
-    pointer-events: auto;
+    pointer-events: all;
 }
 
 #ui-confirm-modal {
-    background: white;
+    background: var(--bg-surface);
     border-radius: 16px;
-    padding: 2rem 2rem 1.5rem;
-    width: 360px;
-    max-width: calc(100vw - 40px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+    padding: 2rem 1.75rem 1.5rem;
+    width: 100%;
+    max-width: 380px;
+    box-shadow: 0 20px 60px rgba(0,0,0,.2);
     text-align: center;
-    transform: scale(0.92) translateY(8px);
-    transition: transform 0.22s ease;
-    font-family: 'Segoe UI', sans-serif;
+    transform: translateY(10px);
+    transition: transform .18s cubic-bezier(.2,0,0,1);
 }
 
 #ui-confirm-overlay.visible #ui-confirm-modal {
-    transform: scale(1) translateY(0);
+    transform: translateY(0);
 }
 
 #ui-confirm-icon-wrap {
-    width: 56px;
-    height: 56px;
+    width: 52px;
+    height: 52px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1.1rem;
     font-size: 22px;
+    margin: 0 auto 1rem;
 }
 
-#ui-confirm-icon-wrap.danger  { background: #fde8ea; color: #dc3545; }
-#ui-confirm-icon-wrap.warning { background: #fff3cd; color: #d97706; }
-#ui-confirm-icon-wrap.primary { background: #e7f1ff; color: #0d6efd; }
+#ui-confirm-icon-wrap.danger  { background: #fee2e2; color: #dc3545; }
+#ui-confirm-icon-wrap.warning { background: #fff3cd; color: #f59e0b; }
+#ui-confirm-icon-wrap.primary { background: #dbeafe; color: #2563eb; }
 
 #ui-confirm-titulo {
-    font-size: 15.5px;
+    font-size: 16px;
     font-weight: 700;
-    color: #1a1a2e;
-    margin: 0 0 0.4rem;
-    line-height: 1.35;
+    color: var(--text-main);
+    margin: 0 0 .4rem;
 }
 
 #ui-confirm-subtexto {
     font-size: 13px;
-    color: #6c757d;
+    color: var(--color-text-secondary);
     margin: 0 0 1.5rem;
-    line-height: 1.5;
 }
 
 #ui-confirm-btns {
@@ -121,35 +173,97 @@
 }
 
 .ui-btn-cancel {
-    flex: 1;
-    padding: 9px 0;
-    border: 1px solid #dee2e6;
+    padding: 8px 20px;
+    border: 1.5px solid var(--color-border-tertiary);
+    background: var(--bg-surface);
     border-radius: 8px;
-    background: white;
     font-size: 13px;
     font-weight: 500;
     cursor: pointer;
-    color: #495057;
-    transition: background 0.15s;
+    color: var(--color-text-secondary);
+    transition: background .15s;
     font-family: inherit;
 }
 
-.ui-btn-cancel:hover { background: #f8f9fa; }
+.ui-btn-cancel:hover { background: var(--bg-subtle); }
 
 .ui-btn-confirm {
-    flex: 1;
-    padding: 9px 0;
+    padding: 8px 20px;
     border: none;
     border-radius: 8px;
     font-size: 13px;
     font-weight: 600;
     cursor: pointer;
-    color: white;
+    color: #fff;
+    transition: background .15s;
     font-family: inherit;
-    transition: filter 0.15s;
 }
 
-.ui-btn-confirm:hover { filter: brightness(0.9); }
-.ui-btn-confirm.danger  { background: #dc3545; }
-.ui-btn-confirm.warning { background: #d97706; }
-.ui-btn-confirm.primary { background: #0d6efd; }
+.ui-btn-confirm.danger          { background: #dc3545; }
+.ui-btn-confirm.danger:hover    { background: #bb2d3b; }
+.ui-btn-confirm.warning         { background: #f59e0b; }
+.ui-btn-confirm.warning:hover   { background: #d97706; }
+.ui-btn-confirm.primary         { background: #2563eb; }
+.ui-btn-confirm.primary:hover   { background: #1d4ed8; }
+
+/* ══════════════════════════════════════════
+   PAGINACIÓN COMPARTIDA
+══════════════════════════════════════════ */
+.pag-controls {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.pag-btn {
+    padding: 3px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--color-border-tertiary);
+    background: var(--bg-surface);
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--color-text-secondary);
+    transition: all 0.2s;
+    line-height: 1.4;
+    min-width: 28px;
+    text-align: center;
+    font-family: inherit;
+}
+
+.pag-btn:hover:not(:disabled) {
+    background: var(--verde);
+    color: white;
+    border-color: var(--verde);
+}
+
+.pag-btn-active {
+    background: var(--verde);
+    color: white;
+    border-color: var(--verde);
+    font-weight: 600;
+    cursor: default;
+}
+
+.pag-btn-disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+}
+
+.pag-page-size {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--color-text-secondary);
+}
+
+.pag-page-size select {
+    padding: 3px 6px;
+    border: 1px solid var(--color-border-tertiary);
+    border-radius: 6px;
+    background: var(--bg-surface);
+    color: var(--color-text-primary);
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}

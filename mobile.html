@@ -1,0 +1,457 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <meta name="theme-color" content="#5EA504"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <title>Chemiconsult</title>
+  <link rel="stylesheet" href="css/mobile/mobile.css"/>
+  <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="TAREAS,AGENDA,STOCK"></script>
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ══════════════════════════════════════
+       VIEW: AGENDA
+  ══════════════════════════════════════ -->
+  <div class="view" id="view-agenda">
+
+    <div class="app-header">
+      <div>
+        <div class="header-sub" id="agenda-sub">—</div>
+        <div class="header-name">Agenda</div>
+      </div>
+      <div class="header-avatar" id="agenda-avatar">—</div>
+    </div>
+
+    <!-- Barra de navegación de fecha -->
+    <div class="agenda-date-bar">
+      <button class="ag-nav-btn" id="agenda-prev" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <div class="ag-date-center">
+        <div class="ag-date-label" id="agenda-fecha-label">Hoy</div>
+        <div class="ag-date-full"  id="agenda-fecha-full"></div>
+      </div>
+      <div class="ag-date-right">
+        <button class="ag-hoy-chip" id="agenda-hoy-btn" type="button" style="display:none">← Hoy</button>
+        <button class="ag-nav-btn" id="agenda-next" type="button">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Lista de eventos del día -->
+    <div class="scroll-content" id="agenda-list">
+      <div class="loading-state" id="agenda-loading">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        <span>Cargando agenda…</span>
+      </div>
+      <div class="empty-state" id="agenda-empty" style="display:none;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <p>Sin eventos para este día</p>
+      </div>
+      <div class="scroll-end"></div>
+    </div>
+
+    <button class="fab" id="fab-agenda" title="Nuevo evento">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       VIEW: TAREAS
+  ══════════════════════════════════════ -->
+  <div class="view active" id="view-tareas">
+
+    <div class="app-header">
+      <div>
+        <div class="header-sub" id="mob-sub">—</div>
+        <div class="header-name">Tareas</div>
+      </div>
+      <div class="header-avatar" id="mob-avatar">—</div>
+    </div>
+
+    <div class="filter-bar" id="filter-chips">
+      <button class="chip active" data-status="">Todas</button>
+      <button class="chip" data-status="TODO">Pendiente</button>
+      <button class="chip" data-status="IN_PROGRESS">En progreso</button>
+      <button class="chip" data-status="EN_REVISION">En revisión</button>
+      <button class="chip" data-status="DONE">Listas</button>
+    </div>
+
+    <div class="scroll-content" id="task-list">
+      <div class="loading-state" id="task-loading">
+        <div class="loading-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <span>Cargando tareas…</span>
+      </div>
+      <div class="empty-state" id="task-empty" style="display:none;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M9 12l2 2 4-4"/></svg>
+        <p>No hay tareas aquí</p>
+      </div>
+      <div class="scroll-end"></div>
+    </div>
+
+    <button class="fab" id="fab-nueva" title="Nueva tarea">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       VIEW: STOCK
+  ══════════════════════════════════════ -->
+  <div class="view" id="view-stock">
+
+    <div class="app-header">
+      <div>
+        <div class="header-sub" id="stock-sub">—</div>
+        <div class="header-name">Stock</div>
+      </div>
+      <div class="header-avatar" id="stock-avatar">—</div>
+    </div>
+
+    <!-- Búsqueda -->
+    <div class="stock-search-bar">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input type="search" class="stock-search" id="stock-search" placeholder="Buscar por nombre, código, ubicación…" autocomplete="off"/>
+    </div>
+
+    <!-- Filtros de nivel -->
+    <div class="filter-bar" id="stock-filter-chips">
+      <button class="chip active" data-nivel="">Todos</button>
+      <button class="chip chip-bajo"  data-nivel="BAJO">⚠ Bajo</button>
+      <button class="chip chip-medio" data-nivel="MEDIO">~ Medio</button>
+      <button class="chip chip-alto"  data-nivel="ALTO">✓ Alto</button>
+    </div>
+
+    <!-- Lista -->
+    <div class="scroll-content" id="stock-list">
+      <div class="loading-state" id="stock-loading">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        <span>Cargando stock…</span>
+      </div>
+      <div class="empty-state" id="stock-empty" style="display:none;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        <p>Sin ítems en stock</p>
+      </div>
+      <div class="scroll-end"></div>
+    </div>
+
+    <button class="fab" id="fab-stock" title="Nuevo ítem">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
+
+  </div>
+
+  <!-- ══════════════════════════════════════
+       VIEW: MI COLA DE ANÁLISIS
+  ══════════════════════════════════════ -->
+  <div class="view" id="view-cola">
+
+    <div class="app-header">
+      <div>
+        <div class="header-sub" id="cola-sub">—</div>
+        <div class="header-name">Parametros a Analizar</div>
+      </div>
+      <div class="header-avatar" id="cola-avatar">—</div>
+    </div>
+
+    <div class="scroll-content" id="cola-list">
+      <div class="loading-state" id="cola-loading">
+        <div class="loading-dots"><span></span><span></span><span></span></div>
+        <span>Cargando análisis…</span>
+      </div>
+      <div class="empty-state" id="cola-empty" style="display:none;">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        <p>Sin análisis pendientes</p>
+      </div>
+      <div class="scroll-end"></div>
+    </div>
+
+  </div>
+
+  <!-- Tab bar -->
+  <nav class="tab-bar">
+    <div class="tab-pill">
+      <button class="tab-item" data-tab="agenda" data-modulo="AGENDA">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <span class="tab-lbl">Agenda</span>
+      </button>
+      <button class="tab-item active" data-tab="tareas" data-modulo="TAREAS">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </span>
+        <span class="tab-lbl">Tareas</span>
+      </button>
+      <button class="tab-item" data-tab="stock" data-modulo="STOCK">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>
+        </span>
+        <span class="tab-lbl">Stock</span>
+      </button>
+      <button class="tab-item" data-tab="cola" id="tab-cola" style="display:none">
+        <span class="tab-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+        </span>
+        <span class="tab-lbl">Parametros a Analizar</span>
+      </button>
+    </div>
+  </nav>
+
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════════
+     OVERLAYS (fuera del app, position:fixed)
+══════════════════════════════════════ -->
+<div class="sheet-backdrop" id="sheet-backdrop"></div>
+
+<!-- Bottom sheet: crear / editar tarea -->
+<div class="bottom-sheet" id="task-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="task-sheet-title">Nueva tarea</span>
+    <button class="sheet-close" id="sheet-cancel-btn" type="button">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
+  </div>
+
+  <div class="sheet-scroll">
+    <form class="sheet-body" id="task-form" novalidate>
+
+      <div class="sheet-field">
+        <label class="sheet-label" for="task-titulo">Título <span class="req">*</span></label>
+        <input type="text" class="sheet-input" id="task-titulo"
+               placeholder="¿Qué hay que hacer?" autocomplete="off" required/>
+      </div>
+
+      <div class="sheet-field">
+        <label class="sheet-label" for="task-desc">Descripción <span class="opt">opcional</span></label>
+        <textarea class="sheet-input sheet-textarea" id="task-desc" rows="2"
+                  placeholder="Contexto, pasos o links relevantes…"></textarea>
+      </div>
+
+      <div class="sheet-row">
+        <div class="sheet-field">
+          <label class="sheet-label" for="task-fecha">Fecha límite <span class="opt">opc.</span></label>
+          <input type="date" class="sheet-input" id="task-fecha"/>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="task-asignado">Asignar a</label>
+          <select class="sheet-input sheet-select" id="task-asignado">
+            <option value="">Sin asignar</option>
+          </select>
+        </div>
+      </div>
+
+      <button type="submit" class="sheet-submit" id="task-submit-btn">Guardar tarea</button>
+
+      <button type="button" class="sheet-delete" id="task-delete-btn" style="display:none;">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        Eliminar tarea
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- Bottom sheet: crear / editar evento de agenda -->
+<div class="bottom-sheet" id="agenda-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="ag-sheet-title">Nuevo evento</span>
+    <button class="sheet-close" id="ag-sheet-cancel" type="button">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
+  </div>
+
+  <div class="sheet-scroll">
+    <form class="sheet-body" id="ag-form" novalidate>
+
+      <!-- Selector de tipo -->
+      <div class="tipo-grid">
+        <button type="button" class="tipo-pill active" id="ag-tipo-MUESTREO"       onclick="seleccionarTipoAgenda('MUESTREO')">💧 Muestreo</button>
+        <button type="button" class="tipo-pill"        id="ag-tipo-COMPRA_INSUMOS" onclick="seleccionarTipoAgenda('COMPRA_INSUMOS')">🛒 Compra</button>
+        <button type="button" class="tipo-pill"        id="ag-tipo-VENCIMIENTO"    onclick="seleccionarTipoAgenda('VENCIMIENTO')">⏰ Vencimiento</button>
+        <button type="button" class="tipo-pill"        id="ag-tipo-OTRO"           onclick="seleccionarTipoAgenda('OTRO')">✏️ Otro</button>
+      </div>
+
+      <!-- Solo MUESTREO: cliente + sucursal -->
+      <div class="ag-section" id="ag-section-muestreo">
+        <div class="sheet-field">
+          <label class="sheet-label" for="ag-cliente-sel">Cliente <span class="req">*</span></label>
+          <select class="sheet-input sheet-select" id="ag-cliente-sel">
+            <option value="">Seleccionar cliente…</option>
+          </select>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="ag-sucursal-sel">Sucursal <span class="opt">opcional</span></label>
+          <select class="sheet-input sheet-select" id="ag-sucursal-sel">
+            <option value="">Dirección principal</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Solo VENCIMIENTO: documentación + de quién -->
+      <div class="ag-section" id="ag-section-vencimiento" style="display:none">
+        <div class="sheet-field">
+          <label class="sheet-label" for="ag-doc-input">Documentación <span class="req">*</span></label>
+          <input type="text" class="sheet-input" id="ag-doc-input" placeholder="Nombre del documento…" autocomplete="off"/>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="ag-dequien-input">De quién <span class="opt">opcional</span></label>
+          <input type="text" class="sheet-input" id="ag-dequien-input" placeholder="Cliente, proveedor…" autocomplete="off"/>
+        </div>
+      </div>
+
+      <!-- Fecha + hora (siempre visibles) -->
+      <div class="sheet-row">
+        <div class="sheet-field">
+          <label class="sheet-label" for="ag-fecha-input">Fecha <span class="req">*</span></label>
+          <input type="date" class="sheet-input" id="ag-fecha-input"/>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="ag-hora-input">Hora</label>
+          <input type="time" class="sheet-input" id="ag-hora-input"/>
+        </div>
+      </div>
+
+      <!-- Observaciones (label cambia por tipo) -->
+      <div class="sheet-field">
+        <label class="sheet-label" id="ag-obs-label" for="ag-obs-input">Observaciones <span class="opt">opcional</span></label>
+        <textarea class="sheet-input sheet-textarea" id="ag-obs-input" rows="2" placeholder="Notas del muestreo…"></textarea>
+      </div>
+
+      <button type="submit" class="sheet-submit" id="ag-submit-btn">Agendar</button>
+
+      <button type="button" class="sheet-delete" id="ag-delete-btn" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        Eliminar evento
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- Bottom sheet: crear / editar ítem de stock -->
+<div class="bottom-sheet" id="stock-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title" id="stock-sheet-title">Nuevo ítem</span>
+    <button class="sheet-close" id="stock-sheet-cancel" type="button">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
+  </div>
+
+  <div class="sheet-scroll">
+    <form class="sheet-body" id="stock-form" novalidate>
+
+      <div class="sheet-field">
+        <label class="sheet-label" for="sstock-nombre">Nombre <span class="req">*</span></label>
+        <input type="text" class="sheet-input" id="sstock-nombre" placeholder="Nombre del ítem…" autocomplete="off"/>
+      </div>
+
+      <div class="sheet-row">
+        <div class="sheet-field">
+          <label class="sheet-label" for="sstock-categoria">Categoría <span class="req">*</span></label>
+          <select class="sheet-input sheet-select" id="sstock-categoria">
+            <option value="">Seleccionar…</option>
+            <option value="REACTIVOS">Reactivos</option>
+            <option value="SOLVENTES">Solventes</option>
+            <option value="MATERIAL_MUESTREO">Material Muestreo</option>
+            <option value="MATERIAL_VIDRIO">Material Vidrio</option>
+            <option value="OTROS">Otros</option>
+          </select>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="sstock-id">Código <span class="opt">opcional</span></label>
+          <input type="text" class="sheet-input" id="sstock-id" placeholder="Ej: REA-001" autocomplete="off"/>
+        </div>
+      </div>
+
+      <div class="sheet-field">
+        <label class="sheet-label">Nivel de stock <span class="req">*</span></label>
+        <div class="nivel-pills">
+          <button type="button" class="nivel-pill np-bajo"  id="snivel-BAJO"  onclick="seleccionarNivelStock('BAJO')">⚠ Bajo</button>
+          <button type="button" class="nivel-pill np-medio active" id="snivel-MEDIO" onclick="seleccionarNivelStock('MEDIO')">~ Medio</button>
+          <button type="button" class="nivel-pill np-alto"  id="snivel-ALTO"  onclick="seleccionarNivelStock('ALTO')">✓ Alto</button>
+        </div>
+      </div>
+
+      <div class="sheet-row">
+        <div class="sheet-field">
+          <label class="sheet-label" for="sstock-cantidad">Cantidad (frascos) <span class="opt">opcional</span></label>
+          <input type="number" class="sheet-input" id="sstock-cantidad" min="0" placeholder="0"/>
+        </div>
+        <div class="sheet-field">
+          <label class="sheet-label" for="sstock-ubicacion">Ubicación <span class="opt">opcional</span></label>
+          <input type="text" class="sheet-input" id="sstock-ubicacion" placeholder="Ej: Heladera 2" autocomplete="off"/>
+        </div>
+      </div>
+
+      <div class="sheet-field">
+        <label class="sheet-label" for="sstock-descripcion">Descripción <span class="opt">opcional</span></label>
+        <textarea class="sheet-input sheet-textarea" id="sstock-descripcion" rows="2" placeholder="Detalles del ítem…"></textarea>
+      </div>
+
+      <div class="sheet-field">
+        <label class="sheet-label" for="sstock-obs">Observaciones <span class="opt">opcional</span></label>
+        <textarea class="sheet-input sheet-textarea" id="sstock-obs" rows="2" placeholder="Notas adicionales…"></textarea>
+      </div>
+
+      <button type="submit" class="sheet-submit" id="stock-submit-btn">Agregar ítem</button>
+
+      <button type="button" class="sheet-delete" id="stock-delete-btn" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+        Eliminar ítem
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- Bottom sheet: perfil / cerrar sesión -->
+<div class="bottom-sheet" id="profile-sheet">
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">
+    <span class="sheet-title">Mi cuenta</span>
+    <button class="sheet-close" id="profile-sheet-close" type="button">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="1" y1="1" x2="13" y2="13"/><line x1="13" y1="1" x2="1" y2="13"/></svg>
+    </button>
+  </div>
+  <div class="sheet-scroll">
+    <div class="sheet-body profile-body">
+      <div class="profile-avatar-big" id="profile-avatar-big">?</div>
+      <div class="profile-name" id="profile-name">—</div>
+      <div class="profile-email" id="profile-email">—</div>
+      <button type="button" class="sheet-delete profile-logout-btn" id="profile-logout-btn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Picker compartido de estado de tarea (position:fixed, siempre encima) -->
+<div class="estado-picker" id="estado-picker"></div>
+
+<!-- Toast -->
+<div class="mob-toast" id="mob-toast"></div>
+
+<script src="js/config.js"></script>
+<script src="js/mobile.js"></script>
+<script src="js/mobile-tareas.js"></script>
+<script src="js/mobile-agenda.js"></script>
+<script src="js/mobile-stock.js"></script>
+<script src="js/mobile-cola.js"></script>
+</body>
+</html>

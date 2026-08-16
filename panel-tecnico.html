@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8"/>
@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="css/sidebar.css"/>
     <link rel="stylesheet" href="css/panel/panel-tecnico.css">
     <link rel="stylesheet" href="css/ui.css">
-    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO"></script>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="PANEL_TECNICO"></script>
 </head>
 <body>
 
@@ -45,6 +45,21 @@
         <button class="tab-btn-custom" onclick="cambiarPestaña('metodologias')">
             <i class="bi bi-journal-bookmark"></i> Metodologías Analíticas
         </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('tiposmuestra')">
+            <i class="bi bi-layers"></i> Tipos de Muestra
+        </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('numeradores')">
+            <i class="bi bi-hash"></i> Numeradores
+        </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('categoriasDoc')">
+            <i class="bi bi-tags"></i> Categ. Documentación
+        </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('gruposInforme')">
+            <i class="bi bi-bookmark-check"></i> Grupos de Informe
+        </button>
+        <button class="tab-btn-custom" onclick="cambiarPestaña('equipos')">
+            <i class="bi bi-tools"></i> Equipos
+        </button>
     </div>
 
     <!-- ==========================================
@@ -62,6 +77,12 @@
                             <label>Nombre de la Norma</label>
                             <input type="text" id="resNombre" class="form-control-custom"
                                    placeholder="Ej: CAA Art 982 - Agua" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Matriz Analítica</label>
+                            <select id="resMatriz" class="form-control-custom" required>
+                                <option value="">Seleccionar matriz...</option>
+                            </select>
                         </div>
                         <div class="form-group-custom">
                             <label>Organismo Emisor</label>
@@ -120,10 +141,18 @@
                                    placeholder="Ej: pH, Turbidez, Arsénico" required>
                         </div>
                         <div class="form-group-custom">
-                            <label>Unidad de Medida</label>
-                            <input type="text" id="paramUnidad" class="form-control-custom"
-                                   placeholder="Ej: mg/L, U.N.T" required>
+                            <label>Tipo de análisis</label>
+                            <select id="paramTipo" class="form-control-custom">
+                                <option value="">Sin clasificar</option>
+                            </select>
                         </div>
+                        <div class="form-group-custom">
+                            <label>Analista responsable</label>
+                            <select id="paramAnalista" class="form-control-custom">
+                                <option value="">Sin asignar</option>
+                            </select>
+                        </div>
+                        <p class="params-hint">La unidad se define al asignar el parámetro a cada resolución, ya que varía según la matriz analítica.</p>
                         <button type="submit" class="btn-guardar-custom"><i class="bi bi-check-lg"></i> Guardar
                             Parámetro
                         </button>
@@ -142,7 +171,8 @@
                         <thead>
                         <tr>
                             <th>Parámetro</th>
-                            <th>Unidad de Medida</th>
+                            <th>Tipo</th>
+                            <th>Analista</th>
                             <th>Acción</th>
                         </tr>
                         </thead>
@@ -192,7 +222,6 @@
                     <table class="tabla-config">
                         <thead>
                         <tr>
-                            <th>Nombre</th>
                             <th>Técnica / Método</th>
                             <th>Referencia</th>
                             <th>Acción</th>
@@ -201,6 +230,262 @@
                         <tbody id="tablaMetodologiasBody"></tbody>
                     </table>
                     <div class="tabla-paginador" id="paginadorMetodologias"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: TIPOS DE MUESTRA
+         ========================================== -->
+    <div id="tab-tiposmuestra" class="tab-content-panel">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Nuevo Tipo de Muestra</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formTipoMuestra">
+                        <div class="form-group-custom">
+                            <label>Nombre del tipo</label>
+                            <input type="text" id="tmNombre" class="form-control-custom"
+                                   placeholder="Ej: Barro, Comprimido, Suelo" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Matriz analítica</label>
+                            <select id="tmMatriz" class="form-control-custom" required>
+                                <option value="">Seleccionar matriz...</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn-guardar-custom">
+                            <i class="bi bi-check-lg"></i> Guardar tipo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Tipos registrados</h5>
+                        <input type="text" id="filtroTiposMuestra" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Tipo de muestra</th>
+                            <th>Matriz</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaTiposMuestraBody"></tbody>
+                    </table>
+                    <div class="tabla-paginador" id="paginadorTiposMuestra"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: NUMERADORES
+         ========================================== -->
+    <div id="tab-numeradores" class="tab-content-panel">
+        <div class="panel-custom" style="max-width:580px;">
+            <div class="panel-header-custom">
+                <h5><i class="bi bi-hash text-primary"></i> Numeradores del sistema</h5>
+            </div>
+            <div class="panel-body-custom">
+                <div class="numeradores-info">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <p>Los numeradores son contadores internos del sistema. Para dar de alta uno nuevo
+                    (ej: remitos, certificados) debe crearse el registro en la base de datos e implementar
+                    la lógica correspondiente en el código. Desde aquí solo se puede corregir el valor actual
+                    de los contadores existentes.</p>
+                </div>
+                <table class="tabla-config" style="margin-top:16px;">
+                    <thead>
+                        <tr>
+                            <th>Contador</th>
+                            <th>Último valor asignado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaNumeradoresBody">
+                        <tr><td colspan="2" class="text-center" style="padding:16px;color:#6c757d;">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: CATEGORÍAS DE DOCUMENTACIÓN
+         ========================================== -->
+    <div id="tab-gruposInforme" class="tab-content-panel">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Nuevo grupo</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formGrupoInforme">
+                        <div class="form-group-custom">
+                            <label>Nombre del grupo</label>
+                            <input type="text" id="grupoLabel" class="form-control-custom"
+                                   placeholder="Ej: Físico Químico" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Código interno</label>
+                            <input type="text" id="grupoCodigo" class="form-control-custom"
+                                   placeholder="Ej: FISICO_QUIMICO (opcional)">
+                            <small class="params-hint">Se genera automáticamente del nombre si se deja vacío.</small>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Orden de aparición</label>
+                            <input type="number" id="grupoOrden" class="form-control-custom" value="0" min="0">
+                        </div>
+                        <button type="submit" class="btn-guardar-custom">
+                            <i class="bi bi-check-lg"></i> Guardar grupo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Grupos registrados</h5>
+                        <input type="text" id="filtroGruposInforme" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Código</th>
+                            <th>Orden</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaGruposInformeBody"></tbody>
+                    </table>
+                    <div class="tabla-paginador" id="paginadorGruposInforme"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         PÁGINA / SECCIÓN: EQUIPOS
+         ========================================== -->
+    <div id="tab-equipos" class="tab-content-panel">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Nuevo equipo / instrumento</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formEquipo">
+                        <div class="form-group-custom">
+                            <label>Nombre <span style="color:red">*</span></label>
+                            <input type="text" id="equipoNombre" class="form-control-custom"
+                                   placeholder="Ej: pHímetro, Conductímetro" required>
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Marca</label>
+                            <input type="text" id="equipoMarca" class="form-control-custom"
+                                   placeholder="Ej: Hanna, Mettler Toledo">
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Modelo</label>
+                            <input type="text" id="equipoModelo" class="form-control-custom"
+                                   placeholder="Ej: HI9813-6">
+                        </div>
+                        <div class="form-group-custom">
+                            <label>N° de Serie</label>
+                            <input type="text" id="equipoNroSerie" class="form-control-custom"
+                                   placeholder="Ej: SN-20241234">
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Certificación / Calibración</label>
+                            <input type="text" id="equipoCertificacion" class="form-control-custom"
+                                   placeholder="Ej: CAL-2024-001">
+                        </div>
+                        <div class="form-group-custom">
+                            <label>Vencimiento</label>
+                            <input type="date" id="equipoVencimiento" class="form-control-custom">
+                        </div>
+                        <button type="submit" class="btn-guardar-custom">
+                            <i class="bi bi-check-lg"></i> Guardar equipo
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Equipos registrados</h5>
+                        <input type="text" id="filtroEquipos" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Modelo</th>
+                            <th>N° Serie</th>
+                            <th>Certificación</th>
+                            <th>Vencimiento</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaEquiposBody"></tbody>
+                    </table>
+                    <div class="tabla-paginador" id="paginadorEquipos"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-categoriasDoc" class="tab-content-panel">
+        <div class="main-row-config">
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <h5><i class="bi bi-plus-circle text-success"></i> Nueva categoría</h5>
+                </div>
+                <div class="panel-body-custom">
+                    <form id="formCategoriaDoc">
+                        <div class="form-group-custom">
+                            <label>Nombre de la categoría</label>
+                            <input type="text" id="catDocNombre" class="form-control-custom"
+                                   placeholder="Ej: Cert. Calibración, Habilitación..." required>
+                        </div>
+                        <button type="submit" class="btn-guardar-custom">
+                            <i class="bi bi-check-lg"></i> Guardar categoría
+                        </button>
+                    </form>
+                </div>
+            </div>
+            <div class="panel-custom">
+                <div class="panel-header-custom">
+                    <div class="panel-header-row">
+                        <h5><i class="bi bi-table text-primary"></i> Categorías registradas</h5>
+                        <input type="text" id="filtroCategoriasDoc" class="tabla-filtro" placeholder="Buscar...">
+                    </div>
+                </div>
+                <div class="panel-body-custom" style="padding:0;">
+                    <table class="tabla-config">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Acción</th>
+                        </tr>
+                        </thead>
+                        <tbody id="tablaCategoriasDocBody"></tbody>
+                    </table>
+                    <div class="tabla-paginador" id="paginadorCategoriasDoc"></div>
                 </div>
             </div>
         </div>
@@ -217,6 +502,105 @@
         event.currentTarget.classList.add('active');
     }
 </script>
+
+<!-- Modal: parámetros de resolución -->
+<div class="params-overlay" id="paramsOverlay" onclick="cerrarModalParams(event)">
+    <div class="params-modal">
+        <div class="params-modal-header">
+            <h5 id="paramsModalTitulo"></h5>
+            <button class="params-modal-close" onclick="document.getElementById('paramsOverlay').classList.remove('visible')" title="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="params-modal-body" id="paramsModalCuerpo"></div>
+    </div>
+</div>
+
+<!-- Modal: metodologías de un parámetro -->
+<div class="params-overlay" id="metodoOverlay" onclick="cerrarMetodoOverlay(event)">
+    <div class="params-modal" style="max-width:680px;">
+        <div class="params-modal-header">
+            <h5 id="metodoModalTitulo">Metodologías</h5>
+            <button class="params-modal-close" onclick="document.getElementById('metodoOverlay').classList.remove('visible')" title="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="params-modal-body">
+            <table class="tabla-config" id="metodoTabla">
+                <thead>
+                    <tr>
+                        <th>Metodología</th>
+                        <th>Matriz</th>
+                        <th>Grupo en informe</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="metodoTbody"></tbody>
+            </table>
+
+            <div class="destino-crear-form" style="margin-top:18px;gap:8px;flex-wrap:wrap;">
+                <div class="metodo-combo-wrap" style="flex:2;min-width:160px;">
+                    <input type="text" id="metodoSearchInput" class="form-control-custom" placeholder="Buscar metodología…" autocomplete="off" style="width:100%">
+                    <input type="hidden" id="metodoSelectMetod">
+                    <div class="metodo-combo-drop" id="metodoComboDrop"></div>
+                </div>
+                <select id="metodoSelectMatriz" class="form-control-custom" style="flex:1;min-width:130px;">
+                    <option value="">Cualquier matriz</option>
+                </select>
+                <select id="metodoSelectTipo" class="form-control-custom" style="flex:1;min-width:160px;">
+                    <option value="">— Grupo en informe —</option>
+                </select>
+                <button type="button" class="btn-guardar-custom" onclick="agregarMetodologia()" style="white-space:nowrap;">
+                    <i class="bi bi-plus-circle"></i> Agregar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal: editor de límite de parámetro -->
+<div class="params-overlay limite-overlay" id="limiteOverlay" onclick="cerrarLimiteOverlay(event)">
+    <div class="params-modal" style="max-width:420px;">
+        <div class="params-modal-header">
+            <h5 id="limiteModalTitulo">Límite</h5>
+            <button class="params-modal-close" onclick="document.getElementById('limiteOverlay').classList.remove('visible')" title="Cerrar">
+                <i class="bi bi-x-lg"></i>
+            </button>
+        </div>
+        <div class="params-modal-body">
+            <input type="hidden" id="limiteDestinoId">
+            <input type="hidden" id="limiteParamId">
+            <div class="form-group-custom">
+                <label>Tipo de límite</label>
+                <select id="limiteTipo" class="form-control-custom" onchange="onTipoLimiteCambio()">
+                    <option value="NE">No exigido</option>
+                    <option value="NL">No legislado (—)</option>
+                    <option value="MAX">Máximo admitido (≤ valor)</option>
+                    <option value="MIN">Mínimo exigido (≥ valor)</option>
+                    <option value="RANGO">Rango (entre min y max)</option>
+                    <option value="AUSENCIA">Ausencia (no debe estar presente)</option>
+                    <option value="TEXTO">Texto libre</option>
+                </select>
+            </div>
+            <div class="form-group-custom" id="limiteGrupoMax" style="display:none;">
+                <label>Valor máximo</label>
+                <input type="text" inputmode="decimal" id="limiteMax" class="form-control-custom" placeholder="ej: 10.0">
+            </div>
+            <div class="form-group-custom" id="limiteGrupoMin" style="display:none;">
+                <label>Valor mínimo</label>
+                <input type="text" inputmode="decimal" id="limiteMin" class="form-control-custom" placeholder="ej: 0.5">
+            </div>
+            <div class="form-group-custom" id="limiteGrupoTexto" style="display:none;">
+                <label>Texto del límite</label>
+                <input type="text" id="limiteTextoInput" class="form-control-custom" placeholder="ej: Ausencia de sabores extraños">
+            </div>
+            <button type="button" class="btn-guardar-custom" onclick="guardarLimiteParam()">
+                <i class="bi bi-check-lg"></i> Guardar límite
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="js/config.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/sidebar.js"></script>

@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Presupuestos - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
+    <link rel="stylesheet" href="css/modal.css"/>
+    <link rel="stylesheet" href="css/tabla-muestras.css"/>
+    <link rel="stylesheet" href="css/presupuesto.css"/>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="PRESUPUESTO"></script>
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<div class="content">
+
+    <div class="page-header">
+        <div>
+            <h1>Presupuestos</h1>
+            <p id="fecha-hoy"></p>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <p class="header-user-name" id="header-nombre">—</p>
+                <p class="header-user-role" id="header-rol">—</p>
+            </div>
+            <div class="avatar-circle" id="header-avatar">--</div>
+        </div>
+    </div>
+    <div class="page-actions">
+        <button class="btn-nuevo-pres" id="btnNuevoPres">
+            <i class="bi bi-plus-lg"></i> Nuevo presupuesto
+        </button>
+    </div>
+
+    <!-- Alerta: pendientes demorados -->
+    <div id="alertaPendientes" class="pres-alerta" style="display:none;">
+        <div class="pres-alerta-header" id="alertaHeader">
+            <i class="bi bi-exclamation-triangle-fill pres-alerta-icon"></i>
+            <span id="alertaTitulo" class="pres-alerta-titulo"></span>
+            <button class="pres-alerta-toggle" id="alertaToggle" title="Mostrar / ocultar">
+                <i class="bi bi-chevron-up"></i>
+            </button>
+        </div>
+        <div id="alertaBody" class="pres-alerta-body"></div>
+    </div>
+
+    <!-- Historial -->
+    <div class="panel hist-panel">
+        <div class="panel-header">
+            <h5><i class="bi bi-clock-history me-2 panel-title-icon-green"></i>Historial de presupuestos</h5>
+            <button class="btn-pres-secondary" id="btnRefreshHistorial" title="Actualizar">
+                <i class="bi bi-arrow-clockwise"></i>
+            </button>
+        </div>
+
+        <div class="panel-body">
+            <div class="hist-filters">
+                <button class="hist-filter-btn active" data-estado="">Todos</button>
+                <button class="hist-filter-btn" data-estado="PENDIENTE">Pendientes</button>
+                <button class="hist-filter-btn" data-estado="ACEPTADO">Aceptados</button>
+                <button class="hist-filter-btn" data-estado="RECHAZADO">Rechazados</button>
+            </div>
+
+            <div class="pres-tabla-wrap">
+                <table class="tabla-muestras">
+                    <thead>
+                        <tr>
+                            <th>N°</th>
+                            <th>Fecha</th>
+                            <th>Cliente</th>
+                            <th>Solicitado por</th>
+                            <th>Total</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="histBody">
+                        <tr><td colspan="7" class="hist-loading">Cargando...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="panel-footer">
+                <small id="infoPaginacion">Mostrando 0 presupuestos</small>
+                <div id="paginacion" class="pag-controls"></div>
+                <div class="pag-page-size">
+                    <label for="selectPageSize">Por página:</label>
+                    <select id="selectPageSize">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- ══ Modal: Nuevo presupuesto (2 pasos) ══ -->
+<div id="modalNuevoPres" class="modal-overlay">
+    <div class="modal-box modal-nuevo-pres">
+
+        <div class="modal-header">
+            <div class="mh-icon"><i class="bi bi-file-earmark-text"></i></div>
+            <div class="mh-info">
+                <p class="mh-eyebrow">Nuevo</p>
+                <h5>Presupuesto</h5>
+            </div>
+            <!-- Step indicator -->
+            <div class="np-steps">
+                <span class="np-step-item np-step-active" id="npStep1Ind">
+                    <span class="np-step-num">1</span> Datos
+                </span>
+                <i class="bi bi-chevron-right np-step-arrow"></i>
+                <span class="np-step-item" id="npStep2Ind">
+                    <span class="np-step-num">2</span> Ítems
+                </span>
+            </div>
+            <button class="modal-close" id="btnCerrarNuevoPres"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <!-- Paso 1: Datos del presupuesto -->
+        <div class="modal-body np-step-body" id="npStep1Body">
+            <div class="form-row">
+                <div class="form-group">
+                    <label>N° Presupuesto <span class="task-opt">(opcional, se auto-asigna)</span></label>
+                    <div class="pres-num-wrap">
+                        <span class="pres-num-prefix">N°</span>
+                        <input type="number" id="npInputNumero" class="form-control-custom pres-input-num"
+                               placeholder="auto" min="1"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Fecha <span class="required">*</span></label>
+                    <input type="date" id="npInputFecha" class="form-control-custom"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Cliente <span class="required">*</span></label>
+                <div class="np-cliente-wrap">
+                    <input type="text" id="npInputCliente" class="form-control-custom"
+                           placeholder="Buscar cliente o escribir nombre libre…" autocomplete="off"/>
+                    <div id="npClienteDrop" class="np-cliente-drop" style="display:none;"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Solicitado por</label>
+                <input type="text" id="npInputSolicitado" class="form-control-custom"
+                       placeholder="Nombre del contacto" autocomplete="off"/>
+            </div>
+        </div>
+
+        <!-- Paso 2: Ítems -->
+        <div class="modal-body np-step-body" id="npStep2Body" style="display:none;">
+            <div class="pres-items-head">
+                <span class="pres-items-title">Ítems del presupuesto</span>
+                <button class="btn-pres-add" id="npBtnAgregarItem">
+                    <i class="bi bi-plus-lg"></i> Agregar ítem
+                </button>
+            </div>
+            <div class="pres-tabla-wrap np-tabla-scroll">
+                <table class="pres-tabla">
+                    <thead>
+                        <tr>
+                            <th class="col-matriz">Matriz</th>
+                            <th class="col-det">Determinación</th>
+                            <th class="col-precio">Precio unitario</th>
+                            <th class="col-cant">Cantidad</th>
+                            <th class="col-total">Total</th>
+                            <th class="col-del"></th>
+                        </tr>
+                    </thead>
+                    <tbody id="npItemsBody"></tbody>
+                </table>
+                <div class="pres-empty" id="npPresEmpty">
+                    <i class="bi bi-inbox"></i>
+                    <span>Sin ítems. Hacé clic en "Agregar ítem" para empezar.</span>
+                </div>
+            </div>
+            <div class="pres-total-row">
+                <span class="pres-total-lbl">Total general</span>
+                <span class="pres-total-val" id="npTotalGeneral">$0</span>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn-cancelar" id="npBtnCancelar">Cancelar</button>
+            <button class="btn-cancelar" id="npBtnVolver" style="display:none;">
+                <i class="bi bi-arrow-left"></i> Volver
+            </button>
+            <button class="btn-guardar" id="npBtnSiguiente">
+                Siguiente <i class="bi bi-arrow-right"></i>
+            </button>
+            <button class="btn-guardar" id="npBtnGenerar" style="display:none;">
+                <i class="bi bi-file-earmark-pdf"></i> Guardar y generar PDF
+            </button>
+        </div>
+
+    </div>
+</div>
+
+<!-- Dropdown inline: cambiar estado -->
+<div id="estadoDrop" class="estado-drop" style="display:none;">
+    <button class="estado-drop-opt pendiente" data-estado="PENDIENTE">
+        <span class="estado-drop-dot"></span> Pendiente
+    </button>
+    <button class="estado-drop-opt aceptado" data-estado="ACEPTADO">
+        <span class="estado-drop-dot"></span> Aceptado
+    </button>
+    <button class="estado-drop-opt rechazado" data-estado="RECHAZADO">
+        <span class="estado-drop-dot"></span> Rechazado
+    </button>
+</div>
+
+<!-- Toast -->
+<div class="toast-confirm" id="toastPres">
+    <i class="bi bi-check-circle-fill"></i>
+    <span id="toastPresMsg">OK</span>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/presupuesto.js"></script>
+<script src="js/sidebar.js"></script>
+</body>
+</html>

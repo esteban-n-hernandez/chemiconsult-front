@@ -10,7 +10,7 @@ let items = [];
 let itemsFiltrados = [];
 let itemEditandoId = null;
 let itemEliminandoId = null;
-const POR_PAGINA = 10;
+let POR_PAGINA = 5;
 let paginaActual = 1;
 
 // ── DOM ──────────────────────────────────────────────────────────────────────
@@ -26,10 +26,13 @@ const selectNivel    = document.getElementById('selectNivel');
 const modalStock     = document.getElementById('modalStock');
 const modalTitulo    = document.getElementById('modalTitulo');
 const formStock      = document.getElementById('formStock');
-const inputNombre    = document.getElementById('inputNombre');
-const inputCategoria = document.getElementById('inputCategoria');
-const inputDescripcion = document.getElementById('inputDescripcion');
-const inputObservaciones = document.getElementById('inputObservaciones');
+const inputNombre           = document.getElementById('inputNombre');
+const inputCategoria        = document.getElementById('inputCategoria');
+const inputDescripcion      = document.getElementById('inputDescripcion');
+const inputIdentificacion   = document.getElementById('inputIdentificacion');
+const inputCantidad         = document.getElementById('inputCantidad');
+const inputUbicacion        = document.getElementById('inputUbicacion');
+const inputObservaciones    = document.getElementById('inputObservaciones');
 const errNombre      = document.getElementById('errNombre');
 const errCategoria   = document.getElementById('errCategoria');
 const errNivel       = document.getElementById('errNivel');
@@ -77,7 +80,9 @@ function aplicarFiltros() {
     itemsFiltrados = items.filter(item => {
         const coincideTexto = !texto ||
             item.nombre.toLowerCase().includes(texto) ||
-            (item.descripcion || '').toLowerCase().includes(texto);
+            (item.descripcion || '').toLowerCase().includes(texto) ||
+            (item.ubicacion || '').toLowerCase().includes(texto) ||
+            (item.identificacion || '').toLowerCase().includes(texto);
         const coincideCategoria = !categoria || item.categoria === categoria;
         const coincideNivel     = !nivel     || item.nivel === nivel;
         return coincideTexto && coincideCategoria && coincideNivel;
@@ -90,6 +95,12 @@ function aplicarFiltros() {
 inputBusqueda.addEventListener('input', aplicarFiltros);
 selectCategoria.addEventListener('change', aplicarFiltros);
 selectNivel.addEventListener('change', aplicarFiltros);
+
+document.getElementById('selectPageSize')?.addEventListener('change', e => {
+    POR_PAGINA = parseInt(e.target.value);
+    paginaActual = 1;
+    renderTabla();
+});
 
 // ── Tabla ────────────────────────────────────────────────────────────────────
 const CATEGORIA_LABEL = {
@@ -113,9 +124,12 @@ function renderTabla() {
     tbody.innerHTML = pagina.map(item => `
         <tr>
             <td class="item-nombre">${item.nombre}</td>
+            <td class="text-center item-id">${item.identificacion || '—'}</td>
             <td class="item-descripcion">${item.descripcion || '—'}</td>
             <td><span class="cat-badge">${CATEGORIA_LABEL[item.categoria] || item.categoria}</span></td>
             <td>${NIVEL_BADGE[item.nivel] || item.nivel}</td>
+            <td class="text-center">${item.cantidadFrascos != null ? item.cantidadFrascos : '—'}</td>
+            <td class="item-ubicacion">${item.ubicacion || '—'}</td>
             <td class="item-obs" title="${item.observaciones || ''}">${item.observaciones || '—'}</td>
             <td>
                 <div class="acciones-cell">
@@ -140,33 +154,31 @@ function renderTabla() {
 }
 
 function renderPaginacion() {
-    const totalPags = Math.ceil(itemsFiltrados.length / POR_PAGINA);
+    const total = Math.ceil(itemsFiltrados.length / POR_PAGINA);
     paginacionEl.innerHTML = '';
-    if (totalPags <= 1) return;
+    if (total <= 1) return;
 
-    const crearBtn = (label, pagina, deshabilitado = false, activo = false) => {
-        const li = document.createElement('li');
-        const btn = document.createElement('button');
-        btn.innerHTML = label;
-        if (activo) btn.classList.add('active');
-        if (deshabilitado) btn.disabled = true;
-        btn.addEventListener('click', () => { paginaActual = pagina; renderTabla(); });
-        li.appendChild(btn);
-        return li;
+    const mkBtn = (label, onClick, disabled, active) => {
+        const b = document.createElement('button');
+        b.className = 'pag-btn' + (disabled ? ' pag-btn-disabled' : '') + (active ? ' pag-btn-active' : '');
+        b.innerHTML = label;
+        b.disabled  = disabled;
+        if (!disabled && !active) b.addEventListener('click', onClick);
+        return b;
     };
 
-    paginacionEl.appendChild(crearBtn('<i class="bi bi-chevron-left"></i>', paginaActual - 1, paginaActual === 1));
-    for (let p = 1; p <= totalPags; p++) {
-        paginacionEl.appendChild(crearBtn(p, p, false, p === paginaActual));
+    paginacionEl.appendChild(mkBtn('<i class="bi bi-chevron-left"></i>', () => { paginaActual--; renderTabla(); }, paginaActual === 1, false));
+    for (let p = 1; p <= total; p++) {
+        paginacionEl.appendChild(mkBtn(p, () => { paginaActual = p; renderTabla(); }, false, p === paginaActual));
     }
-    paginacionEl.appendChild(crearBtn('<i class="bi bi-chevron-right"></i>', paginaActual + 1, paginaActual === totalPags));
+    paginacionEl.appendChild(mkBtn('<i class="bi bi-chevron-right"></i>', () => { paginaActual++; renderTabla(); }, paginaActual === total, false));
 }
 
 // ── Modal alta / edición ─────────────────────────────────────────────────────
 function abrirModal() {
     limpiarFormulario();
     itemEditandoId = null;
-    modalTitulo.innerHTML = '<i class="bi bi-box-seam"></i> Nuevo ítem';
+    modalTitulo.textContent = 'Nuevo ítem';
     abrirOverlay(modalStock);
 }
 
@@ -174,10 +186,13 @@ function abrirEdicion(id) {
     const item = items.find(i => i.id === id);
     if (!item) return;
     itemEditandoId = id;
-    modalTitulo.innerHTML = '<i class="bi bi-pencil"></i> Editar ítem';
+    modalTitulo.textContent = 'Editar ítem';
     inputNombre.value = item.nombre;
     inputCategoria.value = item.categoria;
     inputDescripcion.value = item.descripcion || '';
+    inputIdentificacion.value = item.identificacion || '';
+    inputCantidad.value = item.cantidadFrascos != null ? item.cantidadFrascos : '';
+    inputUbicacion.value = item.ubicacion || '';
     inputObservaciones.value = item.observaciones || '';
     const radio = formStock.querySelector(`input[name="nivel"][value="${item.nivel}"]`);
     if (radio) radio.checked = true;
@@ -196,11 +211,14 @@ formStock.addEventListener('submit', async (e) => {
 
     const nivelSeleccionado = formStock.querySelector('input[name="nivel"]:checked')?.value;
     const payload = {
-        nombre:        inputNombre.value.trim(),
-        categoria:     inputCategoria.value,
-        descripcion:   inputDescripcion.value.trim() || null,
-        nivel:         nivelSeleccionado,
-        observaciones: inputObservaciones.value.trim() || null,
+        nombre:          inputNombre.value.trim(),
+        categoria:       inputCategoria.value,
+        descripcion:     inputDescripcion.value.trim() || null,
+        nivel:           nivelSeleccionado,
+        observaciones:   inputObservaciones.value.trim() || null,
+        identificacion:  inputIdentificacion.value.trim() || null,
+        cantidadFrascos: inputCantidad.value !== '' ? parseInt(inputCantidad.value) : null,
+        ubicacion:       inputUbicacion.value.trim() || null,
     };
 
     const url    = itemEditandoId ? `${API_URL}/${itemEditandoId}` : API_URL;
@@ -294,4 +312,8 @@ function mostrarToast(msg, tipo = 'success') {
 
 // ── Init ─────────────────────────────────────────────────────────────────────
 inicializarHeader();
-cargarItems();
+cargarItems().then(() => {
+    if (new URLSearchParams(location.search).get('nueva') === '1') {
+        abrirModal();
+    }
+});

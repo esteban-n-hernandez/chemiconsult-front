@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8"/>
@@ -6,17 +6,51 @@
     <title>Muestras - CHEMICONSULT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap"
+          rel="stylesheet">
     <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
+    <link rel="stylesheet" href="css/tabla-muestras.css"/>
     <link rel="stylesheet" href="css/muestras/muestras.css"/>
-    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO"></script>
+    <link rel="stylesheet" href="css/modal.css"/>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="MUESTRAS"></script>
     <style>
         /* Fallback local: opacar el bloque de normativas cuando "Sin normativa" está tildado.
            Si ya tenés esta clase definida en muestras.css, esta regla es redundante y no rompe nada. */
         .normativas-panel.disabled-panel {
             opacity: 0.6;
             pointer-events: none;
+        }
+
+        /* Tom Select — ajuste visual para coincidir con el resto del formulario */
+        .ts-wrapper.single .ts-control {
+            font-size: 14px;
+            font-family: inherit;
+            min-height: 36px;
+        }
+
+        .ts-wrapper.focus .ts-control {
+            border-color: var(--verde, #2e7d32);
+            box-shadow: 0 0 0 0.2rem rgba(46, 125, 50, 0.15);
+        }
+
+        .ts-dropdown .option.active,
+        .ts-dropdown .option:hover {
+            background-color: var(--verde-suave, #edf7ee);
+            color: var(--verde, #2e7d32);
+        }
+
+        .ts-dropdown .option.selected {
+            background-color: var(--verde, #2e7d32);
+            color: #fff;
+        }
+
+        .ts-wrapper.disabled .ts-control {
+            background-color: #f3f4f6;
+            cursor: not-allowed;
+            opacity: 0.7;
         }
     </style>
 </head>
@@ -66,18 +100,41 @@
                 </div>
                 <div class="busqueda-filtros">
                     <input type="text" id="inputBuscarCodigo" class="input-buscar" placeholder="🔍 Buscar por código...">
-                    <input type="text" id="inputBuscarCliente" class="input-buscar" placeholder="🔍 Buscar por cliente...">
+                    <input type="text" id="inputBuscarCliente" class="input-buscar"
+                           placeholder="🔍 Buscar por cliente...">
+                </div>
+            </div>
+
+            <!-- Barra exportación Word -->
+            <div class="export-word-bar">
+                <span class="export-word-label">
+                    <i class="bi bi-file-earmark-word"></i> Exportar a Word
+                </span>
+                <div class="export-word-campos">
+                    <label class="export-word-lbl">Desde</label>
+                    <input type="text" id="exportDesde" class="export-word-date" placeholder="dd/mm/aaaa"
+                           maxlength="10">
+                    <label class="export-word-lbl">Hasta</label>
+                    <input type="text" id="exportHasta" class="export-word-date" placeholder="dd/mm/aaaa"
+                           maxlength="10">
+                    <button class="btn-export-word" onclick="exportarRango()">
+                        <i class="bi bi-download"></i> Exportar rango (.zip)
+                    </button>
                 </div>
             </div>
 
             <table class="tabla-muestras" id="tablaMuestras">
                 <thead>
                 <tr>
-                    <th>Código</th>
+                    <th class="th-sortable" data-sort="nroProtocolo" onclick="ordenarPor('nroProtocolo')">
+                        Protocolo <i class="sort-icon bi bi-chevron-down sort-activo"></i>
+                    </th>
                     <th>Cliente</th>
-                    <th>Tipo de análisis</th>
+                    <th>Tipo de muestra</th>
                     <th>Estado</th>
-                    <th>Fecha alta</th>
+                    <th class="th-sortable" data-sort="fechaIngreso" onclick="ordenarPor('fechaIngreso')">
+                        Fecha alta <i class="sort-icon bi bi-chevron-expand"></i>
+                    </th>
                     <th>Fecha límite</th>
                     <th>Acciones</th>
                 </tr>
@@ -92,7 +149,16 @@
             <!-- Paginación -->
             <div class="paginacion-wrapper" id="paginacionEmpleado">
                 <div id="pagInfoEmpleado" class="paginacion-info">Mostrando 0–0 de 0</div>
-                <div id="pagControlsEmpleado"></div>
+                <div id="pagControlsEmpleado" class="pag-controls"></div>
+                <div class="pag-page-size">
+                    <label for="selectPageSize">Por página:</label>
+                    <select id="selectPageSize">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -104,10 +170,25 @@
      Fuera del .content para evitar herencia de CSS
      ============================================= -->
 <div class="modal-overlay" id="modalAltaMuestra">
-    <div class="modal-box">
+    <div class="modal-box modal-box-lg">
+
+        <!-- Loading overlay: visible solo al abrir en modo edición -->
+        <div id="modalAltaLoading" class="modal-loading-overlay d-none">
+            <div class="tube-loader">
+                <div class="tube-cap"></div>
+                <div class="tube-body">
+                    <div class="tube-liquid"></div>
+                </div>
+            </div>
+            <span class="modal-loading-label">Cargando datos...</span>
+        </div>
 
         <div class="modal-header">
-            <h5 id="modalTitulo"><i class="bi bi-flask"></i> Alta de muestra</h5>
+            <div class="mh-icon"><i class="bi bi-flask"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Muestra</div>
+                <h5 id="modalTitulo">Alta de muestra</h5>
+            </div>
             <button class="modal-close" id="modalClose">
                 <i class="bi bi-x-lg"></i>
             </button>
@@ -116,128 +197,164 @@
         <form id="formAltaMuestra" novalidate>
             <div class="modal-body">
 
-                <!-- Fila 1: Protocolo + Fechas -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>N° Protocolo <span class="required">*</span></label>
-                        <input type="text" id="inputProtocolo" class="form-control-custom"
-                               placeholder="CHQ-2026-001" autocomplete="off"/>
-                        <span class="field-error" id="errProtocolo">Campo requerido</span>
+                <!-- Wizard step indicator -->
+                <div class="wizard-steps">
+                    <div class="wizard-step-item active" id="wstep-1" onclick="wizardGoTo(1)">
+                        <div class="wizard-step-dot" id="wdot-1">1</div>
+                        <span class="wizard-step-label">Datos</span>
                     </div>
-                    <div class="form-group">
-                        <label>Fecha de ingreso <span class="required">*</span></label>
-                        <input type="date" id="inputFecha" class="form-control-custom"/>
-                        <span class="field-error" id="errFecha">Campo requerido</span>
+                    <div class="wizard-step-line"></div>
+                    <div class="wizard-step-item" id="wstep-2" onclick="wizardGoTo(2)">
+                        <div class="wizard-step-dot" id="wdot-2">2</div>
+                        <span class="wizard-step-label">Normativas</span>
                     </div>
-                    <div class="form-group">
-                        <label>Fecha estimada de entrega</label>
-                        <input type="date" id="inputFechaEntrega" class="form-control-custom"/>
-                    </div>
-                </div>
-
-                <!-- Fila 2: Cliente (SELECT) + ID Muestra + Punto de muestreo -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Cliente <span class="required">*</span></label>
-                        <!-- FIX: select cargado desde la API en vez de input texto libre -->
-                        <select id="inputCliente" class="form-control-custom">
-                            <option value="">Cargando clientes...</option>
-                        </select>
-                        <span class="field-error" id="errCliente">Seleccioná un cliente</span>
-                    </div>
-                    <div class="form-group">
-                        <label>ID de muestra <span class="required">*</span></label>
-                        <input type="text" id="inputIdMuestra" class="form-control-custom"
-                               placeholder="Ej: M-001" autocomplete="off"/>
-                        <span class="field-error" id="errIdMuestra">Campo requerido</span>
-                    </div>
-                    <div class="form-group">
-                        <!-- NUEVO: punto de muestreo -->
-                        <label>Punto de muestreo</label>
-                        <input type="text" id="inputPuntoMuestreo" class="form-control-custom"
-                               placeholder="Ej: Pozo norte, Salida planta..." autocomplete="off"/>
+                    <div class="wizard-step-line"></div>
+                    <div class="wizard-step-item" id="wstep-3" onclick="wizardGoTo(3)">
+                        <div class="wizard-step-dot" id="wdot-3">3</div>
+                        <span class="wizard-step-label">Parámetros</span>
                     </div>
                 </div>
 
-                <!-- Fila 3: Matriz -->
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tipo de muestra (Matriz) <span class="required">*</span></label>
-                        <select id="inputTipoMuestra" class="form-control-custom">
-                            <option value="">Seleccioná una matriz...</option>
-                        </select>
-                        <span class="field-error" id="errTipoMuestra">Seleccioná un tipo</span>
-                    </div>
-                </div>
-
-                <!-- Fila 4: Normativas / Destinos de vuelco (múltiple) -->
-                <div class="form-group mt-2">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <label class="fw-bold mb-0">Normativa / Destino de vuelco</label>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="checkSinNormativa">
-                            <label class="form-check-label small" for="checkSinNormativa">
-                                No aplica ninguna normativa a esta muestra
-                            </label>
+                <!-- PANEL 1: Datos básicos -->
+                <div id="wizardPanel1" class="wizard-panel">
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label>N° Protocolo <span class="required">*</span></label>
+                            <input type="text" id="inputProtocolo" class="form-control-custom"
+                                   placeholder="1234" autocomplete="off"/>
+                            <span class="field-error" id="errProtocolo">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha de ingreso <span class="required">*</span></label>
+                            <input type="date" id="inputFecha" class="form-control-custom"/>
+                            <span class="field-error" id="errFecha">Campo requerido</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Fecha estimada de entrega</label>
+                            <input type="date" id="inputFechaEntrega" class="form-control-custom"/>
                         </div>
                     </div>
-                    <div id="normativasContainer" class="normativas-panel border rounded p-2 bg-white">
-                        <span class="text-muted small">Seleccioná una matriz para ver las normativas aplicables...</span>
-                    </div>
-                </div>
-
-                <!-- Parámetros a analizar -->
-                <div class="form-group mt-3">
-                    <div class="parametros-header">
-                        <label class="fw-bold">Parámetros a analizar</label>
-                        <button type="button" class="btn-add-param" id="btnAddParam">
-                            <i class="bi bi-plus-lg"></i> Agregar individual
-                        </button>
-                    </div>
-
-                    <!-- Buscador individual -->
-                    <div id="buscadorIndividualContainer" class="buscador-individual-panel d-none mb-3 p-2 border rounded bg-white shadow-sm position-relative">
-                        <div class="input-group input-group-sm mb-1">
-                            <span class="input-group-text bg-white border-end-0">
-                                <i class="bi bi-search text-muted"></i>
-                            </span>
-                            <input type="text" id="inputBuscarParametroIndividual"
-                                   class="form-control form-control-sm border-start-0"
-                                   placeholder="Escribí el nombre del parámetro (ej: Arsénico, pH)..."
-                                   autocomplete="off">
-                            <button class="btn btn-outline-secondary btn-sm" type="button"
-                                    id="btnCerrarBuscadorIndividual">
-                                <i class="bi bi-x-lg"></i>
-                            </button>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cliente <span class="required">*</span></label>
+                            <select id="inputCliente" class="form-control-custom">
+                                <option value="">Cargando clientes...</option>
+                            </select>
+                            <span class="field-error" id="errCliente">Seleccioná un cliente</span>
                         </div>
-                        <div id="resultadosBusquedaIndividual"
-                             class="list-group position-absolute start-0 end-0 mx-2 z-3 shadow"
-                             style="max-height: 200px; overflow-y: auto; top: 100%;"></div>
+                        <div class="form-group">
+                            <label>Sucursal</label>
+                            <select id="inputSucursal" class="form-control-custom" disabled>
+                                <option value="">— sin sucursales —</option>
+                            </select>
+                        </div>
                     </div>
-
-                    <!-- Lista de parámetros -->
-                    <div class="parametros-lista" id="parametrosLista"></div>
-
-                    <!-- Placeholder vacío -->
-                    <div class="parametros-vacio" id="parametrosVacio">
-                        <i class="bi bi-list-ul param-empty-icon"></i>
-                        Seleccioná un destino de vuelco o agregá parámetros manualmente
+                    <div class="form-row-3">
+                        <div class="form-group">
+                            <label>Matriz <span class="required">*</span></label>
+                            <select id="inputTipoMuestra" class="form-control-custom">
+                                <option value="">Seleccioná una matriz...</option>
+                            </select>
+                            <span class="field-error" id="errTipoMuestra">Seleccioná una matriz</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Tipo de muestra</label>
+                            <select id="inputTipoMuestraEspecifica" class="form-control-custom">
+                                <option value="">— sin especificar —</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Punto de muestreo</label>
+                            <input type="text" id="inputPuntoMuestreo" class="form-control-custom"
+                                   placeholder="Ej: Pozo norte, Salida planta..." autocomplete="off"/>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Observaciones -->
-                <div class="form-group mt-2">
-                    <label>Observaciones</label>
-                    <textarea id="inputObservaciones" class="form-control-custom textarea-vertical"
-                              rows="2" placeholder="Notas adicionales sobre la muestra..."></textarea>
+                <!-- PANEL 2: Normativas -->
+                <div id="wizardPanel2" class="wizard-panel" style="display:none">
+                    <div id="seccionNormativas">
+                        <div class="wizard-panel-header">
+                            <label>Normativa / Destino de vuelco</label>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="checkSinNormativa">
+                                <label class="form-check-label small" for="checkSinNormativa">
+                                    No aplica ninguna normativa
+                                </label>
+                            </div>
+                        </div>
+                        <div id="normativasContainer" class="normativas-panel border rounded p-2 bg-white">
+                            <span class="text-muted small">Seleccioná una matriz en el paso anterior para ver las normativas aplicables...</span>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- PANEL 3: Parámetros + Observaciones -->
+                <div id="wizardPanel3" class="wizard-panel" style="display:none">
+                    <div id="seccionParametros">
+                        <div class="parametros-header">
+                            <div class="param-header-left">
+                                <label>Parámetros a analizar</label>
+                                <span class="param-contador" id="paramContador"></span>
+                            </div>
+                            <div class="param-header-actions">
+                                <button type="button" class="btn-param-bulk" id="btnSelectAll">Todos</button>
+                                <button type="button" class="btn-param-bulk" id="btnSelectNone">Ninguno</button>
+                                <button type="button" class="btn-add-param" id="btnAddParam">
+                                    <i class="bi bi-plus-lg"></i> Agregar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Buscador individual -->
+                        <div id="buscadorIndividualContainer"
+                             class="buscador-individual-panel d-none mb-3 p-2 border rounded bg-white shadow-sm position-relative">
+                            <div class="input-group input-group-sm mb-1">
+                                <span class="input-group-text bg-white border-end-0">
+                                    <i class="bi bi-search text-muted"></i>
+                                </span>
+                                <input type="text" id="inputBuscarParametroIndividual"
+                                       class="form-control form-control-sm border-start-0"
+                                       placeholder="Escribí el nombre del parámetro (ej: Arsénico, pH)..."
+                                       autocomplete="off">
+                                <button class="btn btn-outline-secondary btn-sm" type="button"
+                                        id="btnCerrarBuscadorIndividual">
+                                    <i class="bi bi-x-lg"></i>
+                                </button>
+                            </div>
+                            <div id="resultadosBusquedaIndividual"
+                                 class="list-group position-absolute start-0 end-0 mx-2 z-3 shadow"
+                                 style="max-height: 200px; overflow-y: auto; top: 100%;"></div>
+                        </div>
+
+                        <!-- Lista de parámetros -->
+                        <div class="parametros-lista" id="parametrosLista"></div>
+
+                        <!-- Placeholder vacío -->
+                        <div class="parametros-vacio" id="parametrosVacio">
+                            <i class="bi bi-list-ul param-empty-icon"></i>
+                            Seleccioná un destino de vuelco o agregá parámetros manualmente
+                        </div>
+                    </div>
+
+                    <!-- Observaciones -->
+                    <div class="form-group">
+                        <label>Observaciones</label>
+                        <textarea id="inputObservaciones" class="form-control-custom textarea-vertical"
+                                  rows="2" placeholder="Notas adicionales sobre la muestra..."></textarea>
+                    </div>
+                </div>
+
             </div>
 
-            <!-- Botones -->
+            <!-- Footer con navegación del wizard -->
             <div class="modal-footer">
+                <button type="button" class="btn-cancelar wizard-btn-back" id="btnBack" style="display:none">
+                    <i class="bi bi-arrow-left"></i> Anterior
+                </button>
                 <button type="button" class="btn-cancelar" id="btnCancelar">Cancelar</button>
-                <button type="submit" class="btn-guardar" id="btnGuardar">
-                    <i class="bi bi-check-lg"></i> Guardar muestra
+                <button type="button" class="btn-guardar" id="btnGuardar">
+                    Siguiente <i class="bi bi-arrow-right"></i>
                 </button>
             </div>
         </form>
@@ -258,8 +375,14 @@
         </div>
 
         <div class="modal-body">
-            <div id="detalleLoading" class="text-center text-muted py-4">
-                <span class="spinner-border spinner-border-sm me-2"></span> Cargando detalle...
+            <div id="detalleLoading" class="d-flex flex-column align-items-center justify-content-center py-5 gap-3">
+                <div class="tube-loader">
+                    <div class="tube-cap"></div>
+                    <div class="tube-body">
+                        <div class="tube-liquid"></div>
+                    </div>
+                </div>
+                <span class="modal-loading-label">Cargando detalle...</span>
             </div>
 
             <div id="detalleContenido" class="d-none">
@@ -276,16 +399,16 @@
                         <span id="detalleCliente">—</span>
                     </div>
                     <div class="detalle-info-campo">
-                        <label>ID Muestra</label>
-                        <span id="detalleIdMuestra">—</span>
-                    </div>
-                    <div class="detalle-info-campo">
                         <label>Matriz</label>
                         <span id="detalleMatrizTipo">—</span>
                     </div>
                     <div class="detalle-info-campo">
                         <label>Punto de muestreo</label>
                         <span id="detallePuntoMuestreo">—</span>
+                    </div>
+                    <div class="detalle-info-campo">
+                        <label>Tipo de muestra</label>
+                        <span id="detalleTipoMuestra">—</span>
                     </div>
                     <div class="detalle-info-campo">
                         <label>Ingreso → Entrega</label>
@@ -299,10 +422,13 @@
                     <div id="detalleResoluciones" class="detalle-chips"></div>
                 </div>
 
-                <!-- Observaciones -->
+                <!-- Observaciones (Editable) -->
                 <div class="detalle-seccion" id="detalleObservacionesWrap">
                     <p class="detalle-seccion-titulo">Observaciones</p>
                     <p class="detalle-obs-text" id="detalleObservaciones">—</p>
+                    <textarea id="detalleObservacionesInput" class="form-control-custom textarea-vertical"
+                              rows="2" placeholder="Notas adicionales..."
+                              style="margin-top:8px; display:none;"></textarea>
                 </div>
 
                 <!-- Parámetros -->
@@ -318,12 +444,102 @@
         </div>
 
         <div class="modal-footer">
+            <span id="autoGuardadoStatus" class="autosave-status"></span>
             <button type="button" class="btn-cancelar" id="btnCerrarDetalle">Cerrar</button>
-            <button type="button" class="btn-guardar" id="btnGuardarResultados">
-                <i class="bi bi-floppy"></i> Guardar resultados
+            <button type="button" class="btn-cancelar" id="btnEditarResultados" style="display:none">
+                <i class="bi bi-pencil"></i> Editar resultados
             </button>
-            <button type="button" class="btn-guardar" id="btnGenerarInforme"
-                    style="background: #1a6b3a; margin-left: 8px;">
+            <button type="button" class="btn-guardar btn-generar-informe" id="btnGenerarInforme" disabled>
+                <i class="bi bi-file-earmark-pdf-fill"></i> Generar informe
+            </button>
+        </div>
+    </div>
+</div>
+
+<!--  MODAL ARCHIVOS DE MUESTRA -->
+<div class="modal-overlay" id="modalAltaInforme">
+    <div class="modal-box" style="max-width: 520px;">
+        <div class="modal-header">
+            <div class="mh-icon"><i class="bi bi-paperclip"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Archivos</div>
+                <h5 id="altaInformeTitulo">Archivos de la muestra</h5>
+            </div>
+            <button class="modal-close" id="altaInformeClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <!-- Lista de archivos existentes -->
+            <div id="listaArchivosContainer" style="margin-bottom:16px;">
+                <label style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Archivos
+                    subidos</label>
+                <div id="listaArchivos" style="display:flex; flex-direction:column; gap:6px; min-height:32px;">
+                    <span class="text-muted" style="font-size:13px;"
+                          id="listaArchivosVacia">Sin archivos todavía.</span>
+                </div>
+            </div>
+            <!-- Upload nuevo archivo -->
+            <div class="form-group">
+                <label>Tipo de archivo <span class="required">*</span></label>
+                <div style="display:flex; gap:10px; margin-bottom:4px;">
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:14px;">
+                        <input type="radio" name="tipoArchivo" id="tipoFactura" value="FACTURA" checked>
+                        <i class="bi bi-receipt" style="color:#6366f1;"></i> Factura
+                    </label>
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-weight:normal; font-size:14px;">
+                        <input type="radio" name="tipoArchivo" id="tipoInforme" value="INFORME">
+                        <i class="bi bi-file-earmark-text" style="color:#16a34a;"></i> Informe
+                    </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Archivo PDF <span class="required">*</span></label>
+                <input type="file" id="inputAltaInformePdf" class="form-control-custom"
+                       accept=".pdf,application/pdf"/>
+                <span class="field-error" id="altaInformeError" style="display:none;"></span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="altaInformeCancelar">Cerrar</button>
+            <button type="button" class="btn-guardar" id="btnUploadAltaInforme">
+                <i class="bi bi-upload me-1"></i> Subir archivo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL SELECCIÓN DE EQUIPOS PARA INFORME -->
+<div class="modal-overlay" id="modalEquiposInforme">
+    <div class="modal-box" style="max-width: 540px;">
+        <div class="modal-header">
+            <div class="mh-icon"><i class="bi bi-tools"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Generar informe</div>
+                <h5>Equipos / Instrumentos utilizados</h5>
+            </div>
+            <button class="modal-close" id="equiposInformeClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <p style="font-size:13px;color:var(--color-text-secondary);margin-bottom:12px;">
+                Seleccioná los equipos que se utilizaron en este análisis. Podés dejar todo sin marcar si no querés
+                incluir esta sección en el informe.
+            </p>
+            <div id="equiposInformeLoading"
+                 style="text-align:center;padding:16px 0;font-size:13px;color:var(--color-text-secondary);">
+                <span class="spinner-border spinner-border-sm me-2"></span> Cargando equipos...
+            </div>
+            <div id="equiposInformeList"
+                 style="flex-direction:column;gap:8px;max-height:300px;overflow-y:auto;display:none;"></div>
+            <div id="equiposInformeVacio"
+                 style="display:none;font-size:13px;color:var(--color-text-secondary);padding:8px 0;">
+                No hay equipos registrados. Podés cargarlos desde el Panel Técnico.
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="equiposInformeCancelar">Cancelar</button>
+            <button type="button" class="btn-cancelar" id="btnGenerarSinEquipos">
+                <i class="bi bi-file-earmark-pdf"></i> Sin equipos
+            </button>
+            <button type="button" class="btn-guardar" id="btnConfirmarEquipos">
                 <i class="bi bi-file-earmark-pdf-fill"></i> Generar informe
             </button>
         </div>
@@ -336,8 +552,34 @@
     <span id="toastMsg">Operación realizada correctamente</span>
 </div>
 
+<!-- MODAL CANCELAR MUESTRA -->
+<div class="modal-overlay" id="modalCancelarMuestra">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h5 style="color:#dc3545"><i class="bi bi-x-circle"></i> Cancelar muestra</h5>
+            <button class="modal-close" id="modalCancelarClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <p id="modalCancelarMsg" style="margin-bottom:.75rem;color:var(--color-text-secondary);font-size:14px;"></p>
+            <div class="form-group" style="margin:0">
+                <label class="form-label" style="font-size:13px;">Motivo de cancelación</label>
+                <textarea id="inputMotivoCancelacionM" class="form-control-custom textarea-vertical"
+                          rows="3"
+                          placeholder="Ej: Muestra mal tomada, cliente desistió, error de protocolo..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarCancelar">Volver</button>
+            <button type="button" class="btn-eliminar-confirm" id="btnConfirmarCancelar">
+                <i class="bi bi-x-circle"></i> Confirmar cancelación
+            </button>
+        </div>
+    </div>
+</div>
+
 <script src="js/config.js"></script>
 <script src="js/sidebar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 <script src="js/muestras.js"></script>
 </body>
 </html>

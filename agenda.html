@@ -1,0 +1,385 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Agenda | Chemiconsult</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
+    <link rel="stylesheet" href="css/agenda/agenda.css"/>
+    <link rel="stylesheet" href="css/modal.css"/>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="AGENDA"></script>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div id="sidebar-container"></div>
+
+<!-- CONTENIDO PRINCIPAL -->
+<div class="container-fluid py-4">
+
+    <!-- Encabezado de página -->
+    <div class="page-header">
+        <div>
+            <h1>Agenda</h1>
+            <p id="fecha-hoy"></p>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <p class="header-user-name" id="header-nombre">—</p>
+                <p class="header-user-role" id="header-rol">—</p>
+            </div>
+            <div class="avatar-circle" id="header-avatar">--</div>
+        </div>
+    </div>
+
+    <!-- Toolbar de la agenda -->
+    <div class="agenda-toolbar">
+        <div class="agenda-toolbar-left">
+            <button class="view-btn active" onclick="cambiarVista('dayGridMonth', this)">
+                <i class="bi bi-calendar3"></i> Mes
+            </button>
+            <button class="view-btn" onclick="cambiarVista('timeGridWeek', this)">
+                <i class="bi bi-calendar-week"></i> Semana
+            </button>
+            <button class="view-btn" onclick="cambiarVista('timeGridDay', this)">
+                <i class="bi bi-calendar-day"></i> Día
+            </button>
+            <button class="view-btn" onclick="cambiarVista('listMonth', this)">
+                <i class="bi bi-list-ul"></i> Lista
+            </button>
+            <select class="filtro-tipo-select" id="filtro-tipo">
+                <option value="">Todos los tipos</option>
+                <option value="MUESTREO">Muestreo</option>
+                <option value="COMPRA_INSUMOS">Compra de insumos</option>
+                <option value="VENCIMIENTO">Vencimiento</option>
+                <option value="OTRO">Otro</option>
+            </select>
+        </div>
+        <button class="btn-nuevo-muestreo" id="btn-nuevo">
+            <i class="bi bi-plus-lg"></i> Nuevo evento
+        </button>
+    </div>
+
+    <!-- Leyenda de estados -->
+    <div class="agenda-legend">
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#f59e0b;"></div> Pendiente
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#5EA504;"></div> Confirmado
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#64748b;"></div> Realizado
+        </div>
+        <div class="legend-item">
+            <div class="legend-dot" style="background:#ef4444;"></div> Cancelado
+        </div>
+    </div>
+
+    <!-- Calendario -->
+    <div class="calendar-wrapper">
+        <div id="cal-loading-pill" class="cal-loading-pill">
+            <div class="cal-loading-dot"></div>
+            <span>Cargando…</span>
+        </div>
+        <div id="calendario"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- Modal: Ver detalle de muestreo                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="modal fade" id="detalleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="d-flex align-items-center gap-3">
+                    <h5 class="modal-title mb-0">Muestreo agendado</h5>
+                    <span id="detalle-estado" class="estado-badge"></span>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-12 col-sm-6">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Tipo</span>
+                            <span class="detalle-value" id="detalle-tipo">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6" id="detalle-row-cliente">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Cliente</span>
+                            <span class="detalle-value" id="detalle-cliente">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6" id="detalle-row-sucursal">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Sucursal / Punto</span>
+                            <span class="detalle-value" id="detalle-sucursal">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6" id="detalle-row-documentacion" style="display:none">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Documentación</span>
+                            <span class="detalle-value" id="detalle-documentacion">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6" id="detalle-row-dequien" style="display:none">
+                        <div class="detalle-row">
+                            <span class="detalle-label">De quién</span>
+                            <span class="detalle-value" id="detalle-dequien">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Fecha y hora</span>
+                            <span class="detalle-value" id="detalle-fecha">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Responsable</span>
+                            <span class="detalle-value" id="detalle-responsable">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12" id="detalle-row-direccion">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Dirección de visita</span>
+                            <span class="detalle-value" id="detalle-direccion">—</span>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="detalle-row">
+                            <span class="detalle-label">Observaciones</span>
+                            <span class="detalle-value" id="detalle-obs">—</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de cambio de estado -->
+                <div class="mt-3 pt-3 border-top">
+                    <p class="detalle-label mb-2">Cambiar estado:</p>
+                    <div class="d-flex flex-wrap gap-2" id="detalle-estados-btn"></div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <div class="d-flex gap-2">
+                    <button class="btn btn-outline-danger btn-sm" id="detalle-eliminar-btn">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                </div>
+                <button class="btn btn-outline-secondary btn-sm" id="detalle-editar-btn">
+                    <i class="bi bi-pencil"></i> Editar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- Modal: Crear / Editar muestreo                         -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="modal fade" id="formModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered agenda-modal-dialog">
+        <form class="modal-content modal-alta" id="muestreoForm">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <div class="mh-icon"><i class="bi bi-calendar-plus"></i></div>
+                <div class="mh-info">
+                    <div class="mh-eyebrow">Evento</div>
+                    <h5 class="modal-title" id="formModalTitle">Nuevo evento</h5>
+                </div>
+                <button type="button" class="modal-close" data-bs-dismiss="modal" aria-label="Cerrar">
+                    <i class="bi bi-x-lg"></i>
+                </button>
+            </div>
+
+            <div class="modal-body agenda-modal-body">
+
+                <!-- Sección: Tipo de evento -->
+                <div class="form-section">
+                    <div class="form-section-label">
+                        <i class="bi bi-tag-fill"></i> Tipo de evento
+                    </div>
+                    <div class="tipo-picker">
+                        <label class="tipo-option">
+                            <input type="radio" name="form-tipo" value="MUESTREO" checked/>
+                            <i class="bi bi-droplet-fill"></i> Muestreo
+                        </label>
+                        <label class="tipo-option">
+                            <input type="radio" name="form-tipo" value="COMPRA_INSUMOS"/>
+                            <i class="bi bi-cart-fill"></i> Compra de insumos
+                        </label>
+                        <label class="tipo-option">
+                            <input type="radio" name="form-tipo" value="VENCIMIENTO"/>
+                            <i class="bi bi-calendar-x-fill"></i> Vencimiento
+                        </label>
+                        <label class="tipo-option">
+                            <input type="radio" name="form-tipo" value="OTRO"/>
+                            <i class="bi bi-three-dots"></i> Otro
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Sección: Cliente (solo MUESTREO) -->
+                <div class="form-section" id="form-cliente-section">
+                    <div class="form-section-label">
+                        <i class="bi bi-person-fill"></i> Cliente
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label class="field-label">Empresa / Persona <span class="required">*</span></label>
+                            <select class="field-input" id="form-cliente">
+                                <option value="">Seleccioná un cliente…</option>
+                            </select>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">Sucursal / Punto <span class="field-opt">opcional</span></label>
+                            <select class="field-input" id="form-sucursal">
+                                <option value="">Dirección principal</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Vencimiento (solo VENCIMIENTO) -->
+                <div class="form-section" id="form-vencimiento-section" style="display:none">
+                    <div class="form-section-label">
+                        <i class="bi bi-file-earmark-x-fill"></i> Vencimiento
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label class="field-label">Documentación <span class="required">*</span></label>
+                            <input type="text" class="field-input" id="form-documentacion"
+                                   placeholder="Ej: Seguro de responsabilidad civil" autocomplete="off"/>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">De quién <span class="field-opt">opcional</span></label>
+                            <input type="text" class="field-input" id="form-dequien"
+                                   placeholder="Ej: Empresa XYZ" autocomplete="off"/>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Cuándo -->
+                <div class="form-section">
+                    <div class="form-section-label">
+                        <i class="bi bi-clock-fill"></i> Cuándo
+                    </div>
+                    <div class="form-row-2">
+                        <div class="form-field">
+                            <label class="field-label">Fecha y hora <span class="required">*</span></label>
+                            <input type="datetime-local" class="field-input" id="form-fecha" required/>
+                        </div>
+                        <div class="form-field">
+                            <label class="field-label">Estado</label>
+                            <div class="estado-picker">
+                                <label class="estado-option">
+                                    <input type="radio" name="form-estado" value="PENDIENTE" checked/>
+                                    <span class="estado-dot pendiente"></span> Pendiente
+                                </label>
+                                <label class="estado-option">
+                                    <input type="radio" name="form-estado" value="CONFIRMADO"/>
+                                    <span class="estado-dot confirmado"></span> Confirmado
+                                </label>
+                                <label class="estado-option">
+                                    <input type="radio" name="form-estado" value="REALIZADO"/>
+                                    <span class="estado-dot realizado"></span> Realizado
+                                </label>
+                                <label class="estado-option">
+                                    <input type="radio" name="form-estado" value="CANCELADO"/>
+                                    <span class="estado-dot cancelado"></span> Cancelado
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección: Dónde / Quién -->
+                <div class="form-section" id="form-donde-section">
+                    <div class="form-section-label">
+                        <i class="bi bi-geo-alt-fill"></i> Dónde y quién
+                    </div>
+                    <div class="form-field">
+                        <label class="field-label">Dirección de visita</label>
+                        <input type="text" class="field-input" id="form-direccion"
+                               placeholder="Se autocompleta al elegir el cliente"/>
+                    </div>
+                    <div class="form-field" style="margin-top:10px">
+                        <label class="field-label">Responsable <span class="field-opt">opcional</span></label>
+                        <select class="field-input" id="form-responsable">
+                            <option value="">Sin asignar</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sección: Notas -->
+                <div class="form-section">
+                    <div class="form-section-label">
+                        <i class="bi bi-chat-left-text-fill"></i> Notas
+                    </div>
+                    <div class="form-field">
+                        <textarea class="field-input field-textarea" id="form-obs" rows="2"
+                                  placeholder="Instrucciones de acceso, materiales necesarios, contacto en sitio…"></textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+                <button type="submit" class="btn-guardar">
+                    <i class="bi bi-check-lg"></i> Guardar evento
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════ -->
+<!-- Modal: Confirmar eliminación                           -->
+<!-- ═══════════════════════════════════════════════════════ -->
+<div class="modal fade" id="eliminarModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-sm">
+        <div class="modal-content">
+            <div class="modal-header border-0 pb-0">
+                <h6 class="modal-title">¿Eliminar muestreo?</h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body pt-1">
+                <p class="text-muted" style="font-size:13px;">Esta acción no se puede deshacer.</p>
+            </div>
+            <div class="modal-footer border-0 pt-0">
+                <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmar-eliminar-btn">Eliminar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Toast de notificación -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index:1100">
+    <div id="agendaToast" class="toast align-items-center border-0" role="alert">
+        <div class="d-flex">
+            <div class="toast-body fw-semibold"></div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.11/index.global.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/agenda.js"></script>
+<script src="js/sidebar.js"></script>
+</body>
+</html>
+

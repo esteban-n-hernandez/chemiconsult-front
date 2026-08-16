@@ -1,120 +1,17 @@
-:root {
-    --verde: #5EA504;
-    --verde-oscuro: #4a8403;
-    --verde-suave: #f2f7e9;
-    --color-text-secondary: #6c757d;
-    --color-border-tertiary: #dee2e6;
-}
 
 * { box-sizing: border-box; }
 
-body {
-    background: #f0f2f5;
-    display: flex;
-    height: 100vh;
-    overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
-    margin: 0;
-}
 
-.content {
-    flex: 1;
-    padding: 2rem;
-    overflow-y: auto;
-}
 
-.page-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1.75rem;
-}
-
-.page-header h1 {
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: #1a1a2e;
-    margin: 0;
-}
-
-.page-header p {
-    font-size: 13px;
-    color: var(--color-text-secondary);
-    margin: 2px 0 0;
-}
-
-.header-user {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.header-user-info { text-align: right; }
-
-.header-user-name {
-    font-size: 14px;
-    font-weight: 500;
-    margin: 0;
-}
-
-.header-user-role {
-    font-size: 12px;
-    color: var(--color-text-secondary);
-    margin: 0;
-}
-
-.avatar-circle {
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    background: var(--verde-suave);
-    color: var(--verde-oscuro);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 600;
-    font-size: 13px;
-}
 
 @media (max-width: 768px) {
     .content { padding: 1rem; }
 }
 
-/* ==========================================================================
-   Panel (contenedor de sección)
-   ========================================================================== */
-.panel {
-    background: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-    margin-bottom: 1.5rem;
-    overflow: hidden;
-}
-
-.panel-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1.1rem 1.4rem;
-    border-bottom: 1px solid var(--color-border-tertiary);
-}
-
-.panel-header h5 {
-    font-size: 15px;
-    font-weight: 700;
-    margin: 0;
-    color: #1a1a2e;
-    display: flex;
-    align-items: center;
-}
-
-.panel-title-icon-green {
-    color: var(--verde);
-}
-
-.panel-body {
-    padding: 1.4rem;
-}
+/* Panel overrides — perfil usa padding mayor */
+.panel { margin-bottom: 1.5rem; }
+.panel-header { padding: 1.1rem 1.4rem; }
+.panel-body { padding: 1.4rem; }
 
 /* ==========================================================================
    Formulario
@@ -137,7 +34,7 @@ body {
 .form-group label {
     font-size: 12.5px;
     font-weight: 600;
-    color: #444;
+    color: var(--text-main);
 }
 
 .form-group label .required {
@@ -149,7 +46,8 @@ body {
     border-radius: 8px;
     padding: 0.55rem 0.8rem;
     font-size: 13.5px;
-    background: #fff;
+    background: var(--bg-surface);
+    color: var(--text-main);
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -160,7 +58,7 @@ body {
 }
 
 .form-control-custom:disabled {
-    background: #f5f5f5;
+    background: var(--bg-subtle);
     color: var(--color-text-secondary);
 }
 
@@ -211,43 +109,54 @@ body {
 }
 
 /* ==========================================================================
-   Toast de confirmación
+   Panel Mi empresa — ficha compacta de solo lectura
    ========================================================================== */
-.toast-confirm {
-    position: fixed;
-    bottom: 24px;
-    right: 24px;
-    background: #1a1a2e;
-    color: #fff;
-    padding: 0.85rem 1.3rem;
-    border-radius: 10px;
+.empresa-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem 1.5rem;
+}
+
+.empresa-field--wide {
+    grid-column: span 2;
+}
+
+.empresa-field {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 13.5px;
+    flex-direction: column;
+    gap: 3px;
+    padding: 0.65rem 0.9rem;
+    background: var(--bg-subtle);
+    border-radius: 8px;
+    border: 1px solid var(--color-border-soft);
+}
+
+.empresa-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-secondary, #64748b);
+}
+
+.empresa-value {
+    font-size: 14px;
     font-weight: 500;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
-    transform: translateY(20px);
-    opacity: 0;
-    pointer-events: none;
-    transition: transform 0.25s ease, opacity 0.25s ease;
-    z-index: 2000;
+    color: var(--text-main);
+    word-break: break-word;
 }
 
-.toast-confirm.visible {
-    transform: translateY(0);
-    opacity: 1;
+@media (max-width: 768px) {
+    .empresa-grid { grid-template-columns: 1fr 1fr; }
+    .empresa-field--wide { grid-column: span 2; }
 }
 
-.toast-confirm i {
-    color: var(--verde);
-    font-size: 16px;
+@media (max-width: 480px) {
+    .empresa-grid { grid-template-columns: 1fr; }
+    .empresa-field--wide { grid-column: span 1; }
 }
 
-.toast-confirm.toast-error {
-    background: #7a1f1f;
-}
-
-.toast-confirm.toast-error i {
-    color: #ff8a8a;
-}
+/* Toast overrides — ícono verde por defecto, error en rojo */
+.toast-confirm i         { color: var(--verde); font-size: 16px; }
+.toast-confirm.toast-error             { background: #7a1f1f; }
+.toast-confirm.toast-error i           { color: #ff8a8a; }

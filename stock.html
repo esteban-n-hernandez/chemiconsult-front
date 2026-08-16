@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8"/>
@@ -6,8 +6,10 @@
     <title>Stock - CHEMICONSULT</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
     <link rel="stylesheet" href="css/stock/stock.css"/>
-    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO"></script>
+    <link rel="stylesheet" href="css/modal.css"/>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="STOCK"></script>
 </head>
 <body>
 
@@ -85,16 +87,19 @@
                 <thead>
                 <tr>
                     <th>Ítem</th>
+                    <th>ID</th>
                     <th>Descripción</th>
                     <th>Categoría</th>
                     <th>Nivel</th>
+                    <th>Cant.</th>
+                    <th>Ubicación</th>
                     <th>Observaciones</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody id="tablaStockBody">
                 <tr>
-                    <td colspan="6" class="text-center" style="padding:2rem; color:#adb5bd;">Cargando...</td>
+                    <td colspan="9" class="text-center" style="padding:2rem; color:#adb5bd;">Cargando...</td>
                 </tr>
                 </tbody>
             </table>
@@ -106,7 +111,16 @@
 
             <div class="panel-footer">
                 <small id="infoPaginacion">Mostrando 0 ítems</small>
-                <ul class="paginacion" id="paginacion"></ul>
+                <div id="paginacion" class="pag-controls"></div>
+                <div class="pag-page-size">
+                    <label for="selectPageSize">Por página:</label>
+                    <select id="selectPageSize">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
             </div>
         </div>
     </div>
@@ -118,7 +132,11 @@
     <div class="modal-box">
 
         <div class="modal-header">
-            <h5 id="modalTitulo"><i class="bi bi-box-seam"></i> Nuevo ítem</h5>
+            <div class="mh-icon"><i class="bi bi-box-seam"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Stock</div>
+                <h5 id="modalTitulo">Nuevo ítem</h5>
+            </div>
             <button class="modal-close" id="modalClose"><i class="bi bi-x-lg"></i></button>
         </div>
 
@@ -148,6 +166,22 @@
                 <div class="form-group">
                     <label>Descripción</label>
                     <input type="text" id="inputDescripcion" class="form-control-custom" placeholder="Ej: H₂SO₄ 98% — frasco 1L" autocomplete="off"/>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Identificación</label>
+                        <input type="text" id="inputIdentificacion" class="form-control-custom" placeholder="Ej: 042" autocomplete="off"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Cantidad (unidades/frascos)</label>
+                        <input type="number" id="inputCantidad" class="form-control-custom" placeholder="Ej: 5" min="0" autocomplete="off"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Ubicación</label>
+                    <input type="text" id="inputUbicacion" class="form-control-custom" placeholder="Ej: Estante A3, Heladera 2" autocomplete="off"/>
                 </div>
 
                 <div class="form-group">
@@ -222,3 +256,4 @@
 <script src="js/stock.js"></script>
 </body>
 </html>
+

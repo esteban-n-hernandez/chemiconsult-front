@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Documentación - CHEMICONSULT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/css/tom-select.bootstrap5.min.css" rel="stylesheet"/>
+    <style>
+        /* Variables de Bootstrap que necesita el tema tom-select.bootstrap5, mapeadas al sistema */
+        :root {
+            --bs-body-bg:         var(--bg-surface);
+            --bs-body-color:      var(--text-main);
+            --bs-border-color:    var(--color-border-tertiary);
+            --bs-secondary-bg:    var(--bg-subtle);
+            --bs-emphasis-color:  var(--text-main);
+            --bs-primary:         var(--verde);
+            --bs-primary-rgb:     94, 165, 4;
+            --bs-border-radius:   7px;
+            --bs-body-font-size:  13px;
+        }
+        /* Ajuste de foco para que use el verde del sistema */
+        .ts-wrapper.focus .ts-control {
+            border-color: var(--verde) !important;
+            box-shadow: 0 0 0 3px rgba(94,165,4,.15) !important;
+        }
+        .ts-dropdown { z-index: 10000; }
+    </style>
+    <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
+    <link rel="stylesheet" href="css/documentos/documentos.css"/>
+    <link rel="stylesheet" href="css/modal.css"/>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="DOCUMENTOS"></script>
+</head>
+<body>
+
+<div id="sidebar-container"></div>
+
+<div class="content">
+
+    <div class="page-header">
+        <div>
+            <h1>Documentación</h1>
+            <p id="fecha-hoy"></p>
+        </div>
+        <div class="header-user">
+            <div class="header-user-info">
+                <p class="header-user-name" id="header-nombre">—</p>
+                <p class="header-user-role" id="header-rol">—</p>
+            </div>
+            <div class="avatar-circle" id="header-avatar">--</div>
+        </div>
+    </div>
+
+    <div class="page-actions">
+        <button class="btn-nuevo-doc" id="btnNuevoDoc">
+            <i class="bi bi-upload"></i> Subir documento
+        </button>
+    </div>
+
+    <div id="alertaVencimiento" class="alerta-vencimiento" style="display:none">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <span id="alertaVencimientoMsg"></span>
+    </div>
+
+    <div class="kpi-grid">
+        <div class="kpi-card gris">
+            <div class="kpi-icon gris"><i class="bi bi-file-earmark-text"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-total">—</h3>
+                <p>Total documentos</p>
+            </div>
+        </div>
+        <div class="kpi-card verde">
+            <div class="kpi-icon verde"><i class="bi bi-shield-check"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-vigentes">—</h3>
+                <p>Vigentes</p>
+            </div>
+        </div>
+        <div class="kpi-card naranja">
+            <div class="kpi-icon naranja"><i class="bi bi-clock-history"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-proximos">—</h3>
+                <p>Próximos a vencer</p>
+            </div>
+        </div>
+        <div class="kpi-card rojo">
+            <div class="kpi-icon rojo"><i class="bi bi-exclamation-circle"></i></div>
+            <div class="kpi-data">
+                <h3 id="kpi-vencidos">—</h3>
+                <p>Vencidos</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-header">
+            <h5><i class="bi bi-folder2-open me-2" style="color:var(--verde);"></i>Documentos</h5>
+            <div class="filtros">
+                <input type="text" id="inputBusqueda" class="filtro-input" placeholder="Buscar documento..." autocomplete="off"/>
+                <select id="selectCategoria" class="filtro-select">
+                    <option value="">Todas las categorías</option>
+                </select>
+                <select id="selectEstado" class="filtro-select">
+                    <option value="">Todos los estados</option>
+                    <option value="VIGENTE">Vigente</option>
+                    <option value="PROXIMO_VENCER">Próximo a vencer</option>
+                    <option value="VENCIDO">Vencido</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="panel-body" style="padding:0;">
+            <table class="tabla-docs" id="tablaDocumentos">
+                <thead>
+                <tr>
+                    <th>Documento</th>
+                    <th>Categoría</th>
+                    <th>Vencimiento</th>
+                    <th>Estado</th>
+                    <th>Subido</th>
+                    <th>Acciones</th>
+                </tr>
+                </thead>
+                <tbody id="tablaDocsBody">
+                <tr>
+                    <td colspan="6" class="text-center" style="padding:2rem; color:#adb5bd;">Cargando...</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <div class="sin-resultados" id="sinResultados" style="display:none;">
+                <i class="bi bi-folder2-open"></i>
+                <p>No se encontraron documentos</p>
+            </div>
+
+            <div class="panel-footer">
+                <small id="infoPaginacion">Mostrando 0 documentos</small>
+                <div id="paginacion" class="pag-controls"></div>
+                <div class="pag-page-size">
+                    <label for="selectPageSize">Por página:</label>
+                    <select id="selectPageSize">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                        <option value="20">20</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- MODAL SUBIR DOCUMENTO -->
+<div class="modal-overlay" id="modalDoc">
+    <div class="modal-box">
+        <div class="modal-header">
+            <div class="mh-icon"><i class="bi bi-file-earmark-arrow-up"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Documentación</div>
+                <h5 id="modalDocTitulo">Subir documento</h5>
+            </div>
+            <button class="modal-close" id="modalDocClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+
+        <form id="formDoc" novalidate>
+            <div class="modal-body">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre <span class="required">*</span></label>
+                        <input type="text" id="inputNombre" class="form-control-custom"
+                               placeholder="Ej: Certificado de calibración balanza" autocomplete="off"/>
+                        <span class="field-error" id="errNombre">Campo requerido</span>
+                    </div>
+                    <div class="form-group">
+                        <label>Categoría <span class="required">*</span></label>
+                        <select id="inputCategoria" class="form-control-custom"></select>
+                        <span class="field-error" id="errCategoria">Seleccioná una categoría</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Descripción <span class="field-opt">opcional</span></label>
+                    <input type="text" id="inputDescripcion" class="form-control-custom"
+                           placeholder="Breve descripción del documento" autocomplete="off"/>
+                </div>
+
+                <div class="form-group">
+                    <label>Fecha de vencimiento <span class="field-opt">opcional</span></label>
+                    <input type="date" id="inputVencimiento" class="form-control-custom"/>
+                </div>
+
+                <div class="form-group" id="grupoArchivo">
+                    <label>Archivo <span class="required">*</span></label>
+                    <div class="file-drop-area" id="fileDropArea">
+                        <i class="bi bi-cloud-upload file-drop-icon"></i>
+                        <p class="file-drop-text">Arrastrá un archivo o hacé clic para seleccionar</p>
+                        <p class="file-drop-hint">.pdf, .png, .jpg, .docx</p>
+                        <input type="file" id="inputArchivo" class="file-input"
+                               accept=".pdf,.png,.jpg,.jpeg,.docx,.doc"/>
+                    </div>
+                    <div class="file-selected" id="fileSelected" style="display:none;">
+                        <i class="bi bi-file-earmark-check"></i>
+                        <span id="fileSelectedName"></span>
+                        <button type="button" class="file-clear" id="fileClear">
+                            <i class="bi bi-x"></i>
+                        </button>
+                    </div>
+                    <span class="field-error" id="errArchivo">Seleccioná un archivo</span>
+                </div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" id="btnDocCancelar">Cancelar</button>
+                <button type="submit" class="btn-guardar" id="btnDocGuardar">
+                    <i class="bi bi-check-lg"></i> Guardar
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL VISTA PREVIA DOCUMENTO -->
+<div class="modal-overlay" id="modalVista">
+    <div class="modal-box modal-box-preview">
+        <div class="modal-header">
+            <div class="mh-icon"><i class="bi bi-eye"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Vista previa</div>
+                <h5 id="modalVistaNombre">—</h5>
+            </div>
+            <button class="btn-cancelar" id="btnVistaDescargar" style="margin-left:auto; margin-right:8px; display:flex; align-items:center; gap:5px;">
+                <i class="bi bi-download"></i> Descargar
+            </button>
+            <button class="modal-close" id="modalVistaClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="preview-body" id="modalVistaBody"></div>
+    </div>
+</div>
+
+<!-- MODAL CONFIRMAR ELIMINACIÓN -->
+<div class="modal-overlay" id="modalEliminar">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h5><i class="bi bi-trash3"></i> Eliminar documento</h5>
+            <button class="modal-close" id="modalEliminarClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body" style="gap:0.75rem;">
+            <div class="baja-warning-icon"><i class="bi bi-file-earmark-x"></i></div>
+            <p class="baja-mensaje">¿Eliminar <strong id="eliminarDocNombre">—</strong>?</p>
+            <p class="baja-submensaje">El archivo se eliminará permanentemente.</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
+            <button type="button" class="btn-eliminar" id="btnConfirmarEliminar">
+                <i class="bi bi-trash3"></i> Eliminar
+            </button>
+        </div>
+    </div>
+</div>
+
+<div class="toast-confirm" id="toastConfirm">
+    <i id="toastIcon" class="bi bi-check-circle-fill"></i>
+    <span id="toastMsg">Operación realizada</span>
+</div>
+
+<script src="js/config.js"></script>
+<script src="js/sidebar.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
+<script src="js/documentos.js"></script>
+</body>
+</html>

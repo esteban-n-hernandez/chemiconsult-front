@@ -1,0 +1,174 @@
+/* ═══════════════════════════════════════════════════════════════
+   tabla-muestras.css  —  estilos compartidos: tabla, badges, botones
+   Usado en: dashboard-empleado, dashboard-cliente, muestras
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Tabla ── */
+.tabla-muestras {
+    width: 100%;
+    font-size: 13px;
+    border-collapse: collapse;
+}
+
+.tabla-muestras thead th {
+    background: var(--bg-subtle, #f9fafb);
+    color: var(--verde);
+    font-weight: 600;
+    padding: 10px 12px;
+    text-align: left;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    border-bottom: 1px solid var(--color-border-tertiary);
+}
+
+.tabla-muestras tbody tr:nth-child(even) td {
+    background: var(--bg-subtle, #f9fafb);
+}
+
+.tabla-muestras tbody tr td {
+    transition: background 0.12s;
+}
+
+.tabla-muestras tbody tr:hover td {
+    background: rgba(94, 165, 4, 0.06);
+    cursor: pointer;
+}
+
+.tabla-muestras td {
+    padding: 10px 12px;
+    vertical-align: middle;
+}
+
+.tabla-muestras .btn-light {
+    background: var(--bg-surface);
+    border: 1px solid #daeacd;
+    color: var(--verde);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    transition: all 0.2s;
+    font-size: 13px;
+}
+
+.tabla-muestras .btn-light:hover {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: white;
+}
+
+
+/* ── Badge de estado ── */
+.badge-estado {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+}
+
+.badge-dot { display: none; }
+
+.badge-pendiente            { background: #fef3c7; color: #92400e; }
+.badge-proceso              { background: #dbeafe; color: #1e40af; }
+.badge-completo-sin-informe { background: #f1f5f9; color: #475569; }
+.badge-demorada             { background: #fee2e2; color: #991b1b; }
+.badge-informe              { background: #dcfce7; color: #166534; }
+.badge-cancelado            { background: #f3f4f6; color: #6b7280; }
+
+/* ── Fechas de vencimiento ── */
+.fecha-ok      { color: var(--color-text-secondary); }
+.fecha-warning { color: #fd7e14; font-weight: 600; }
+.fecha-vencida { color: #dc3545; font-weight: 600; }
+
+/* ── Botones de acción ── */
+.acciones-celda {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-accion {
+    background: var(--bg-surface);
+    border: 1px solid var(--color-border-tertiary);
+    color: var(--text-secondary);
+    width: 30px;
+    height: 30px;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 13px;
+    flex-shrink: 0;
+}
+
+.btn-accion:hover {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-accion-verde {
+    border-color: #c5e6a0;
+    color: var(--verde);
+}
+
+.btn-accion-verde:hover {
+    background: var(--verde);
+    border-color: var(--verde);
+    color: white;
+}
+
+.btn-accion-gris {
+    color: var(--color-text-tertiary);
+}
+
+.btn-accion-rojo {
+    border-color: #f5c6cb;
+    color: #dc3545;
+}
+
+.btn-accion-rojo:hover {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+.btn-accion.btn-avanzar:hover {
+    background: #d1e7dd;
+    color: #146c43;
+    border-color: #198754;
+}
+
+.btn-accion.btn-eliminar:hover {
+    background: #f8d7da;
+    color: #dc3545;
+    border-color: #dc3545;
+}
+
+.btn-accion.btn-pdf {
+    border-color: #fecaca;
+    color: #ef4444;
+}
+
+.btn-accion.btn-pdf:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+.btn-accion.btn-archivos:hover {
+    background: #e0f2fe;
+    border-color: #0ea5e9;
+    color: #0369a1;
+}

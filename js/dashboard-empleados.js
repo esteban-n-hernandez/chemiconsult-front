@@ -57,6 +57,7 @@ function labelEstado(estado) {
         COMPLETO_SIN_INFORME: "Completo sin informe",
         DEMORADA: "Demorada",
         COMPLETO: "Completo",
+        CANCELADO: "Cancelado",
     };
     return map[normalizarEstado(estado)] || (estado || "-");
 }
@@ -91,6 +92,18 @@ function filtrarTabla(estado, btn) {
 
     if (estado === "todos") {
         filteredMuestras = [...allMuestras];
+    } else if (estado === "CANCELADO") {
+        const canceladas = allEstudios.filter(
+            (m) => normalizarEstado(m.estado) === "CANCELADO"
+        );
+        canceladas.sort((a, b) => {
+            const fa = parseFecha(a.fechaAlta), fb = parseFecha(b.fechaAlta);
+            if (!fa && !fb) return 0;
+            if (!fa) return 1;
+            if (!fb) return -1;
+            return fb - fa;
+        });
+        filteredMuestras = canceladas.slice(0, 20);
     } else {
         filteredMuestras = allMuestras.filter(
             (m) => normalizarEstado(m.estado) === estado,
@@ -101,40 +114,6 @@ function filtrarTabla(estado, btn) {
     renderPage();
 }
 
-// ── Gráfico ──
-let grafico = new Chart(document.getElementById("graficoEstados"), {
-    type: "doughnut",
-    data: {
-        labels: [
-            "Pendiente",
-            "En proceso",
-            "Completo sin informe",
-            "Demorada",
-        ],
-        datasets: [
-            {
-                data: [4, 6, 3, 2],
-                backgroundColor: ["#fff3cd", "#cfe2ff", "#d1e7dd", "#f8d7da"],
-                borderColor: ["#856404", "#0d6efd", "#146c43", "#842029"],
-                borderWidth: 2,
-                hoverOffset: 6,
-            },
-        ],
-    },
-    options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        cutout: "65%",
-        plugins: {
-            legend: {display: false},
-            tooltip: {
-                callbacks: {
-                    label: (ctx) => ` ${ctx.label}: ${ctx.parsed} muestras`,
-                },
-            },
-        },
-    },
-});
 
 // ════════════════════════════════
 //  HELPER AUTENTICADO
@@ -181,6 +160,8 @@ function cerrarModalMuestra() {
         parametrosPorDestinoCacheDash.clear();
         cerrarBuscadorDash();
         document.querySelectorAll("#formAltaMuestra .field-error").forEach(el => el.style.display = "none");
+        document.getElementById("grupoSucursal").style.display = "none";
+        document.getElementById("inputSucursal").innerHTML = '';
     }, 250);
 }
 
@@ -207,6 +188,28 @@ async function cargarClientesDash() {
     } catch { sel.innerHTML = '<option value="">Sin clientes disponibles</option>'; }
 }
 
+document.getElementById("inputCliente").addEventListener("change", async function () {
+    const clienteId = this.value;
+    const grupoSucursal = document.getElementById("grupoSucursal");
+    const selSucursal   = document.getElementById("inputSucursal");
+    selSucursal.innerHTML = '<option value="">— casa central —</option>';
+    grupoSucursal.style.display = "none";
+    if (!clienteId) return;
+    try {
+        const r = await fetchDash(`${API_BASE}/api/clientes/${clienteId}/sucursales`);
+        if (!r.ok) return;
+        const sucursales = await r.json();
+        if (sucursales.length === 0) return;
+        sucursales.forEach(s => {
+            const opt = document.createElement("option");
+            opt.value = s.id;
+            opt.textContent = s.nombre + (s.localidad ? ` — ${s.localidad}` : "");
+            selSucursal.appendChild(opt);
+        });
+        grupoSucursal.style.display = "block";
+    } catch { /* sin sucursales */ }
+});
+
 async function cargarMatricesDash() {
     const sel = document.getElementById("inputTipoMuestra");
     try {
@@ -224,12 +227,32 @@ async function cargarMatricesDash() {
     } catch { console.warn("No se pudieron cargar matrices"); }
 }
 
+async function cargarTiposMuestra(matrizId) {
+    const select = document.getElementById("inputTipoMuestraEspecifica");
+    select.innerHTML = '<option value="">— sin especificar —</option>';
+    if (!matrizId) return;
+    try {
+        const r = await fetchDash(`${API_BASE}/api/tipos-muestra?matrizId=${matrizId}`);
+        if (!r.ok) return;
+        const tipos = await r.json();
+        tipos.forEach(t => {
+            const opt = document.createElement("option");
+            opt.value = t.id;
+            opt.textContent = t.nombre;
+            select.appendChild(opt);
+        });
+    } catch (err) {
+        console.error("Error cargando tipos de muestra:", err);
+    }
+}
+
 document.getElementById("inputTipoMuestra").addEventListener("change", async function () {
     const matrizId = this.value;
     const cont = document.getElementById("normativasContainer");
     destinosSeleccionadosDash.clear();
     parametrosPorDestinoCacheDash.clear();
     recalcularParametrosDash();
+    cargarTiposMuestra(matrizId);
     if (document.getElementById("checkSinNormativa").checked) return;
     if (!matrizId) {
         cont.innerHTML = '<span class="text-muted small">Seleccioná una matriz para ver las normativas aplicables...</span>';
@@ -393,7 +416,6 @@ formMuestra.addEventListener("submit", async function (e) {
     const protocolo = document.getElementById("inputProtocolo").value.trim();
     const fecha     = document.getElementById("inputFecha").value;
     const clienteId = document.getElementById("inputCliente").value;
-    const idMuestra = document.getElementById("inputIdMuestra").value.trim();
     const matrizId  = document.getElementById("inputTipoMuestra").value;
 
     let ok = true;
@@ -401,7 +423,6 @@ formMuestra.addEventListener("submit", async function (e) {
         [!protocolo, "errProtocolo"],
         [!fecha,     "errFecha"],
         [!clienteId, "errCliente"],
-        [!idMuestra, "errIdMuestra"],
         [!matrizId,  "errTipoMuestra"],
     ].forEach(([cond, errId]) => {
         const err = document.getElementById(errId);
@@ -418,8 +439,11 @@ formMuestra.addEventListener("submit", async function (e) {
         fechaIngreso:         fecha,
         fechaEntrega:         document.getElementById("inputFechaEntrega").value || null,
         clienteId:            parseInt(clienteId),
-        idMuestra,
+        sucursalId:           document.getElementById("inputSucursal").value ? parseInt(document.getElementById("inputSucursal").value) : null,
         puntoMuestreo:        document.getElementById("inputPuntoMuestreo").value.trim() || null,
+        tipoMuestraId:        document.getElementById("inputTipoMuestraEspecifica").value
+                                  ? parseInt(document.getElementById("inputTipoMuestraEspecifica").value)
+                                  : null,
         matrizId:             parseInt(matrizId),
         resolucionDestinoIds: Array.from(destinosSeleccionadosDash),
         observaciones:        document.getElementById("inputObservaciones").value.trim() || null,
@@ -447,7 +471,9 @@ formMuestra.addEventListener("submit", async function (e) {
     }
 });
 
-document.getElementById("btnAccionNuevaMuestra").addEventListener("click", abrirModalMuestra);
+document.getElementById("btnAccionNuevaMuestra").addEventListener("click", () => {
+    window.location.href = "muestras.html?nueva=1";
+});
 
 // ════════════════════════════════
 //  MODAL ALTA TAREA
@@ -525,7 +551,9 @@ formTarea.addEventListener("submit", async function (e) {
     }
 });
 
-document.getElementById("btnAccionAltaTarea").addEventListener("click", abrirModalTarea);
+document.getElementById("btnAccionAltaTarea").addEventListener("click", () => {
+    window.location.href = "task.html?nueva=1";
+});
 
 // ════════════════════════════════
 //  MODAL ALTA STOCK
@@ -594,7 +622,9 @@ formStock.addEventListener("submit", async function (e) {
     }
 });
 
-document.getElementById("btnAccionAltaStock").addEventListener("click", abrirModalStock);
+document.getElementById("btnAccionAltaStock").addEventListener("click", () => {
+    window.location.href = "stock.html?nueva=1";
+});
 
 // Escape cierra cualquier modal activo
 document.addEventListener("keydown", (e) => {
@@ -602,6 +632,8 @@ document.addEventListener("keydown", (e) => {
     if (modalMuestra.classList.contains("visible")) cerrarModalMuestra();
     if (modalTarea.classList.contains("visible"))   cerrarModalTarea();
     if (modalStock.classList.contains("visible"))   cerrarModalStock();
+    if (modalAltaInforme && modalAltaInforme.classList.contains("visible"))       cerrarAltaInforme();
+    if (modalCancelarMuestra && modalCancelarMuestra.classList.contains("visible")) cerrarModalCancelar();
 });
 
 // ── Toast ──
@@ -612,71 +644,6 @@ function mostrarToast(msg) {
     setTimeout(() => toast.classList.remove("visible"), 3500);
 }
 
-function generarAlertas() {
-    const alertasBody = document.getElementById("alertasBody");
-    if (!alertasBody) return;
-
-    const hoy = new Date();
-    hoy.setHours(0, 0, 0, 0);
-
-    const estadosActivos = new Set(["PENDIENTE", "EN_PROCESO", "DEMORADA", "COMPLETO_SIN_INFORME"]);
-
-    // Ordenar activas con fecha por urgencia (más antiguas/próximas primero)
-    const items = allEstudios
-        .filter(m => estadosActivos.has(normalizarEstado(m.estado)))
-        .map(m => ({ ...m, _fecha: parseFecha(m.fecha) }))
-        .filter(m => m._fecha)
-        .sort((a, b) => a._fecha - b._fecha)
-        .reduce((acc, m) => {
-            const dias = Math.ceil((m._fecha - hoy) / 86400000);
-            if (dias > 7) return acc; // solo hasta 7 días adelante
-            let color, etiqueta;
-            if (dias < 0) {
-                color = "rojo";
-                etiqueta = `${Math.abs(dias)}d atrasada`;
-            } else if (dias === 0) {
-                color = "rojo";
-                etiqueta = "Hoy";
-            } else if (dias === 1) {
-                color = "naranja";
-                etiqueta = "Mañana";
-            } else if (dias <= 3) {
-                color = "naranja";
-                etiqueta = `En ${dias} días`;
-            } else {
-                color = "azul";
-                etiqueta = `En ${dias} días`;
-            }
-            acc.push({ color, etiqueta, m });
-            return acc;
-        }, []);
-
-    // Sin fecha de entrega cargada: COMPLETO_SIN_INFORME pendientes de informe
-    allEstudios
-        .filter(m => normalizarEstado(m.estado) === "COMPLETO_SIN_INFORME" && !parseFecha(m.fecha))
-        .slice(0, 2)
-        .forEach(m => items.push({ color: "naranja", etiqueta: "Sin informe", m }));
-
-    if (items.length === 0) {
-        alertasBody.innerHTML = `
-            <div class="alerta-vacio">
-                <i class="bi bi-calendar-check"></i>
-                Sin entregas próximas
-            </div>`;
-        return;
-    }
-
-    alertasBody.innerHTML = items.slice(0, 8).map(({ color, etiqueta, m }) => `
-        <div class="alerta-item">
-            <div class="alerta-dot ${color}"></div>
-            <div class="alerta-texto">
-                <p><strong>${m.codigo}</strong></p>
-                <span>${m.cliente} · ${m.tipo}</span>
-            </div>
-            <span class="alerta-fecha ${color}">${etiqueta}</span>
-        </div>
-    `).join("");
-}
 
 // ════════════════════════════════
 //  VER DETALLE
@@ -699,14 +666,14 @@ async function verDetalle(id) {
 
 function poblarModalDetalle(d) {
     const badge = document.getElementById("detalleEstadoBadge");
-    badge.className = badgeClassParaEstado(d.estado);
-    badge.textContent = labelEstado(d.estado);
+    badge.className = "";
+    badge.innerHTML = badgeHTML(d.estado);
 
     document.getElementById("detalleProtocolo").textContent = d.nroProtocolo || "—";
-    document.getElementById("detalleIdMuestra").textContent = d.idMuestra || "—";
     document.getElementById("detalleCliente").textContent = d.cliente || "—";
     document.getElementById("detalleMatriz").textContent = d.matrizNombre || "—";
     document.getElementById("detallePunto").textContent = d.puntoMuestreo || "—";
+    document.getElementById("detalleTipoMuestra").textContent = d.tipoMuestraNombre || "—";
     document.getElementById("detalleFechaIngreso").textContent = formatearFechaDMY(d.fechaIngreso) || "—";
     document.getElementById("detalleFechaEntrega").textContent = formatearFechaDMY(d.fechaEntrega) || "—";
     document.getElementById("detalleObservaciones").textContent = d.observaciones || "Sin observaciones";
@@ -774,43 +741,200 @@ async function avanzarEstado(id, estadoActual, btn) {
 }
 
 // ════════════════════════════════
-//  ELIMINAR
+//  CANCELAR MUESTRA
 // ════════════════════════════════
-const modalEliminar = document.getElementById("modalEliminar");
-document.getElementById("modalEliminarClose").addEventListener("click", () => modalEliminar.classList.remove("visible"));
-document.getElementById("btnCancelarEliminar").addEventListener("click", () => modalEliminar.classList.remove("visible"));
-modalEliminar.addEventListener("click", e => { if (e.target === modalEliminar) modalEliminar.classList.remove("visible"); });
+let _cancelarMuestraId = null;
 
-function pedirConfirmacionEliminar(id, codigo) {
-    document.getElementById("modalEliminarMsg").textContent =
-        `¿Estás seguro de que querés eliminar la muestra ${codigo}? Esta acción no se puede deshacer.`;
-    document.getElementById("btnConfirmarEliminar").dataset.id = id;
-    modalEliminar.classList.add("visible");
+const modalCancelarMuestra = document.getElementById("modalCancelarMuestra");
+document.getElementById("modalCancelarClose").addEventListener("click", cerrarModalCancelar);
+document.getElementById("btnCancelarCancelar").addEventListener("click", cerrarModalCancelar);
+modalCancelarMuestra.addEventListener("click", e => { if (e.target === modalCancelarMuestra) cerrarModalCancelar(); });
+
+function abrirModalCancelar(id, codigo) {
+    _cancelarMuestraId = id;
+    document.getElementById("modalCancelarMsg").textContent =
+        `¿Cancelar la muestra ${codigo}? El registro se conserva con estado Cancelado.`;
+    document.getElementById("inputMotivoCancelacionM").value = "";
+    modalCancelarMuestra.classList.add("visible");
+    setTimeout(() => document.getElementById("inputMotivoCancelacionM").focus(), 100);
 }
 
-document.getElementById("btnConfirmarEliminar").addEventListener("click", async function () {
-    const id = this.dataset.id;
-    const token = localStorage.getItem("token");
+function cerrarModalCancelar() {
+    modalCancelarMuestra.classList.remove("visible");
+    _cancelarMuestraId = null;
+}
+
+document.getElementById("btnConfirmarCancelar").addEventListener("click", async function () {
+    const id = _cancelarMuestraId;
+    if (!id) return;
+    const motivo = document.getElementById("inputMotivoCancelacionM").value.trim();
     this.disabled = true;
-    this.innerHTML = `<i class="bi bi-hourglass-split"></i> Eliminando...`;
+    this.innerHTML = `<i class="bi bi-hourglass-split"></i> Cancelando...`;
 
     try {
-        const resp = await fetch(`${API_BASE}/api/estudios/${id}`, {
-            method: "DELETE",
-            headers: token ? { Authorization: "Bearer " + token } : {},
+        const resp = await fetchDash(`${API_BASE}/api/estudios/${id}/cancelar`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ motivo }),
         });
         if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-        modalEliminar.classList.remove("visible");
-        mostrarToast("Muestra eliminada correctamente");
+        cerrarModalCancelar();
+        mostrarToast("Muestra cancelada correctamente");
         await cargarEstudios();
     } catch (err) {
-        console.error("Error eliminando muestra:", err);
-        mostrarToast("Error al eliminar la muestra");
+        console.error("Error cancelando muestra:", err);
+        mostrarToast("Error al cancelar la muestra");
     } finally {
         this.disabled = false;
-        this.innerHTML = `<i class="bi bi-trash3"></i> Eliminar`;
+        this.innerHTML = `<i class="bi bi-x-circle"></i> Confirmar cancelación`;
     }
 });
+
+// ════════════════════════════════
+//  ARCHIVOS DE MUESTRA
+// ════════════════════════════════
+let altaInformeAnalisisId = null;
+
+const modalAltaInforme = document.getElementById("modalAltaInforme");
+document.getElementById("altaInformeClose").addEventListener("click", cerrarAltaInforme);
+document.getElementById("altaInformeCancelar").addEventListener("click", cerrarAltaInforme);
+modalAltaInforme.addEventListener("click", e => { if (e.target === modalAltaInforme) cerrarAltaInforme(); });
+document.getElementById("btnUploadAltaInforme").addEventListener("click", onUploadAltaInforme);
+
+function abrirAltaInforme(id, protocolo) {
+    altaInformeAnalisisId = id;
+    document.getElementById("altaInformeTitulo").textContent = `Archivos — ${protocolo || id}`;
+    document.getElementById("inputAltaInformePdf").value = "";
+    const errEl = document.getElementById("altaInformeError");
+    if (errEl) { errEl.textContent = ""; errEl.style.display = "none"; }
+    modalAltaInforme.classList.add("visible");
+    cargarListaArchivos(id);
+}
+
+function cerrarAltaInforme() {
+    modalAltaInforme.classList.remove("visible");
+    altaInformeAnalisisId = null;
+}
+
+async function cargarListaArchivos(analisisId) {
+    const contenedor = document.getElementById("listaArchivos");
+    if (!contenedor) return;
+    contenedor.innerHTML = `<span style="font-size:13px;color:#888;">Cargando...</span>`;
+    try {
+        const r = await fetchDash(`${API_BASE}/api/estudios/${analisisId}/archivos`);
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        const docs = await r.json();
+        if (!docs || docs.length === 0) {
+            contenedor.innerHTML = `<span class="text-muted" style="font-size:13px;">Sin archivos todavía.</span>`;
+            return;
+        }
+        contenedor.innerHTML = docs.map(d => `
+            <div style="display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f8f9fa;border-radius:6px;">
+                <i class="bi bi-file-earmark-pdf" style="color:#ef4444;font-size:16px;flex-shrink:0;"></i>
+                <span style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${d.nombre || d.id}</span>
+                <button class="btn-accion" onclick="descargarArchivoModal(${analisisId},'${d.id}')" title="Descargar" style="width:28px;height:28px;"><i class="bi bi-download"></i></button>
+                <button class="btn-accion btn-accion-rojo" onclick="eliminarArchivoModal(${analisisId},'${d.id}')" title="Eliminar" style="width:28px;height:28px;"><i class="bi bi-trash"></i></button>
+            </div>`).join("");
+    } catch (err) {
+        contenedor.innerHTML = `<span style="font-size:13px;color:#ef4444;">Error al cargar archivos.</span>`;
+        console.error("Error cargando archivos:", err);
+    }
+}
+
+window.descargarArchivoModal = function(analisisId, docId) {
+    const token = localStorage.getItem("token");
+    fetch(`${API_BASE}/api/estudios/${analisisId}/archivos/${docId}`, {
+        headers: token ? { Authorization: "Bearer " + token } : {},
+    }).then(r => {
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        return r.blob();
+    }).then(blob => {
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `documento_${docId}.pdf`; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 10000);
+    }).catch(err => {
+        console.error("Error descargando archivo:", err);
+        mostrarToast("Error al descargar el archivo.");
+    });
+};
+
+window.eliminarArchivoModal = async function(analisisId, docId) {
+    try {
+        const r = await fetchDash(`${API_BASE}/api/estudios/${analisisId}/archivos/${docId}`, { method: "DELETE" });
+        if (!r.ok) throw new Error(`HTTP ${r.status}`);
+        mostrarToast("Archivo eliminado");
+        await cargarListaArchivos(analisisId);
+        await cargarEstudios();
+    } catch (err) {
+        console.error("Error eliminando archivo:", err);
+        mostrarToast("Error al eliminar el archivo.");
+    }
+};
+
+async function onUploadAltaInforme() {
+    const input = document.getElementById("inputAltaInformePdf");
+    const errEl = document.getElementById("altaInformeError");
+    const btn = document.getElementById("btnUploadAltaInforme");
+    if (!input.files || !input.files[0]) {
+        errEl.textContent = "Seleccioná un archivo PDF.";
+        errEl.style.display = "block";
+        return;
+    }
+    errEl.style.display = "none";
+    btn.disabled = true;
+    btn.innerHTML = `<i class="bi bi-hourglass-split"></i> Subiendo...`;
+    try {
+        const fd = new FormData();
+        fd.append("file", input.files[0], input.files[0].name);
+        const token = localStorage.getItem("token");
+        const resp = await fetch(`${API_BASE}/api/estudios/${altaInformeAnalisisId}/documento`, {
+            method: "POST",
+            headers: token ? { Authorization: "Bearer " + token } : {},
+            body: fd,
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        mostrarToast("Archivo subido correctamente");
+        input.value = "";
+        await cargarListaArchivos(altaInformeAnalisisId);
+        await cargarEstudios();
+    } catch (err) {
+        console.error("Error subiendo archivo:", err);
+        errEl.textContent = "Error al subir el archivo.";
+        errEl.style.display = "block";
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = `<i class="bi bi-upload me-1"></i> Subir archivo`;
+    }
+}
+
+// ════════════════════════════════
+//  GENERAR INFORME PDF
+// ════════════════════════════════
+async function generarInformeDesdeDash(id) {
+    mostrarToast("Generando informe...");
+    try {
+        const token = localStorage.getItem("token");
+        const resp = await fetch(`${API_BASE}/api/estudios/${id}/generar-informe`, {
+            method: "POST",
+            headers: token
+                ? { Authorization: "Bearer " + token, "Content-Type": "application/json" }
+                : { "Content-Type": "application/json" },
+            body: JSON.stringify({ equipoIds: [] }),
+        });
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        const blob = await resp.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url; a.download = `informe_${id}.pdf`; a.click();
+        setTimeout(() => URL.revokeObjectURL(url), 60000);
+        mostrarToast("Informe generado correctamente");
+        await cargarEstudios();
+    } catch (err) {
+        console.error("Error generando informe:", err);
+        mostrarToast("Error al generar el informe.");
+    }
+}
 
 async function cargarEstudios() {
     const tablaBody = document.getElementById("tablaMuestrasBody");
@@ -842,36 +966,34 @@ async function cargarEstudios() {
     }
 }
 
-function badgeClassParaEstado(estado) {
-    if (!estado) return "badge-estado badge-pendiente";
-    const e = normalizarEstado(estado);
-    switch (e) {
-        case "DEMORADA":
-            return "badge-estado badge-demorada";
-        case "EN_PROCESO":
-            return "badge-estado badge-proceso";
-        case "COMPLETO_SIN_INFORME":
-            return "badge-estado badge-completo-sin-informe";
-        case "PENDIENTE":
-            return "badge-estado badge-pendiente";
-        default:
-            return "badge-estado";
-    }
+function badgeHTML(estado) {
+    const e = normalizarEstado(estado || "");
+    const classMap = {
+        PENDIENTE:            "badge-pendiente",
+        EN_PROCESO:           "badge-proceso",
+        COMPLETO_SIN_INFORME: "badge-completo-sin-informe",
+        DEMORADA:             "badge-demorada",
+        COMPLETO:             "badge-informe",
+        CANCELADO:            "badge-cancelado",
+    };
+    const cls = classMap[e] || "";
+    const lbl = labelEstado(e);
+    return `<span class="badge-estado ${cls}"><span class="badge-dot"></span>${lbl}</span>`;
 }
 
 function mostrarMuestras(estudios) {
     const mapped = Array.isArray(estudios)
         ? estudios.map((est) => ({
             id: est.id || est._id || est.codigo || est.protocolo || null,
-            codigo: est.protocolo || est.codigo || est.id || "-",
+            codigo: est.nroProtocolo || est.protocolo || est.codigo || est.id || "-",
             cliente: est.cliente || est.clienteNombre || est.customer || "-",
-            tipo: est.tipo || est.tipoAnalisis || est.tipo_de_analisis || "-",
+            tipo: est.tipoMuestraNombre || est.tipo || est.tipoAnalisis || est.tipo_de_analisis || "-",
             estado: est.estado || est.status || "-",
             tieneInforme: (est.estado || est.status || "").toString().toUpperCase() === "COMPLETO",
             fechaAlta: formatearFechaDMY(
-                est.fechaAlta || est.fecha_alta || est.fechaCreacion ||
-                est.fecha_creacion || est.createdDate || est.createdAt ||
-                est.fechaDeAlta || "-",
+                est.fechaIngreso || est.fechaAlta || est.fecha_alta ||
+                est.fechaCreacion || est.fecha_creacion || est.createdDate ||
+                est.createdAt || est.fechaDeAlta || "-",
             ),
             fecha: est.fechaEntrega || est.fecha_entrega || est.deliveryDate || est.fecha || "-",
         }))
@@ -881,6 +1003,7 @@ function mostrarMuestras(estudios) {
     allEstudios = mapped;
     // Solo activas para la tabla
     allMuestras = mapped.filter((m) => ESTADOS_VISIBLES.has(normalizarEstado(m.estado)));
+    allMuestras.sort((a, b) => (Number(b.id) || 0) - (Number(a.id) || 0));
 
     const demoTotal = parseInt(localStorage.getItem("demoTotal") || "0");
     if (demoTotal > allMuestras.length) {
@@ -903,65 +1026,235 @@ function mostrarMuestras(estudios) {
     filteredMuestras = [...allMuestras];
     currentPage = 1;
     actualizarKPIs();
-    generarAlertas();
     renderPage();
 }
 
 function actualizarKPIs() {
-    const pendientes        = allEstudios.filter(m => normalizarEstado(m.estado) === "PENDIENTE").length;
-    const enProceso         = allEstudios.filter(m => normalizarEstado(m.estado) === "EN_PROCESO").length;
-    const demoradas         = allEstudios.filter(m => normalizarEstado(m.estado) === "DEMORADA").length;
-    const completoSinInforme= allEstudios.filter(m => normalizarEstado(m.estado) === "COMPLETO_SIN_INFORME").length;
-    const activas           = pendientes + enProceso + demoradas + completoSinInforme;
+    const pendientes         = allEstudios.filter(m => normalizarEstado(m.estado) === "PENDIENTE").length;
+    const enProceso          = allEstudios.filter(m => normalizarEstado(m.estado) === "EN_PROCESO").length;
+    const demoradas          = allEstudios.filter(m => normalizarEstado(m.estado) === "DEMORADA").length;
+    const completoSinInforme = allEstudios.filter(m => normalizarEstado(m.estado) === "COMPLETO_SIN_INFORME").length;
+    const activas            = pendientes + enProceso + demoradas + completoSinInforme;
 
-    const hoy     = new Date();
-    const en7dias = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
-    const vencenProximo = allEstudios.filter(m => {
-        if (normalizarEstado(m.estado) === "COMPLETO") return false;
-        const f = parseFecha(m.fecha);
-        return f && f >= hoy && f <= en7dias;
-    }).length;
+    const elActivas    = document.getElementById("hub-activas");
+    const elDemoradas  = document.getElementById("hub-demoradas");
+    const elSinInforme = document.getElementById("hub-sin-informe");
 
-    const elMuestras    = document.getElementById("kpi-muestras-activas");
-    const elMuestrasSub = document.getElementById("kpi-muestras-sub");
-    const elDemoradas   = document.getElementById("kpi-demoradas");
-    const elDemoradasSub= document.getElementById("kpi-demoradas-sub");
+    if (elActivas)    elActivas.textContent = activas;
+    if (elDemoradas)  elDemoradas.textContent = demoradas;
+    if (elSinInforme) elSinInforme.textContent = completoSinInforme;
 
-    if (elMuestras) elMuestras.textContent = activas;
-    if (elMuestrasSub) {
-        elMuestrasSub.innerHTML = vencenProximo > 0
-            ? `<i class="bi bi-clock"></i> ${vencenProximo} vencen esta semana`
-            : `<i class="bi bi-check2"></i> Sin vencimientos próximos`;
-    }
-    if (elDemoradas) elDemoradas.textContent = demoradas;
-    if (elDemoradasSub) {
-        elDemoradasSub.innerHTML = demoradas > 0
-            ? `<i class="bi bi-arrow-right"></i> <a href="muestras.html">Ver muestras</a>`
-            : `<i class="bi bi-check2"></i> Sin demoradas`;
-    }
+    _refreshActivePanel("muestras");
 
-    if (grafico) {
-        grafico.data.datasets[0].data = [pendientes, enProceso, completoSinInforme, demoradas];
-        grafico.update();
-    }
+    renderHubMuestras();
+    renderGraficoMes();
 }
+
+let _graficoOffset = 0; // 0 = mes actual, -1 = mes anterior, etc.
+
+function renderGraficoMes() {
+    const ahora = new Date();
+    const target = new Date(ahora.getFullYear(), ahora.getMonth() + _graficoOffset, 1);
+    const mes  = target.getMonth();
+    const anio = target.getFullYear();
+
+    const delMes = allEstudios.filter(m => {
+        const f = parseFecha(m.fechaAlta);
+        return f && f.getMonth() === mes && f.getFullYear() === anio;
+    });
+
+    const grupos = { "Pendientes": 0, "En proceso": 0, "OK": 0, "Canceladas": 0 };
+    delMes.forEach(m => {
+        const est = normalizarEstado(m.estado);
+        if      (est === "PENDIENTE")                                                          grupos["Pendientes"]++;
+        else if (est === "EN_PROCESO" || est === "DEMORADA" || est === "COMPLETO_SIN_INFORME") grupos["En proceso"]++;
+        else if (est === "COMPLETO")                                                            grupos["OK"]++;
+        else                                                                                    grupos["Canceladas"]++;
+    });
+
+    const MESES = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"];
+    const elLabel = document.getElementById("graficoMesLabel");
+    if (elLabel) elLabel.textContent = `${MESES[mes]} ${anio}`;
+
+    const elTotal = document.getElementById("graficoTotal");
+    if (elTotal) elTotal.textContent = delMes.length;
+
+    // deshabilitar "siguiente" cuando ya estamos en el mes actual
+    const btnSig = document.getElementById("btnGraficoSiguiente");
+    if (btnSig) btnSig.disabled = _graficoOffset >= 0;
+
+    const canvas = document.getElementById("graficoEstados");
+    if (!canvas) return;
+
+    const labels = Object.keys(grupos);
+    const data   = Object.values(grupos);
+    const colors = ["#f59e0b", "#3b82f6", "#5EA504", "#9ca3af"];
+
+    if (window._graficoMes) {
+        window._graficoMes.data.datasets[0].data = data;
+        window._graficoMes.update();
+        return;
+    }
+
+    window._graficoMes = new Chart(canvas, {
+        type: "doughnut",
+        data: {
+            labels,
+            datasets: [{
+                data,
+                backgroundColor: colors,
+                borderWidth: 0,
+                hoverOffset: 6,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "68%",
+            plugins: {
+                legend: {
+                    position: "bottom",
+                    labels: {
+                        boxWidth: 10,
+                        padding: 10,
+                        font: { size: 11 },
+                        color: getComputedStyle(document.documentElement)
+                            .getPropertyValue("--text-main").trim() || "#1a1a2e",
+                    }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: ctx => ` ${ctx.label}: ${ctx.parsed}`,
+                    }
+                }
+            }
+        }
+    });
+}
+
+document.getElementById("btnGraficoAnterior")?.addEventListener("click", () => {
+    _graficoOffset--;
+    renderGraficoMes();
+});
+document.getElementById("btnGraficoSiguiente")?.addEventListener("click", () => {
+    if (_graficoOffset >= 0) return;
+    _graficoOffset++;
+    renderGraficoMes();
+});
+
+function renderHubMuestras() {
+    const body = document.getElementById("hubMuestrasBody");
+    if (!body) return;
+
+    const estadosActivos = new Set(["PENDIENTE", "EN_PROCESO", "DEMORADA", "COMPLETO_SIN_INFORME"]);
+    const activas = allEstudios.filter(m => estadosActivos.has(normalizarEstado(m.estado)));
+
+    if (activas.length === 0) {
+        body.innerHTML = `<div class="mod-mini-empty"><i class="bi bi-check2-circle"></i> Sin muestras activas</div>`;
+        return;
+    }
+
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+
+    const sorted = [...activas].sort((a, b) => {
+        const aDem = normalizarEstado(a.estado) === "DEMORADA";
+        const bDem = normalizarEstado(b.estado) === "DEMORADA";
+        if (aDem && !bDem) return -1;
+        if (!aDem && bDem) return 1;
+        const fa = parseFecha(a.fecha), fb = parseFecha(b.fecha);
+        if (fa && fb) return fa - fb;
+        if (fa) return -1;
+        if (fb) return 1;
+        return 0;
+    });
+
+    body.innerHTML = sorted.slice(0, 3).map(m => {
+        const estado = normalizarEstado(m.estado);
+        let dotClass = "azul", badgeClass = "proc", badgeText = "En proceso";
+
+        if (estado === "DEMORADA") {
+            dotClass = "rojo"; badgeClass = "demo"; badgeText = "Demorada";
+        } else if (estado === "PENDIENTE") {
+            dotClass = "naranja";
+            const f = parseFecha(m.fecha);
+            if (f) {
+                const dias = Math.ceil((f - hoy) / 86400000);
+                if (dias < 0)      { badgeClass = "demo"; badgeText = `${Math.abs(dias)}d atrasada`; }
+                else if (dias === 0){ badgeClass = "hoy";  badgeText = "Hoy"; }
+                else if (dias === 1){ badgeClass = "pend"; badgeText = "Mañana"; }
+                else               { badgeClass = "pend"; badgeText = `${dias}d`; }
+            } else { badgeClass = "pend"; badgeText = "Pendiente"; }
+        } else if (estado === "COMPLETO_SIN_INFORME") {
+            dotClass = "gris"; badgeClass = "sin"; badgeText = "Sin informe";
+        }
+
+        return `<div class="mod-mini-row">
+            <span class="mod-mini-dot ${dotClass}"></span>
+            <span class="mod-mini-name">${m.cliente}</span>
+            <span class="mod-mini-badge ${badgeClass}">${badgeText}</span>
+        </div>`;
+    }).join("");
+}
+
+// Datos para paneles expandibles
+let agendaSemanaDatos   = [];
+let agendaHoyDatos      = [];
+let agendaTodosDatos    = [];
+let stockBajosDatos     = [];
+let stockMediosDatos    = [];
+let stockAltosDatos     = [];
+let tareasProgresoDatos = [];
+let tareasTodoDatos     = [];
+let tareasRevisionDatos = [];
 
 async function cargarTareasKPI() {
     try {
         const r = await fetchDash(`${API_BASE}/api/task`);
         if (!r.ok) return;
         const tareas = await r.json();
+
         const todo       = tareas.filter(t => t.status === "TODO").length;
         const enProgreso = tareas.filter(t => t.status === "IN_PROGRESS").length;
+        const enRevision = tareas.filter(t => t.status === "EN_REVISION").length;
 
-        const el    = document.getElementById("kpi-tareas");
-        const elSub = document.getElementById("kpi-tareas-sub");
-        if (el) el.textContent = todo;
-        if (elSub) {
-            elSub.innerHTML = enProgreso > 0
-                ? `<i class="bi bi-arrow-right-circle"></i> ${enProgreso} en progreso`
-                : `<i class="bi bi-check2"></i> Ninguna en progreso`;
+        const elTodo     = document.getElementById("hub-tareas-todo");
+        const elProgreso = document.getElementById("hub-tareas-progreso");
+        const elRevision = document.getElementById("hub-tareas-revision");
+        if (elTodo)     elTodo.textContent = todo;
+        if (elProgreso) elProgreso.textContent = enProgreso;
+        if (elRevision) elRevision.textContent = enRevision;
+
+        tareasProgresoDatos = tareas.filter(t => t.status === "IN_PROGRESS");
+        tareasTodoDatos     = tareas.filter(t => t.status === "TODO");
+        tareasRevisionDatos = tareas.filter(t => t.status === "EN_REVISION");
+        _refreshActivePanel("tareas");
+
+        const body = document.getElementById("hubTareasBody");
+        if (!body) return;
+
+        const activas = tareas.filter(t => t.status !== "DONE" && t.status !== "COMPLETO");
+        const sorted  = [...activas].sort((a, b) => {
+            const order = { "IN_PROGRESS": 0, "EN_REVISION": 1, "TODO": 2 };
+            return (order[a.status] ?? 3) - (order[b.status] ?? 3);
+        });
+
+        if (sorted.length === 0) {
+            body.innerHTML = `<div class="mod-mini-empty"><i class="bi bi-check2-circle"></i> Sin tareas pendientes</div>`;
+            return;
         }
+
+        body.innerHTML = sorted.slice(0, 3).map(t => {
+            let dotClass = "violeta", badgeClass = "pend", badgeText = "Pendiente";
+            if (t.status === "IN_PROGRESS") { dotClass = "azul";    badgeClass = "proc"; badgeText = "En progreso"; }
+            if (t.status === "EN_REVISION") { dotClass = "naranja"; badgeClass = "pend"; badgeText = "En revisión"; }
+            const titulo = t.title || t.titulo || "—";
+            return `<div class="mod-mini-row">
+                <span class="mod-mini-dot ${dotClass}"></span>
+                <span class="mod-mini-name">${titulo}</span>
+                <span class="mod-mini-badge ${badgeClass}">${badgeText}</span>
+            </div>`;
+        }).join("");
     } catch { /* no bloquea el dashboard */ }
 }
 
@@ -970,16 +1263,40 @@ async function cargarStockKPI() {
         const r = await fetchDash(`${API_BASE}/api/stock`);
         if (!r.ok) return;
         const items = await r.json();
-        const bajos = items.filter(i => i.nivel === "BAJO").length;
 
-        const el    = document.getElementById("kpi-stock");
-        const elSub = document.getElementById("kpi-stock-sub");
-        if (el) el.textContent = bajos;
-        if (elSub) {
-            elSub.innerHTML = bajos > 0
-                ? `<i class="bi bi-exclamation-triangle"></i> ${bajos} items con nivel bajo`
-                : `<i class="bi bi-check2"></i> Stock sin alertas`;
+        const bajos  = items.filter(i => i.nivel === "BAJO");
+        const medios = items.filter(i => i.nivel === "MEDIO");
+        const altos  = items.filter(i => i.nivel === "ALTO");
+
+        const elCritico = document.getElementById("hub-stock-critico");
+        const elBajo    = document.getElementById("hub-stock-bajo");
+        const elOk      = document.getElementById("hub-stock-ok");
+        if (elCritico) elCritico.textContent = bajos.length;
+        if (elBajo)    elBajo.textContent    = medios.length;
+        if (elOk)      elOk.textContent      = altos.length;
+
+        stockBajosDatos  = bajos;
+        stockMediosDatos = medios;
+        stockAltosDatos  = altos;
+        _refreshActivePanel("stock");
+
+        const body = document.getElementById("hubStockBody");
+        if (!body) return;
+
+        const alertas = [...bajos, ...medios].slice(0, 3);
+        if (alertas.length === 0) {
+            body.innerHTML = `<div class="mod-mini-empty"><i class="bi bi-check2-circle"></i> Stock sin alertas</div>`;
+            return;
         }
+
+        body.innerHTML = alertas.map(item => {
+            const isBajo = item.nivel === "BAJO";
+            return `<div class="mod-mini-row">
+                <span class="mod-mini-dot ${isBajo ? "rojo" : "naranja"}"></span>
+                <span class="mod-mini-name">${item.nombre}</span>
+                <span class="mod-mini-badge ${isBajo ? "demo" : "pend"}">${isBajo ? "Crítico" : "Bajo"}</span>
+            </div>`;
+        }).join("");
     } catch { /* no bloquea el dashboard */ }
 }
 
@@ -1001,7 +1318,6 @@ function renderPage() {
         tablaBody.innerHTML = `<tr><td colspan="7" class="text-center">No hay muestras disponibles</td></tr>`;
     } else {
         filteredMuestras.slice(start, end).forEach((m) => {
-            const badgeClass = badgeClassParaEstado(m.estado);
             const acciones = [];
             const estadoNorm = normalizarEstado(m.estado);
 
@@ -1021,23 +1337,33 @@ function renderPage() {
                 );
             }
 
-            acciones.push(
-                `<button class="btn-accion btn-subir" data-id="${m.id}" title="Subir informe"><i class="bi bi-upload"></i></button>`,
-            );
+            if (estadoNorm === "COMPLETO_SIN_INFORME" || estadoNorm === "COMPLETO") {
+                acciones.push(
+                    `<button class="btn-accion btn-accion-gris btn-archivos" data-id="${m.id}" data-codigo="${m.codigo}" title="Archivos"><i class="bi bi-paperclip"></i></button>`,
+                );
+            }
 
-            acciones.push(
-                `<button class="btn-accion btn-eliminar" data-id="${m.id}" data-codigo="${m.codigo}" title="Eliminar"><i class="bi bi-trash3"></i></button>`,
-            );
+            if (estadoNorm === "COMPLETO_SIN_INFORME") {
+                acciones.push(
+                    `<button class="btn-accion btn-accion-verde btn-pdf" data-id="${m.id}" title="Generar informe PDF"><i class="bi bi-file-earmark-pdf"></i></button>`,
+                );
+            }
+
+            if (estadoNorm !== "CANCELADO") {
+                acciones.push(
+                    `<button class="btn-accion btn-accion-rojo btn-eliminar" data-id="${m.id}" data-codigo="${m.codigo}" title="Cancelar muestra"><i class="bi bi-x-circle"></i></button>`,
+                );
+            }
 
             const row = `
                     <tr data-estado="${(m.estado || "").toString().toUpperCase()}" data-id="${m.id}">
-                        <td><span class="cod-badge">${m.codigo}</span></td>
+                        <td><strong>${m.codigo}</strong></td>
                         <td>${m.cliente}</td>
                         <td>${m.tipo}</td>
-                        <td><span class="${badgeClass}">${labelEstado(m.estado)}</span></td>
+                        <td>${badgeHTML(m.estado)}</td>
                         <td>${m.fechaAlta || "-"}</td>
                         <td>${m.fecha}</td>
-                        <td>${acciones.join(" ")}</td>
+                        <td class="acciones-celda">${acciones.join(" ")}</td>
                     </tr>`;
 
             tablaBody.innerHTML += row;
@@ -1088,45 +1414,6 @@ function renderPage() {
         }
     });
     pagControls.appendChild(next);
-}
-
-// ── Upload de PDF (file input global y handlers) ──
-// Creamos un input file oculto que reutilizaremos
-const globalFileInput = document.createElement("input");
-globalFileInput.type = "file";
-globalFileInput.accept = "application/pdf";
-globalFileInput.style.display = "none";
-document.body.appendChild(globalFileInput);
-
-// Cuando el usuario seleccione un archivo, iniciamos el upload
-globalFileInput.addEventListener("change", async function (e) {
-    const file = this.files && this.files[0];
-    const targetId = this.dataset.targetId;
-    const triggerBtnSelector = this.dataset.triggerBtnSelector;
-    let triggerBtn = null;
-    if (triggerBtnSelector)
-        triggerBtn = document.querySelector(triggerBtnSelector);
-    if (!file || !targetId) return;
-    try {
-        await subirDocumento(targetId, file, triggerBtn);
-    } finally {
-        // limpiar el input para permitir seleccionar el mismo archivo otra vez
-        this.value = "";
-        delete this.dataset.targetId;
-        delete this.dataset.triggerBtnSelector;
-    }
-});
-
-// Función que dispara el file picker para un id dado
-function startUploadForId(id, triggerBtn) {
-    globalFileInput.dataset.targetId = id;
-    if (triggerBtn && triggerBtn instanceof Element) {
-        const attr =
-            "data-upload-trigger-" + Math.random().toString(36).slice(2, 9);
-        triggerBtn.setAttribute(attr, "1");
-        globalFileInput.dataset.triggerBtnSelector = "[" + attr + "]";
-    }
-    globalFileInput.click();
 }
 
 // Subir documento usando fetch + FormData
@@ -1232,10 +1519,10 @@ document.addEventListener("click", function (e) {
     }
 
     const btnEliminar = e.target.closest(".btn-eliminar");
-    if (btnEliminar) {
+    if (btnEliminar && btnEliminar.closest("#tablaMuestrasBody")) {
         const id = btnEliminar.getAttribute("data-id");
         const codigo = btnEliminar.getAttribute("data-codigo");
-        if (id) pedirConfirmacionEliminar(id, codigo);
+        if (id) abrirModalCancelar(id, codigo);
         return;
     }
 
@@ -1246,102 +1533,476 @@ document.addEventListener("click", function (e) {
         return;
     }
 
-    const btnSubir = e.target.closest(".btn-subir");
-    if (btnSubir) {
-        const id = btnSubir.getAttribute("data-id");
-        if (id) startUploadForId(id, btnSubir);
+    const btnArchivos = e.target.closest(".btn-archivos");
+    if (btnArchivos) {
+        const id = btnArchivos.getAttribute("data-id");
+        const codigo = btnArchivos.getAttribute("data-codigo");
+        if (id) abrirAltaInforme(id, codigo);
+        return;
+    }
+
+    const btnPdf = e.target.closest(".btn-pdf");
+    if (btnPdf) {
+        const id = btnPdf.getAttribute("data-id");
+        if (id) generarInformeDesdeDash(id);
+        return;
     }
 });
+
+async function cargarMustreosKPI() {
+    try {
+        const r = await fetchDash(`${API_BASE}/api/muestreos`);
+        if (!r.ok) return;
+        const muestreos = await r.json();
+
+        const hoy = new Date();
+        hoy.setHours(0, 0, 0, 0);
+        const finSemana = new Date(hoy.getTime() + 7 * 24 * 60 * 60 * 1000);
+
+        const pendientes = muestreos.filter(m => m.estado === "PENDIENTE" || m.estado === "CONFIRMADO");
+
+        function getFecha(m) {
+            return parseFecha(m.fecha || m.fechaProgramada || m.fechaMuestreo || m.fechaInicio);
+        }
+
+        const estaSemana = pendientes.filter(m => {
+            const f = getFecha(m);
+            return f && f >= hoy && f <= finSemana;
+        });
+        const deHoy = pendientes.filter(m => {
+            const f = getFecha(m);
+            return f && f.toDateString() === hoy.toDateString();
+        });
+
+        const elSemana = document.getElementById("hub-muestreos-semana");
+        const elHoy    = document.getElementById("hub-muestreos-hoy");
+        const elTotal  = document.getElementById("hub-muestreos-total");
+        if (elSemana) elSemana.textContent = estaSemana.length;
+        if (elHoy)    elHoy.textContent    = deHoy.length;
+        if (elTotal)  elTotal.textContent  = pendientes.length;
+
+        agendaSemanaDatos = estaSemana;
+        agendaHoyDatos    = deHoy;
+        agendaTodosDatos  = pendientes;
+        _refreshActivePanel("agenda");
+
+        const body = document.getElementById("hubMustreosBody");
+        if (!body) return;
+
+        if (pendientes.length === 0) {
+            body.innerHTML = `<div class="mod-mini-empty"><i class="bi bi-calendar-check"></i> Sin muestreos próximos</div>`;
+            return;
+        }
+
+        const sorted = [...pendientes].sort((a, b) => {
+            const fa = getFecha(a), fb = getFecha(b);
+            if (!fa && !fb) return 0;
+            if (!fa) return 1;
+            if (!fb) return -1;
+            return fa - fb;
+        });
+
+        body.innerHTML = sorted.slice(0, 3).map(m => {
+            const f = getFecha(m);
+            let dotClass = "azul", badgeClass = "hoy", badgeText = "—";
+            if (f) {
+                const dias = Math.ceil((f - hoy) / 86400000);
+                if (dias === 0)       { dotClass = "azul";    badgeClass = "hoy";  badgeText = "Hoy"; }
+                else if (dias === 1)  { dotClass = "naranja"; badgeClass = "pend"; badgeText = "Mañana"; }
+                else if (dias > 1)   { dotClass = "verde";   badgeClass = "ok";   badgeText = formatearFechaDMY(f); }
+                else                  { dotClass = "rojo";    badgeClass = "demo"; badgeText = "Vencido"; }
+            }
+            const cliente = m.cliente || m.clienteNombre || m.nombreCliente || "—";
+            return `<div class="mod-mini-row">
+                <span class="mod-mini-dot ${dotClass}"></span>
+                <span class="mod-mini-name">${cliente}</span>
+                <span class="mod-mini-badge ${badgeClass}">${badgeText}</span>
+            </div>`;
+        }).join("");
+    } catch { /* no bloquea el dashboard */ }
+}
+
+// ════════════════════════════════
+//  SISTEMA UNIFICADO DE PANELES KPI
+// ════════════════════════════════
+
+function _refreshActivePanel(cardKey) {
+    const panelEl = document.getElementById(`panel-${cardKey}`);
+    if (!panelEl || !panelEl.classList.contains("is-open")) return;
+    const activeKpi = document.querySelector(`.mod-kpi-clickable[data-card="${cardKey}"].is-active`);
+    if (activeKpi) {
+        const contentEl = document.getElementById(`panel-${cardKey}-content`);
+        if (contentEl) renderKpiPanel(cardKey, activeKpi.dataset.kpi, contentEl);
+    }
+}
+
+function renderKpiPanel(cardKey, kpiKey, contentEl) {
+    const renderers = {
+        "muestras__activas":     renderMuestrasActivas,
+        "muestras__demoradas":   renderMuestrasDemoradas,
+        "muestras__sin-informe": renderMuestrasSinInforme,
+        "agenda__semana":        renderAgendaSemana,
+        "agenda__hoy":           renderAgendaHoy,
+        "agenda__pendientes":    renderAgendaPendientes,
+        "stock__critico":        renderStockCritico,
+        "stock__bajo":           renderStockBajo,
+        "stock__ok":             renderStockOk,
+        "tareas__progreso":      renderTareasProgreso,
+        "tareas__todo":          renderTareasTodo,
+        "tareas__revision":      renderTareasRevision,
+    };
+    const fn = renderers[`${cardKey}__${kpiKey}`];
+    if (fn) fn(contentEl);
+}
+
+// ── Muestras ──
+function renderMuestrasActivas(el) {
+    const ACTIVOS = new Set(["PENDIENTE", "EN_PROCESO", "DEMORADA", "COMPLETO_SIN_INFORME"]);
+    const lista = allEstudios.filter(m => ACTIVOS.has(normalizarEstado(m.estado)));
+    const dotCls = { PENDIENTE:"naranja", EN_PROCESO:"azul", DEMORADA:"rojo", COMPLETO_SIN_INFORME:"gris" };
+    const bCls   = { PENDIENTE:"pend",    EN_PROCESO:"proc", DEMORADA:"demo", COMPLETO_SIN_INFORME:"sin"  };
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-droplet-fill"></i>${lista.length} activa${lista.length!==1?"s":""}</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin muestras activas</div>`
+            : lista.map(m => {
+                const e = normalizarEstado(m.estado);
+                return `<div class="mod-panel-item">
+                    <span class="mod-mini-dot ${dotCls[e]||"gris"}"></span>
+                    <span class="mod-mini-name">${m.cliente}</span>
+                    <span class="mod-panel-sub">${m.codigo}</span>
+                    <span class="mod-mini-badge ${bCls[e]||"pend"}" style="margin-left:auto">${labelEstado(e)}</span>
+                </div>`;
+            }).join(""));
+}
+
+function renderMuestrasDemoradas(el) {
+    const lista = allEstudios.filter(m => normalizarEstado(m.estado) === "DEMORADA");
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-exclamation-circle-fill"></i>${lista.length} demorada${lista.length!==1?"s":""}</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin muestras demoradas</div>`
+            : lista.map(m => {
+                const fE = parseFecha(m.fecha);
+                let badge;
+                if (fE) {
+                    const dias = Math.ceil((hoy - fE) / 86400000);
+                    badge = dias > 0 ? `${dias}d tarde` : "Hoy";
+                } else {
+                    const fA = parseFecha(m.fechaAlta);
+                    badge = fA ? `${Math.ceil((hoy - fA) / 86400000)}d` : "—";
+                }
+                return `<div class="mod-panel-item">
+                    <span class="mod-mini-dot rojo"></span>
+                    <span class="mod-mini-name">${m.cliente}</span>
+                    <span class="mod-panel-sub">${m.codigo}</span>
+                    <span class="mod-mini-badge demo" style="margin-left:auto">${badge}</span>
+                </div>`;
+            }).join(""));
+}
+
+function renderMuestrasSinInforme(el) {
+    const lista = allEstudios.filter(m => normalizarEstado(m.estado) === "COMPLETO_SIN_INFORME");
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-file-earmark-x"></i>${lista.length} sin informe</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin muestras pendientes de informe</div>`
+            : lista.map(m => `<div class="mod-panel-item">
+                <span class="mod-mini-dot gris"></span>
+                <span class="mod-mini-name">${m.cliente}</span>
+                <span class="mod-panel-sub">${m.codigo}</span>
+                <span class="mod-mini-badge sin" style="margin-left:auto">Sin informe</span>
+            </div>`).join(""));
+}
+
+// ── Agenda ──
+function _agendaItemHTML(m, hoy) {
+    const TIPO_LBL = { MUESTREO:"Muestreo", COMPRA_INSUMOS:"Compra insumos", VENCIMIENTO:"Vencimiento", OTRO:"Otro" };
+    const TIPO_DOT = { MUESTREO:"azul", COMPRA_INSUMOS:"naranja", VENCIMIENTO:"rojo", OTRO:"gris" };
+    const tipo  = ((m.tipo || m.tipoEvento || "")).toUpperCase();
+    const f     = parseFecha(m.fecha || m.fechaProgramada || m.fechaMuestreo || m.fechaInicio);
+    const cli   = m.cliente || m.clienteNombre || m.nombreCliente || "";
+    const nombre = cli || TIPO_LBL[tipo] || "Evento";
+    const dias  = f ? Math.ceil((f - hoy) / 86400000) : null;
+    const badge = dias === 0 ? "Hoy" : dias === 1 ? "Mañana" : f ? formatearFechaDMY(f) : "—";
+    const bCls  = dias === 0 ? "hoy" : (dias !== null && dias < 0) ? "demo" : "pend";
+    return `<div class="mod-panel-item">
+        <span class="mod-mini-dot ${TIPO_DOT[tipo]||"azul"}"></span>
+        <span class="mod-mini-name">${nombre}</span>
+        <span class="mod-panel-sub">${TIPO_LBL[tipo]||""}</span>
+        <span class="mod-mini-badge ${bCls}" style="margin-left:auto">${badge}</span>
+    </div>`;
+}
+
+function renderAgendaSemana(el) {
+    const lista = agendaSemanaDatos;
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-calendar-week-fill"></i>${lista.length} evento${lista.length!==1?"s":""} esta semana</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-calendar-check me-1"></i>Sin eventos esta semana</div>`
+            : lista.map(m => _agendaItemHTML(m, hoy)).join(""));
+}
+
+function renderAgendaHoy(el) {
+    const lista = agendaHoyDatos;
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-calendar-day-fill"></i>${lista.length} evento${lista.length!==1?"s":""} hoy</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-calendar-check me-1"></i>Sin eventos hoy</div>`
+            : lista.map(m => _agendaItemHTML(m, hoy)).join(""));
+}
+
+function renderAgendaPendientes(el) {
+    const lista = agendaTodosDatos;
+    const hoy = new Date(); hoy.setHours(0, 0, 0, 0);
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-calendar-fill"></i>${lista.length} pendiente${lista.length!==1?"s":""}</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-calendar-check me-1"></i>Sin eventos pendientes</div>`
+            : lista.map(m => _agendaItemHTML(m, hoy)).join(""));
+}
+
+// ── Stock ──
+function _stockItemHTML(i, dotCls, bCls, bText) {
+    const cat = (i.categoria || "").replace(/_/g, " ").toLowerCase();
+    return `<div class="mod-panel-item">
+        <span class="mod-mini-dot ${dotCls}"></span>
+        <span class="mod-mini-name">${i.nombre || "—"}</span>
+        <span class="mod-panel-sub">${cat}</span>
+        <span class="mod-mini-badge ${bCls}" style="margin-left:auto">${bText}</span>
+    </div>`;
+}
+
+function renderStockCritico(el) {
+    const lista = stockBajosDatos;
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-exclamation-triangle-fill"></i>${lista.length} ítem${lista.length!==1?"s":""} crítico${lista.length!==1?"s":""}</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin ítems críticos</div>`
+            : lista.map(i => _stockItemHTML(i, "rojo", "demo", "Crítico")).join(""));
+}
+
+function renderStockBajo(el) {
+    const lista = stockMediosDatos;
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-box-seam"></i>${lista.length} ítem${lista.length!==1?"s":""} en nivel bajo</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin ítems en nivel bajo</div>`
+            : lista.map(i => _stockItemHTML(i, "naranja", "pend", "Bajo")).join(""));
+}
+
+function renderStockOk(el) {
+    const lista = stockAltosDatos;
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-check-circle-fill"></i>${lista.length} ítem${lista.length!==1?"s":""} OK</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin ítems en nivel OK</div>`
+            : lista.map(i => _stockItemHTML(i, "verde", "ok", "OK")).join(""));
+}
+
+// ── Tareas ──
+function _tareaItemHTML(t, dotCls, bCls, bText) {
+    const asig = t.assignedTo || t.nombreAsignado || t.userName || "";
+    return `<div class="mod-panel-item">
+        <span class="mod-mini-dot ${dotCls}"></span>
+        <span class="mod-mini-name">${t.title || t.titulo || "—"}</span>
+        ${asig ? `<span class="mod-panel-sub">${asig}</span>` : ""}
+        <span class="mod-mini-badge ${bCls}" style="margin-left:auto">${bText}</span>
+    </div>`;
+}
+
+function renderTareasProgreso(el) {
+    const lista = tareasProgresoDatos;
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-play-circle-fill"></i>${lista.length} en progreso</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin tareas en progreso</div>`
+            : lista.map(t => _tareaItemHTML(t, "azul", "proc", "En progreso")).join(""));
+}
+
+function renderTareasTodo(el) {
+    const lista = tareasTodoDatos;
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-list-check"></i>${lista.length} pendiente${lista.length!==1?"s":""}</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin tareas pendientes</div>`
+            : lista.map(t => _tareaItemHTML(t, "naranja", "pend", "Pendiente")).join(""));
+}
+
+function renderTareasRevision(el) {
+    const lista = tareasRevisionDatos;
+    el.innerHTML =
+        `<div class="mod-panel-header"><i class="bi bi-eye-fill"></i>${lista.length} en revisión</div>` +
+        (lista.length === 0
+            ? `<div class="mod-mini-empty"><i class="bi bi-check2-circle me-1"></i>Sin tareas en revisión</div>`
+            : lista.map(t => _tareaItemHTML(t, "violeta", "pend", "En revisión")).join(""));
+}
+
+// ── Panel de KPI: se abre al hacer hover sobre el número ──
+document.querySelectorAll(".mod-kpi-clickable").forEach(kpiEl => {
+    kpiEl.addEventListener("mouseenter", function () {
+        const cardKey   = this.dataset.card;
+        const kpiKey    = this.dataset.kpi;
+        const panelEl   = document.getElementById(`panel-${cardKey}`);
+        const contentEl = document.getElementById(`panel-${cardKey}-content`);
+        if (!panelEl || !contentEl) return;
+
+        document.querySelectorAll(`.mod-kpi-clickable[data-card="${cardKey}"]`)
+            .forEach(k => k.classList.remove("is-active"));
+        this.classList.add("is-active");
+        renderKpiPanel(cardKey, kpiKey, contentEl);
+        panelEl.classList.add("is-open");
+    });
+});
+
+// Cierra el panel cuando el mouse sale de la tarjeta completa
+document.querySelectorAll(".mod-card").forEach(cardEl => {
+    cardEl.addEventListener("mouseleave", function () {
+        const kpis = this.querySelectorAll(".mod-kpi-clickable");
+        if (kpis.length === 0) return;
+        const cardKey = kpis[0].dataset.card;
+        const panelEl = document.getElementById(`panel-${cardKey}`);
+        if (panelEl) panelEl.classList.remove("is-open");
+        kpis.forEach(k => k.classList.remove("is-active"));
+    });
+});
+
+// ════════════════════════════════
+//  MI COLA DE ANÁLISIS
+// ════════════════════════════════
+(function initColaDash() {
+    if (rol !== 'ROLE_EMPLEADO') return;
+
+    const panel  = document.getElementById('colaDashPanel');
+    const body   = document.getElementById('colaDashBody');
+    const grid   = document.getElementById('colaDashGrid');
+    const empty  = document.getElementById('colaDashEmpty');
+    const badge  = document.getElementById('colaDashBadge');
+    const toggle = document.getElementById('colaDashToggle');
+    const refresh = document.getElementById('colaDashRefresh');
+
+    if (!panel) return;
+    panel.style.display = '';
+
+    let collapsed = false;
+
+    toggle.addEventListener('click', () => {
+        collapsed = !collapsed;
+        body.classList.toggle('collapsed', collapsed);
+        toggle.classList.toggle('collapsed', collapsed);
+        document.getElementById('colaDashToggleLabel').textContent = collapsed ? 'Mostrar' : 'Ocultar';
+    });
+
+    refresh.addEventListener('click', () => cargarMiCola());
+
+    window.cargarMiCola = async function cargarMiCola() {
+        mostrarSkelCola();
+        try {
+            const r = await fetchDash(`${API_BASE}/api/mi-cola`);
+            if (!r.ok) throw new Error(`HTTP ${r.status}`);
+            const grupos = await r.json();
+            renderColaDash(grupos);
+        } catch (err) {
+            console.error('Error cargando mi cola:', err);
+            grid.innerHTML = '';
+            empty.style.display = 'flex';
+            empty.innerHTML = '<i class="bi bi-exclamation-circle"></i> Error al cargar la cola de análisis';
+        }
+    };
+
+    function mostrarSkelCola() {
+        grid.innerHTML = '';
+        empty.style.display = 'none';
+        const wrap = document.createElement('div');
+        wrap.className = 'cola-skel-wrap';
+        for (let i = 0; i < 4; i++) {
+            const item = document.createElement('div');
+            item.className = 'cola-skel-item';
+            item.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <div class="sh" style="height:13px;border-radius:4px;width:70px"></div>
+                    <div class="sh" style="height:22px;width:22px;border-radius:50%"></div>
+                </div>
+                <div class="sh" style="height:34px;border-radius:7px;width:100%"></div>
+                <div class="sh" style="height:34px;border-radius:7px;width:100%"></div>`;
+            wrap.appendChild(item);
+        }
+        grid.appendChild(wrap);
+    }
+
+    function renderColaDash(grupos) {
+        grid.innerHTML = '';
+        const total = grupos.reduce((s, g) => s + g.totalPendientes, 0);
+        badge.textContent = `${total} pendiente${total !== 1 ? 's' : ''}`;
+
+        if (!grupos.length) {
+            empty.style.display = 'flex';
+            empty.innerHTML = '<i class="bi bi-check2-circle"></i> Sin análisis pendientes en tu cola';
+            return;
+        }
+        empty.style.display = 'none';
+
+        const ESTADO_CFG = {
+            PENDIENTE:   { lbl: 'Pendiente',   cls: 'ce-pendiente' },
+            EN_PROCESO:  { lbl: 'En proceso',  cls: 'ce-proceso'   },
+            DEMORADA:    { lbl: 'Demorada',     cls: 'ce-demorada'  },
+            EN_REVISION: { lbl: 'En revisión',  cls: 'ce-revision'  },
+        };
+
+        grupos.forEach(grupo => {
+            const card = document.createElement('div');
+            card.className = 'cola-param-card';
+
+            const unidadHtml = grupo.unidad
+                ? `<div class="cola-param-unit">${esc(grupo.unidad)}</div>` : '';
+
+            const MAX_VISIBLE = 3;
+            const visibles = grupo.muestras.slice(0, MAX_VISIBLE);
+            const resto    = grupo.muestras.length - MAX_VISIBLE;
+
+            const filas = visibles.map(m => {
+                const cfg = ESTADO_CFG[m.estado] || { lbl: m.estado, cls: '' };
+                return `<div class="cola-sample-row">
+                    <div>
+                        <div class="cola-sample-proto">#${esc(m.nroProtocolo)}</div>
+                        <div class="cola-sample-client">${esc(m.clienteNombre || '')}</div>
+                    </div>
+                    <span class="cola-muestra-chip ${cfg.cls}">${cfg.lbl}</span>
+                </div>`;
+            }).join('');
+
+            const masHtml = resto > 0
+                ? `<div class="cola-dash-mas">+${resto} más</div>` : '';
+
+            card.innerHTML = `
+                <div class="cola-param-head">
+                    <div>
+                        <div class="cola-param-name">${esc(grupo.parametroNombre)}</div>
+                        ${unidadHtml}
+                    </div>
+                    <div class="cola-count-circle">${grupo.totalPendientes}</div>
+                </div>
+                <div class="cola-sample-list">${filas}</div>
+                ${masHtml}`;
+
+            grid.appendChild(card);
+        });
+    }
+
+    function esc(str) {
+        return String(str || '').replace(/[&<>"']/g, c =>
+            ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+    }
+
+    cargarMiCola();
+})();
 
 // Cargar al iniciar
 cargarEstudios();
 cargarTareasKPI();
 cargarStockKPI();
+cargarMustreosKPI();
 
-// ════════════════════════════════
-//  PANEL VISIBILITY MANAGER
-// ════════════════════════════════
-const DP_KEY = "chemiconsult_hidden_panels";
-
-const DP_META = {
-    // paneles
-    alertas:       { type: "panel", icon: "bi-calendar-check",  label: "Próximas entregas" },
-    acciones:      { type: "panel", icon: "bi-lightning-charge", label: "Acciones rápidas" },
-    grafico:       { type: "panel", icon: "bi-pie-chart",        label: "Distribución" },
-    // KPI cards
-    muestras:      { type: "kpi",   icon: "bi-flask",            label: "Muestras activas" },
-    tareas:        { type: "kpi",   icon: "bi-list-check",       label: "Tareas pendientes" },
-    stock:         { type: "kpi",   icon: "bi-box-seam",         label: "Stock bajo" },
-    demoradas:     { type: "kpi",   icon: "bi-clock-history",    label: "Demoradas" },
-};
-
-function dpLoad() {
-    try { return JSON.parse(localStorage.getItem(DP_KEY) || "[]"); }
-    catch { return []; }
-}
-
-function dpSave(hidden) {
-    localStorage.setItem(DP_KEY, JSON.stringify(hidden));
-}
-
-function dpRender() {
-    const hidden = dpLoad();
-    const bar = document.getElementById("dpRestoreBar");
-    if (!bar) return;
-
-    Object.keys(DP_META).forEach(id => {
-        const meta = DP_META[id];
-        const sel = meta.type === "kpi"
-            ? `.kpi-card[data-kpi="${id}"]`
-            : `[data-panel="${id}"]`;
-        const el = document.querySelector(sel);
-        if (el) el.classList.toggle("dp-hidden", hidden.includes(id));
-    });
-
-    if (hidden.length === 0) {
-        bar.style.display = "none";
-        bar.innerHTML = "";
-        return;
-    }
-
-    bar.style.display = "flex";
-    bar.innerHTML =
-        `<span class="dp-restore-bar-label">Ocultos:</span>` +
-        hidden.map(id => {
-            const m = DP_META[id];
-            if (!m) return "";
-            return `<button class="dp-restore-chip" data-restore="${id}">
-                        <i class="bi ${m.icon}"></i>${m.label}
-                        <i class="bi bi-eye" style="font-size:11px;opacity:.7"></i>
-                    </button>`;
-        }).join("");
-
-    bar.querySelectorAll("[data-restore]").forEach(btn =>
-        btn.addEventListener("click", () => {
-            dpSave(dpLoad().filter(id => id !== btn.dataset.restore));
-            dpRender();
-        })
-    );
-}
-
-document.querySelectorAll(".dp-toggle").forEach(btn =>
-    btn.addEventListener("click", () => {
-        const id = btn.dataset.panel;
-        const hidden = dpLoad();
-        if (!hidden.includes(id)) hidden.push(id);
-        dpSave(hidden);
-        dpRender();
-    })
-);
-
-document.querySelectorAll(".dp-kpi-close").forEach(btn =>
-    btn.addEventListener("click", () => {
-        const id = btn.dataset.kpi;
-        const hidden = dpLoad();
-        if (!hidden.includes(id)) hidden.push(id);
-        dpSave(hidden);
-        dpRender();
-    })
-);
-
-dpRender();

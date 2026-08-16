@@ -7,6 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/ui.css"/>
+    <link rel="stylesheet" href="css/tabla-muestras.css"/>
     <link rel="stylesheet" href="css/dashboard/dashboard-clientes.css">
     <script src="js/auth.js" data-roles="ROLE_CLIENTE"></script>
 </head>
@@ -33,38 +35,37 @@
         </div>
     </div>
 
-    <!-- Bienvenida -->
-    <div class="bienvenida-card">
-        <div>
-            <h2>¡Bienvenido/a, <span id="cliente-nombre">—</span>!</h2>
-            <p>Acá podés ver el estado de tus muestras y descargar tus informes.</p>
+    <!-- Bienvenida + KPIs en una sola fila -->
+    <div class="hero-row">
+        <div class="bienvenida-card">
+            <i class="bi bi-flask bienvenida-icon"></i>
+            <div>
+                <h2>¡Bienvenido/a, <span id="cliente-nombre">—</span>!</h2>
+                <p>Tus muestras y análisis</p>
+            </div>
         </div>
-        <div class="bienvenida-icon">
-            <i class="bi bi-flask"></i>
-        </div>
-    </div>
 
-    <!-- KPIs -->
-    <div class="kpi-grid">
-        <div class="kpi-card verde">
-            <div class="kpi-icon verde"><i class="bi bi-flask"></i></div>
-            <div class="kpi-data">
-                <h3 id="kpi-total">—</h3>
-                <p>Muestras totales</p>
+        <div class="kpi-grid">
+            <div class="kpi-card verde">
+                <div class="kpi-icon verde"><i class="bi bi-flask"></i></div>
+                <div class="kpi-data">
+                    <h3 id="kpi-total">—</h3>
+                    <p>Totales</p>
+                </div>
             </div>
-        </div>
-        <div class="kpi-card azul">
-            <div class="kpi-icon azul"><i class="bi bi-hourglass-split"></i></div>
-            <div class="kpi-data">
-                <h3 id="kpi-proceso">—</h3>
-                <p>En proceso</p>
+            <div class="kpi-card azul">
+                <div class="kpi-icon azul"><i class="bi bi-hourglass-split"></i></div>
+                <div class="kpi-data">
+                    <h3 id="kpi-proceso">—</h3>
+                    <p>En proceso</p>
+                </div>
             </div>
-        </div>
-        <div class="kpi-card naranja">
-            <div class="kpi-icon naranja"><i class="bi bi-file-earmark-check"></i></div>
-            <div class="kpi-data">
-                <h3 id="kpi-listos">—</h3>
-                <p>Informes disponibles</p>
+            <div class="kpi-card naranja">
+                <div class="kpi-icon naranja"><i class="bi bi-file-earmark-check"></i></div>
+                <div class="kpi-data">
+                    <h3 id="kpi-listos">—</h3>
+                    <p>Con informe</p>
+                </div>
             </div>
         </div>
     </div>
@@ -73,15 +74,21 @@
     <div class="panel">
         <div class="panel-header">
             <h5><i class="bi bi-list-check me-2" style="color:var(--verde);"></i>Mis análisis</h5>
-            <div class="search-wrapper">
-                <i class="bi bi-search"></i>
-                <input
-                        type="text"
-                        class="search-input"
-                        id="buscadorProtocolo"
-                        placeholder="Buscar por N° protocolo..."
-                        autocomplete="off"
-                >
+            <div class="panel-header-filtros">
+                <div class="search-wrapper">
+                    <i class="bi bi-search"></i>
+                    <input type="text" class="search-input" id="buscadorProtocolo"
+                           placeholder="Buscar por N° protocolo..." autocomplete="off">
+                </div>
+                <div class="filtros-fecha-inline">
+                    <label class="filtro-fecha-label">Desde</label>
+                    <input type="text" id="filtroDesde" class="filtro-fecha-input" placeholder="dd/mm/aaaa" maxlength="10">
+                    <label class="filtro-fecha-label">Hasta</label>
+                    <input type="text" id="filtroHasta" class="filtro-fecha-input" placeholder="dd/mm/aaaa" maxlength="10">
+                    <button id="btnLimpiarFecha" class="btn-limpiar-fecha" title="Limpiar fechas">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -89,9 +96,13 @@
             <table class="tabla-muestras" id="tablaMuestras">
                 <thead>
                 <tr>
-                    <th>N° Protocolo</th>
+                    <th class="th-sortable" data-sort="codigo" onclick="ordenarPor('codigo')">
+                        N° Protocolo <i class="bi bi-chevron-expand sort-icon"></i>
+                    </th>
                     <th>Tipo de análisis</th>
-                    <th>Fecha ingreso</th>
+                    <th class="th-sortable" data-sort="fechaRaw" onclick="ordenarPor('fechaRaw')">
+                        Fecha ingreso <i class="bi bi-chevron-expand sort-icon"></i>
+                    </th>
                     <th>Estado</th>
                     <th>Informe</th>
                 </tr>
@@ -113,39 +124,65 @@
 
         <div class="paginacion-wrapper">
             <span id="pag-info">Mostrando 0 de 0 registros</span>
-            <div class="paginacion-btns" id="paginacion-btns"></div>
+            <div style="display:flex;align-items:center;gap:12px;">
+                <div style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--gris);">
+                    <span>Filas:</span>
+                    <select id="selectPorPagina" class="filtro-fecha-input" style="width:60px;cursor:pointer;">
+                        <option value="5" selected>5</option>
+                        <option value="10">10</option>
+                        <option value="15">15</option>
+                    </select>
+                </div>
+                <div class="paginacion-btns" id="paginacion-btns"></div>
+            </div>
+        </div>
+
+        <div class="estudios-notice">
+            <i class="bi bi-info-circle"></i>
+            Los estudios y sus informes son almacenados durante 5 años.
         </div>
     </div>
 
 </div>
 
 <!-- ══════════════════════════════════
-     PDF SIDE PANEL
+     Modal PDF
 ══════════════════════════════════ -->
-<div class="pdf-overlay" id="pdfOverlay"></div>
-
-<div class="pdf-panel" id="pdfPanel">
-    <div class="pdf-panel-header">
-        <h6><i class="bi bi-file-earmark-pdf me-2" style="color:#ef4444;"></i><span id="pdfPanelTitulo">Resultado</span></h6>
-        <button class="btn-close-panel" id="btnCerrarPanel" title="Cerrar">&#x2715;</button>
-    </div>
-    <div class="pdf-panel-actions">
-        <a id="btnDescargarPdf" href="#" download class="btn-descargar-pdf">
-            <i class="bi bi-download"></i> Descargar PDF
-        </a>
-        <a id="btnAbrirNueva" href="#" target="_blank" class="btn-abrir-nueva">
-            <i class="bi bi-box-arrow-up-right"></i> Abrir en nueva pestaña
-        </a>
-    </div>
-    <div class="pdf-frame-wrapper">
-        <div class="pdf-loading" id="pdfLoading">
-            <div class="spinner"></div>
-            <span>Cargando informe...</span>
+<div class="modal fade" id="pdfModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content pdf-modal-content">
+            <div class="pdf-modal-header">
+                <div class="pdf-modal-title">
+                    <i class="bi bi-file-earmark-pdf" style="color:#ef4444;"></i>
+                    <span id="pdfModalTitulo">Informe</span>
+                </div>
+                <div class="pdf-modal-actions">
+                    <a id="btnDescargarPdf" href="#" download class="btn-descargar-pdf">
+                        <i class="bi bi-download"></i> Descargar
+                    </a>
+                    <a id="btnAbrirNueva" href="#" target="_blank" class="btn-abrir-nueva">
+                        <i class="bi bi-box-arrow-up-right"></i> Nueva pestaña
+                    </a>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+            </div>
+            <!-- Barra de selección de archivos (se muestra solo si hay más de uno) -->
+            <div id="pdfArchivosNav" style="display:none; padding:8px 16px; border-bottom:1px solid var(--bs-border-color, #dee2e6); display:none; gap:8px; flex-wrap:wrap; align-items:center;">
+                <span style="font-size:12px; color:#888; margin-right:4px;">Archivos:</span>
+                <div id="pdfArchivosBtns" style="display:flex; gap:6px; flex-wrap:wrap;"></div>
+            </div>
+            <div class="pdf-modal-body">
+                <div class="pdf-loading" id="pdfLoading">
+                    <div class="spinner"></div>
+                    <span>Cargando informe...</span>
+                </div>
+                <iframe id="pdfIframe" src="" title="Resultado PDF"></iframe>
+            </div>
         </div>
-        <iframe id="pdfIframe" src="" title="Resultado PDF"></iframe>
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/dashboard-clientes.js"></script>
 <script src="js/sidebar.js"></script>

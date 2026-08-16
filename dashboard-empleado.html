@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8"/>
@@ -8,11 +8,13 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet"/>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,600;12..96,700&family=Work+Sans:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <link rel="stylesheet" href="css/sidebar.css"/>
+    <link rel="stylesheet" href="css/tabla-muestras.css"/>
     <link rel="stylesheet" href="css/dashboard/dashboard-empleados.css"/>
     <link rel="stylesheet" href="css/ui.css">
-    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO"></script>
+    <link rel="stylesheet" href="css/modal.css">
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="DASHBOARD"></script>
 </head>
 <body>
 
@@ -41,52 +43,171 @@
         </div>
     </div>
 
-    <!-- KPI Cards -->
-    <div class="kpi-grid">
-        <div class="kpi-card verde" data-kpi="muestras">
-            <button class="dp-kpi-close" data-kpi="muestras" title="Ocultar"><i class="bi bi-x"></i></button>
-            <div class="kpi-top">
-                <div class="kpi-icon verde"><i class="bi bi-droplet-fill"></i></div>
-                <span class="kpi-badge">activas</span>
+    <!-- Hub de módulos -->
+    <div class="hub-grid">
+
+        <!-- Módulo: Muestras -->
+        <div class="mod-card mod-verde">
+            <div class="mod-header">
+                <div class="mod-title">
+                    <div class="mod-icon mod-icon-verde"><i class="bi bi-droplet-fill"></i></div>
+                    Muestras
+                </div>
+                <div class="mod-header-actions">
+                    <button id="btnAccionNuevaMuestra" class="mod-btn-accion" title="Nueva muestra">
+                        <i class="bi bi-plus-lg"></i> Nueva
+                    </button>
+                    <a href="muestras.html" class="mod-link">Ver todas <i class="bi bi-arrow-right"></i></a>
+                </div>
             </div>
-            <div class="kpi-number" id="kpi-muestras-activas">—</div>
-            <div class="kpi-label">Muestras activas</div>
-            <div class="kpi-sub" id="kpi-muestras-sub"></div>
-        </div>
-        <div class="kpi-card rojo" data-kpi="demoradas">
-            <button class="dp-kpi-close" data-kpi="demoradas" title="Ocultar"><i class="bi bi-x"></i></button>
-            <div class="kpi-top">
-                <div class="kpi-icon rojo"><i class="bi bi-clock-history"></i></div>
-                <span class="kpi-badge">demoradas</span>
+            <div class="mod-kpis-row">
+                <div class="mod-kpi mod-kpi-clickable" data-card="muestras" data-kpi="activas">
+                    <div class="mod-kpi-num" id="hub-activas">—</div>
+                    <div class="mod-kpi-lbl">Activas <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="muestras" data-kpi="demoradas">
+                    <div class="mod-kpi-num mod-num-rojo" id="hub-demoradas">—</div>
+                    <div class="mod-kpi-lbl">Demoradas <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="muestras" data-kpi="sin-informe">
+                    <div class="mod-kpi-num mod-num-muted" id="hub-sin-informe">—</div>
+                    <div class="mod-kpi-lbl">Sin informe <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
             </div>
-            <div class="kpi-number" id="kpi-demoradas">—</div>
-            <div class="kpi-label">Muestras demoradas</div>
-            <div class="kpi-sub" id="kpi-demoradas-sub"></div>
-        </div>
-        <div class="kpi-card azul" data-kpi="tareas">
-            <button class="dp-kpi-close" data-kpi="tareas" title="Ocultar"><i class="bi bi-x"></i></button>
-            <div class="kpi-top">
-                <div class="kpi-icon azul"><i class="bi bi-list-check"></i></div>
-                <span class="kpi-badge">pendientes</span>
+            <div class="mod-card-panel" id="panel-muestras">
+                <div id="panel-muestras-content"></div>
             </div>
-            <div class="kpi-number" id="kpi-tareas">—</div>
-            <div class="kpi-label">Tareas pendientes</div>
-            <div class="kpi-sub" id="kpi-tareas-sub"></div>
         </div>
-        <div class="kpi-card naranja" data-kpi="stock">
-            <button class="dp-kpi-close" data-kpi="stock" title="Ocultar"><i class="bi bi-x"></i></button>
-            <div class="kpi-top">
-                <div class="kpi-icon naranja"><i class="bi bi-box-seam"></i></div>
-                <span class="kpi-badge">revisar</span>
+
+        <!-- Módulo: Agenda -->
+        <div class="mod-card mod-azul">
+            <div class="mod-header">
+                <div class="mod-title">
+                    <div class="mod-icon mod-icon-azul"><i class="bi bi-calendar-event"></i></div>
+                    Agenda
+                </div>
+                <a href="agenda.html" class="mod-link">Ver agenda <i class="bi bi-arrow-right"></i></a>
             </div>
-            <div class="kpi-number" id="kpi-stock">—</div>
-            <div class="kpi-label">Items con stock bajo</div>
-            <div class="kpi-sub" id="kpi-stock-sub"></div>
+            <div class="mod-kpis-row">
+                <div class="mod-kpi mod-kpi-clickable" data-card="agenda" data-kpi="semana">
+                    <div class="mod-kpi-num mod-num-naranja" id="hub-muestreos-semana">—</div>
+                    <div class="mod-kpi-lbl">Esta semana <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="agenda" data-kpi="hoy">
+                    <div class="mod-kpi-num mod-num-verde" id="hub-muestreos-hoy">—</div>
+                    <div class="mod-kpi-lbl">Hoy <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="agenda" data-kpi="pendientes">
+                    <div class="mod-kpi-num mod-num-muted" id="hub-muestreos-total">—</div>
+                    <div class="mod-kpi-lbl">Pendientes <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+            </div>
+            <div class="mod-card-panel" id="panel-agenda">
+                <div id="panel-agenda-content"></div>
+            </div>
         </div>
+
+        <!-- Módulo: Stock -->
+        <div class="mod-card mod-naranja">
+            <div class="mod-header">
+                <div class="mod-title">
+                    <div class="mod-icon mod-icon-naranja"><i class="bi bi-box-seam"></i></div>
+                    Stock
+                </div>
+                <div class="mod-header-actions">
+                    <button id="btnAccionAltaStock" class="mod-btn-accion" title="Alta stock">
+                        <i class="bi bi-plus-lg"></i> Alta
+                    </button>
+                    <a href="stock.html" class="mod-link">Ver stock <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="mod-kpis-row">
+                <div class="mod-kpi mod-kpi-clickable" data-card="stock" data-kpi="critico">
+                    <div class="mod-kpi-num mod-num-rojo" id="hub-stock-critico">—</div>
+                    <div class="mod-kpi-lbl">Crítico <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="stock" data-kpi="bajo">
+                    <div class="mod-kpi-num mod-num-naranja" id="hub-stock-bajo">—</div>
+                    <div class="mod-kpi-lbl">Stock bajo <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="stock" data-kpi="ok">
+                    <div class="mod-kpi-num mod-num-verde" id="hub-stock-ok">—</div>
+                    <div class="mod-kpi-lbl">OK <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+            </div>
+            <div class="mod-card-panel" id="panel-stock">
+                <div id="panel-stock-content"></div>
+            </div>
+        </div>
+
+        <!-- Módulo: Tareas -->
+        <div class="mod-card mod-violeta">
+            <div class="mod-header">
+                <div class="mod-title">
+                    <div class="mod-icon mod-icon-violeta"><i class="bi bi-list-check"></i></div>
+                    Tareas
+                </div>
+                <div class="mod-header-actions">
+                    <button id="btnAccionAltaTarea" class="mod-btn-accion" title="Nueva tarea">
+                        <i class="bi bi-plus-lg"></i> Nueva
+                    </button>
+                    <a href="task.html" class="mod-link">Ver tareas <i class="bi bi-arrow-right"></i></a>
+                </div>
+            </div>
+            <div class="mod-kpis-row">
+                <div class="mod-kpi mod-kpi-clickable" data-card="tareas" data-kpi="progreso">
+                    <div class="mod-kpi-num mod-num-azul" id="hub-tareas-progreso">—</div>
+                    <div class="mod-kpi-lbl">En progreso <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="tareas" data-kpi="todo">
+                    <div class="mod-kpi-num mod-num-naranja" id="hub-tareas-todo">—</div>
+                    <div class="mod-kpi-lbl">Pendientes <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+                <div class="mod-kpi-sep"></div>
+                <div class="mod-kpi mod-kpi-clickable" data-card="tareas" data-kpi="revision">
+                    <div class="mod-kpi-num mod-num-muted" id="hub-tareas-revision">—</div>
+                    <div class="mod-kpi-lbl">En revisión <i class="bi bi-chevron-down mod-kpi-chevron"></i></div>
+                </div>
+            </div>
+            <div class="mod-card-panel" id="panel-tareas">
+                <div id="panel-tareas-content"></div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Restore bar paneles ocultos -->
-    <div id="dpRestoreBar" class="dp-restore-bar"></div>
+    <!-- Mi cola de análisis (solo ROLE_EMPLEADO) -->
+    <div class="cola-dash-panel" id="colaDashPanel" style="display:none">
+        <div class="cola-dash-head">
+            <div class="cola-dash-title">
+                <div class="mod-icon mod-icon-verde"><i class="bi bi-flask"></i></div>
+                No se
+                <span class="cola-dash-badge" id="colaDashBadge">0 pendientes</span>
+            </div>
+            <div class="cola-dash-actions">
+                <button class="cola-dash-btn" id="colaDashRefresh">
+                    <i class="bi bi-arrow-clockwise"></i> Actualizar
+                </button>
+                <button class="cola-dash-btn" id="colaDashToggle">
+                    <i class="bi bi-chevron-up" id="colaDashChevron"></i>
+                    <span id="colaDashToggleLabel">Ocultar</span>
+                </button>
+            </div>
+        </div>
+        <div class="cola-dash-body" id="colaDashBody">
+            <div class="cola-dash-grid" id="colaDashGrid"></div>
+            <div class="cola-dash-empty" id="colaDashEmpty" style="display:none">
+                <i class="bi bi-check2-circle"></i> Sin análisis pendientes en tu cola
+            </div>
+        </div>
+    </div>
 
     <!-- Fila central -->
     <div class="main-row">
@@ -117,14 +238,17 @@
                     <button class="filtro-btn" onclick="filtrarTabla('DEMORADA', this)">
                         Demoradas
                     </button>
+                    <button class="filtro-btn" onclick="filtrarTabla('CANCELADO', this)">
+                        Canceladas
+                    </button>
                 </div>
 
                 <table class="tabla-muestras" id="tablaMuestras">
                     <thead>
                     <tr>
-                        <th>Código</th>
+                        <th>Protocolo</th>
                         <th>Cliente</th>
-                        <th>Tipo de análisis</th>
+                        <th>Tipo de muestra</th>
                         <th>Estado</th>
                         <th>Fecha alta</th>
                         <th>Fecha límite</th>
@@ -154,94 +278,33 @@
         </div>
         </div><!-- /data-panel="tabla" -->
 
-        <!-- Próximas entregas -->
-        <div data-panel="alertas" class="dp-cell">
-        <div class="panel">
+        <!-- Gráfico muestras del mes -->
+        <div class="grafico-mes-card panel">
             <div class="panel-header">
-                <h5>
-                    <i class="bi bi-calendar-check me-2 panel-title-icon-orange"></i>Próximas entregas
-                </h5>
-                <button class="dp-toggle" data-panel="alertas" title="Ocultar panel"><i class="bi bi-eye-slash"></i></button>
-            </div>
-            <div class="panel-body" id="alertasBody">
-                <div class="alerta-loading">
-                    <span class="spinner-border spinner-border-sm me-2"></span> Cargando...
+                <h5><i class="bi bi-pie-chart-fill me-2 panel-title-icon-green"></i>Muestras</h5>
+                <div class="grafico-nav">
+                    <button class="grafico-nav-btn" id="btnGraficoAnterior" title="Mes anterior">
+                        <i class="bi bi-chevron-left"></i>
+                    </button>
+                    <span id="graficoMesLabel" class="grafico-mes-label">—</span>
+                    <button class="grafico-nav-btn" id="btnGraficoSiguiente" title="Mes siguiente">
+                        <i class="bi bi-chevron-right"></i>
+                    </button>
                 </div>
             </div>
-        </div>
-        </div><!-- /data-panel="alertas" -->
-    </div>
-
-    <!-- Fila inferior -->
-    <div class="bottom-row">
-        <!-- Acciones rápidas -->
-        <div data-panel="acciones" class="dp-cell">
-        <div class="panel">
-            <div class="panel-header">
-                <h5>
-                    <i class="bi bi-lightning-charge me-2 panel-title-icon-green"></i
-                    >Acciones rápidas
-                </h5>
-                <button class="dp-toggle" data-panel="acciones" title="Ocultar panel"><i class="bi bi-eye-slash"></i></button>
-            </div>
-            <div class="panel-body">
-                <div class="acciones-grid">
-                    <a class="accion-card" id="btnAccionNuevaMuestra">
-                        <i class="bi bi-flask"></i>
-                        Nueva muestra
-                    </a>
-                    <a class="accion-card" id="btnAccionAltaTarea">
-                        <i class="bi bi-kanban"></i>
-                        Alta tarea
-                    </a>
-                    <a class="accion-card" id="btnAccionAltaStock">
-                        <i class="bi bi-box-seam"></i>
-                        Alta stock
-                    </a>
+            <div class="panel-body grafico-mes-body">
+                <div class="grafico-total-wrap">
+                    <div class="grafico-total-num" id="graficoTotal">—</div>
+                    <div class="grafico-total-sub">muestras ingresadas</div>
                 </div>
-            </div>
-        </div>
-        </div><!-- /data-panel="acciones" -->
-
-        <!-- Gráfico -->
-        <div data-panel="grafico" class="dp-cell">
-        <div class="panel">
-            <div class="panel-header">
-                <h5>
-                    <i class="bi bi-pie-chart me-2 panel-title-icon-green"></i
-                    >Distribución de muestras
-                </h5>
-                <div class="dp-panel-header-right">
-                    <span class="panel-subtitle">Este mes</span>
-                    <button class="dp-toggle" data-panel="grafico" title="Ocultar panel"><i class="bi bi-eye-slash"></i></button>
-                </div>
-            </div>
-            <div class="panel-body">
-                <div class="chart-wrapper">
+                <div class="grafico-canvas-wrap">
                     <canvas id="graficoEstados"></canvas>
                 </div>
-                <div class="chart-legend">
-                    <span class="chart-legend-item">
-                        <span class="chart-legend-dot chart-legend-dot-pendiente"></span>
-                        Pendiente
-                    </span>
-                    <span class="chart-legend-item">
-                        <span class="chart-legend-dot chart-legend-dot-en-analisis"></span>
-                        En análisis
-                    </span>
-                    <span class="chart-legend-item">
-                        <span class="chart-legend-dot chart-legend-dot-informe-listo"></span>
-                        Informe listo
-                    </span>
-                    <span class="chart-legend-item">
-                        <span class="chart-legend-dot chart-legend-dot-demorada"></span>
-                        Demorada
-                    </span>
-                </div>
             </div>
         </div>
-        </div><!-- /data-panel="grafico" -->
+
     </div>
+
 </div>
 
 <!-- MODAL ALTA MUESTRA (completo) -->
@@ -270,8 +333,8 @@
                         <input type="date" id="inputFechaEntrega" class="form-control-custom"/>
                     </div>
                 </div>
-                <!-- Fila 2: Cliente + ID Muestra + Punto -->
-                <div class="form-row form-row-3">
+                <!-- Fila 2: Cliente + Sucursal (condicional) -->
+                <div class="form-row">
                     <div class="form-group">
                         <label>Cliente <span class="required">*</span></label>
                         <select id="inputCliente" class="form-control-custom">
@@ -279,14 +342,24 @@
                         </select>
                         <span class="field-error" id="errCliente">Seleccioná un cliente</span>
                     </div>
-                    <div class="form-group">
-                        <label>ID de muestra <span class="required">*</span></label>
-                        <input type="text" id="inputIdMuestra" class="form-control-custom" placeholder="Ej: M-001" autocomplete="off"/>
-                        <span class="field-error" id="errIdMuestra">Campo requerido</span>
+                    <div class="form-group" id="grupoSucursal" style="display:none;">
+                        <label>Sucursal</label>
+                        <select id="inputSucursal" class="form-control-custom">
+                            <option value="">— casa central —</option>
+                        </select>
                     </div>
+                </div>
+                <!-- Fila 3: Punto de muestreo + Tipo de muestra -->
+                <div class="form-row">
                     <div class="form-group">
                         <label>Punto de muestreo</label>
                         <input type="text" id="inputPuntoMuestreo" class="form-control-custom" placeholder="Ej: Pozo norte..." autocomplete="off"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de muestra</label>
+                        <select id="inputTipoMuestraEspecifica" class="form-control-custom">
+                            <option value="">— sin especificar —</option>
+                        </select>
                     </div>
                 </div>
                 <!-- Fila 3: Matriz -->
@@ -472,10 +545,10 @@
             <div id="detalleEstadoBadge" class="badge-estado" style="margin-bottom:.5rem"></div>
             <div class="detalle-grid">
                 <div class="detalle-campo"><label>Protocolo</label><span id="detalleProtocolo">—</span></div>
-                <div class="detalle-campo"><label>ID Muestra</label><span id="detalleIdMuestra">—</span></div>
                 <div class="detalle-campo"><label>Cliente</label><span id="detalleCliente">—</span></div>
                 <div class="detalle-campo"><label>Matriz</label><span id="detalleMatriz">—</span></div>
                 <div class="detalle-campo"><label>Punto de muestreo</label><span id="detallePunto">—</span></div>
+                <div class="detalle-campo"><label>Tipo de muestra</label><span id="detalleTipoMuestra">—</span></div>
                 <div class="detalle-campo"><label>Fecha ingreso</label><span id="detalleFechaIngreso">—</span></div>
                 <div class="detalle-campo"><label>Fecha entrega</label><span id="detalleFechaEntrega">—</span></div>
             </div>
@@ -498,20 +571,59 @@
     </div>
 </div>
 
-<!-- MODAL CONFIRMAR ELIMINAR -->
-<div class="modal-overlay" id="modalEliminar">
-    <div class="modal-box modal-box-sm">
+<!-- MODAL ARCHIVOS DE MUESTRA -->
+<div class="modal-overlay" id="modalAltaInforme">
+    <div class="modal-box" style="max-width: 520px;">
         <div class="modal-header">
-            <h5 style="color:#dc3545"><i class="bi bi-trash3"></i> Eliminar muestra</h5>
-            <button class="modal-close" id="modalEliminarClose"><i class="bi bi-x-lg"></i></button>
+            <div class="mh-icon"><i class="bi bi-paperclip"></i></div>
+            <div class="mh-info">
+                <div class="mh-eyebrow">Archivos</div>
+                <h5 id="altaInformeTitulo">Archivos de la muestra</h5>
+            </div>
+            <button class="modal-close" id="altaInformeClose"><i class="bi bi-x-lg"></i></button>
         </div>
         <div class="modal-body">
-            <p id="modalEliminarMsg" style="font-size:14px;color:#1a1a2e;margin:0;line-height:1.5"></p>
+            <div id="listaArchivosContainer" style="margin-bottom:16px;">
+                <label style="font-weight:600; font-size:13px; margin-bottom:6px; display:block;">Archivos subidos</label>
+                <div id="listaArchivos" style="display:flex; flex-direction:column; gap:6px; min-height:32px;">
+                    <span class="text-muted" style="font-size:13px;" id="listaArchivosVacia">Sin archivos todavía.</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Agregar archivo PDF <span class="required">*</span></label>
+                <input type="file" id="inputAltaInformePdf" class="form-control-custom"
+                       accept=".pdf,application/pdf"/>
+                <span class="field-error" id="altaInformeError" style="display:none;"></span>
+            </div>
         </div>
         <div class="modal-footer">
-            <button type="button" class="btn-cancelar" id="btnCancelarEliminar">Cancelar</button>
-            <button type="button" class="btn-eliminar-confirm" id="btnConfirmarEliminar">
-                <i class="bi bi-trash3"></i> Eliminar
+            <button type="button" class="btn-cancelar" id="altaInformeCancelar">Cerrar</button>
+            <button type="button" class="btn-guardar" id="btnUploadAltaInforme">
+                <i class="bi bi-upload me-1"></i> Subir archivo
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL CANCELAR MUESTRA -->
+<div class="modal-overlay" id="modalCancelarMuestra">
+    <div class="modal-box modal-box-sm">
+        <div class="modal-header">
+            <h5 style="color:#dc3545"><i class="bi bi-x-circle"></i> Cancelar muestra</h5>
+            <button class="modal-close" id="modalCancelarClose"><i class="bi bi-x-lg"></i></button>
+        </div>
+        <div class="modal-body">
+            <p id="modalCancelarMsg" style="margin-bottom:.75rem;color:var(--color-text-secondary);font-size:14px;"></p>
+            <div class="form-group" style="margin:0">
+                <label class="form-label" style="font-size:13px;">Motivo de cancelación</label>
+                <textarea id="inputMotivoCancelacionM" class="form-control-custom textarea-vertical"
+                          rows="3" placeholder="Ej: Muestra mal tomada, cliente desistió, error de protocolo..."></textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn-cancelar" id="btnCancelarCancelar">Volver</button>
+            <button type="button" class="btn-eliminar-confirm" id="btnConfirmarCancelar">
+                <i class="bi bi-x-circle"></i> Confirmar cancelación
             </button>
         </div>
     </div>
@@ -522,9 +634,11 @@
     <i class="bi bi-check-circle-fill"></i>
     <span id="toastMsg">Muestra registrada correctamente</span>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="js/config.js"></script>
 <script src="js/ui.js"></script>
 <script src="js/dashboard-empleados.js"></script>
 <script src="js/sidebar.js"></script>
 </body>
 </html>
+

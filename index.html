@@ -3,17 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CHEMICONSULT</title>
+    <title>CHEMICONSULT | Laboratorio de Análisis Químicos y Ambientales</title>
+    <meta name="description" content="Más de 30 años brindando servicios de análisis químicos, ambientales, higiene y seguridad laboral, control de calidad y consultoría en Argentina.">
+    <meta property="og:title" content="CHEMICONSULT | Laboratorio de Análisis Químicos y Ambientales">
+    <meta property="og:description" content="Soluciones analíticas de alta precisión para análisis ambientales, control de calidad, higiene y seguridad laboral y seguridad alimentaria.">
+    <meta property="og:image" content="img/LogoLogin.png">
+    <meta property="og:type" content="website">
     <link rel="icon" href="img/icon%20logo.png" type="image/x-icon">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-162EMJYH1V"></script>
+    <!-- Google Analytics: se carga solo si el usuario acepta cookies -->
     <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-162EMJYH1V');
+        (function () {
+            if (localStorage.getItem('ga_consent') === 'granted') {
+                var s = document.createElement('script');
+                s.async = true;
+                s.src = 'https://www.googletagmanager.com/gtag/js?id=G-162EMJYH1V';
+                document.head.appendChild(s);
+                window.dataLayer = window.dataLayer || [];
+                window.gtag = function () { dataLayer.push(arguments); };
+                gtag('js', new Date());
+                gtag('config', 'G-162EMJYH1V');
+            }
+        })();
     </script>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
@@ -40,8 +51,8 @@
 
 
 <!-- MENÚ COLAPSABLE -->
-<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top" style="border-bottom: 3px solid #5EA504;">
-    <div class="container-fluid justify-content-center">
+<nav class="navbar navbar-expand-lg bg-body-tertiary fixed-top navbar-main">
+    <div class="container-fluid justify-content-center navbar-main-inner">
 
         <a class="navbar-brand d-lg-none" href="#">
             <img src="img/Logo%20navbar.png" alt="CHEMICONSULT" class="logo-navbar">
@@ -84,22 +95,20 @@
                 <li class="nav-item"><a class="nav-link" href="#section-clientes">Clientes</a></li>
                 <li class="nav-item"><a class="nav-link" href="#section-contacto">Contacto</a></li>
 
-                <!-- Análisis de Agua, con estilo de botón -->
-                <li class="nav-item d-none px-3 d-lg-block">
-                    <a class="btn-nav-pricing" href="#section-pricing">
-                        Análisis de Agua
-                    </a>
-                </li>
-
-                <!-- Versión mobile -->
-                <li class="nav-item d-lg-none px-3">
-                    <a class="btn-nav-pricing" href="#section-pricing">
-                        Análisis de Agua
-                    </a>
+                <li class="nav-item px-3">
+                    <a class="btn-nav-pricing" href="#section-pricing">Análisis de Agua</a>
                 </li>
 
             </ul>
         </div>
+
+        <!-- Acceso portal clientes — solo desktop -->
+        <a href="https://chemiconsult-portal.com.ar/" target="_blank" rel="noopener noreferrer"
+           class="btn-portal d-none d-lg-flex align-items-center gap-2">
+            <i class="bi bi-person-circle"></i>
+            Portal clientes
+        </a>
+
     </div>
 </nav>
 
@@ -120,19 +129,21 @@
 </section>
 
 
-<section class="row py-5 text-center scroll-effect" id="section-mision-vision">
-    <div class="col" data-aos="fade-right">
-        <h2 class="custom-underline-border">Misión</h2>
-        <p>Brindar servicios de análisis químicos y ambientales confiables y con los más altos estándares de
-            calidad,
-            ética profesional y compromiso con el desarrollo sostenible a través de una relación personalizada con
-            nuestros clientes.</p>
-    </div>
-    <div class="col" data-aos="fade-left">
-        <h2 class="custom-underline-border">Visión</h2>
-        <p>Ser un laboratorio referente en nuestras áreas de trabajo por nuestro compromiso con el cliente y por
-            brindar
-            servicios eficientes y de calidad a través de la mejora continua.</p>
+<section class="py-5 text-center scroll-effect" id="section-mision-vision">
+    <div class="container">
+        <div class="row">
+            <div class="col" data-aos="fade-right">
+                <h2 class="custom-underline-border">Misión</h2>
+                <p>Brindar servicios de análisis químicos y ambientales confiables y con los más altos estándares de
+                    calidad, ética profesional y compromiso con el desarrollo sostenible a través de una relación
+                    personalizada con nuestros clientes.</p>
+            </div>
+            <div class="col" data-aos="fade-left">
+                <h2 class="custom-underline-border">Visión</h2>
+                <p>Ser un laboratorio referente en nuestras áreas de trabajo por nuestro compromiso con el cliente
+                    y por brindar servicios eficientes y de calidad a través de la mejora continua.</p>
+            </div>
+        </div>
     </div>
 </section>
 
@@ -162,7 +173,7 @@
 
                 <!-- Columna izquierda: listado -->
                 <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
-                    <ul class="text-start mx-auto" style="max-width: 500px;">
+                    <ul class="text-start mx-auto service-list">
                         <li>Muestreo y análisis de aguas (superficiales y subterráneas)</li>
                         <li>Muestreo y análisis de efluentes</li>
                         <li>Muestreo y análisis de barros y suelos</li>
@@ -235,7 +246,7 @@
 
                 <!-- Columna izquierda: listado -->
                 <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
-                    <ul class="text-start mx-auto" style="max-width: 500px;">
+                    <ul class="text-start mx-auto service-list">
                         <li>Potabilidad de aguas</li>
                         <li>Sustancias químicas en ambientes laborales</li>
                         <li>Iluminación</li>
@@ -301,7 +312,7 @@
 
                 <!-- Columna izquierda: listado -->
                 <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
-                    <ul class="text-start mx-auto" style="max-width: 500px;">
+                    <ul class="text-start mx-auto service-list">
                         <li>Cromatografía gaseosa</li>
                         <li>Absorción atómica</li>
                         <li>Espectros UV – visible</li>
@@ -320,15 +331,15 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/qa/controlcalidad1.jpg" class="d-block w-100"
-                                     loading="lazy" alt="Servicio Higiene 1">
+                                     loading="lazy" alt="Control de Calidad 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/qa/controlcalidad2.jpg" class="d-block w-100"
-                                     loading="lazy" alt="Servicio Higiene 2">
+                                     loading="lazy" alt="Control de Calidad 2">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/qa/controlcalidad3.jpg" class="d-block w-100"
-                                     loading="lazy" alt="Servicio Higiene 3">
+                                     loading="lazy" alt="Control de Calidad 3">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselControlCalidad"
@@ -365,7 +376,7 @@
 
                 <!-- Columna izquierda: listado -->
                 <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
-                    <ul class="text-start mx-auto" style="max-width: 500px;">
+                    <ul class="text-start mx-auto service-list">
                         <li>Estudios de preformulación</li>
                         <li>Diseño y desarrollo galénico de medicamentos</li>
                         <li>Diseño de procesos de fabricación</li>
@@ -379,11 +390,11 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/farma/farma1.png" class="d-block w-100"
-                                     loading="lazy" alt="Servicio Higiene 1">
+                                     loading="lazy" alt="Farma 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/farma/farma2.png" class="d-block w-100"
-                                     loading="lazy" alt="Servicio Higiene 2">
+                                     loading="lazy" alt="Farma 2">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button" data-bs-target="#carouselFarma"
@@ -421,7 +432,7 @@
 
                 <!-- Columna izquierda: listado -->
                 <div class="col-lg-6 mb-4 mb-lg-0" data-aos="fade-right">
-                    <ul class="text-start mx-auto" style="max-width: 500px;">
+                    <ul class="text-start mx-auto service-list">
                         <li>Análisis de alimentos</li>
                         <li>Hisopado de superficies</li>
                         <li>Auditorías bromatológicas internas y externas</li>
@@ -444,15 +455,15 @@
                         <div class="carousel-inner rounded-3 shadow">
                             <div class="carousel-item active">
                                 <img src="img/transition/alimentaria/seguridad%20alimentaria1.jpg"
-                                     loading="lazy" class="d-block w-100" alt="Servicio Higiene 1">
+                                     loading="lazy" class="d-block w-100" alt="Seguridad Alimentaria 1">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/alimentaria/seguridad%20alimentaria2.jpg"
-                                     loading="lazy" class="d-block w-100" alt="Servicio Higiene 2">
+                                     loading="lazy" class="d-block w-100" alt="Seguridad Alimentaria 2">
                             </div>
                             <div class="carousel-item">
                                 <img src="img/transition/alimentaria/seguridad%20alimentaria3.jpg"
-                                     loading="lazy" class="d-block w-100" alt="Servicio Higiene 2">
+                                     loading="lazy" class="d-block w-100" alt="Seguridad Alimentaria 3">
                             </div>
                         </div>
                         <button class="carousel-control-prev" type="button"
@@ -483,7 +494,7 @@
             el cumplimiento normativo y la seguridad ambiental.
         </p>
 
-        <div class="como-comprar mb-5 mx-auto text-start" style="max-width: 600px;">
+        <div class="como-comprar mb-5 mx-auto text-start">
             <h4 class="mb-3 text-center">¿Cómo comprar?</h4>
             <ol class="text-start">
                 <li>Seleccioná el análisis que mejor se adapte a tus necesidades.</li>
@@ -785,15 +796,14 @@
             brevedad.
         </p>
 
-        <!-- Ícono de WhatsApp -->
+        <!-- Ícono de WhatsApp flotante -->
         <a href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información" target="_blank"
-           class="whatsapp-icon">
-            <img src="https://img.icons8.com/?size=100&id=BkugfgmBwtEI&format=png&color=000000" alt="WhatsApp"
-                 style="width:60px; height:60px;">
+           rel="noopener noreferrer" class="whatsapp-icon" aria-label="WhatsApp">
+            <img src="img/icons/whatsapp-svgrepo-com.svg" alt="WhatsApp">
         </a>
 
         <!-- FORMULARIO -->
-        <form action="sendmail.php" method="POST" class="mx-auto text-start contact-form" style="max-width: 600px;">
+        <form action="sendmail.php" method="POST" class="mx-auto text-start contact-form">
 
             <div class="mb-3">
                 <label for="inputName" class="form-label">Nombre</label>
@@ -812,7 +822,7 @@
 
             <div class="form-floating mb-4">
                     <textarea class="form-control" name="sugerencia" placeholder="Escribí tu consulta"
-                              id="floatingTextarea" style="height: 120px;" required></textarea>
+                              id="floatingTextarea" required></textarea>
                 <label for="floatingTextarea">Consulta...</label>
             </div>
 
@@ -864,60 +874,117 @@
 
 <!-- Footer principal -->
 <footer class="footer py-5">
-    <div class="container d-flex flex-wrap justify-content-between align-items-start gap-4">
+    <div class="container">
+        <div class="row g-4 text-center text-md-start align-items-center justify-content-md-between">
 
-        <!-- Logo -->
-        <div class="footer-logo text-center text-md-start">
-            <img src="img/LogoTransparente.png" alt="Logo de la empresa" loading="lazy" style="width: 200px;">
-        </div>
+            <!-- Logo -->
+            <div class="col-12 col-md-auto d-flex justify-content-center justify-content-md-start">
+                <img src="img/LogoTransparente.png" alt="Logo de la empresa" loading="lazy" class="footer-logo-img">
+            </div>
 
-        <!-- Datos de contacto -->
-        <div class="datos-contacto">
-            <ul class="list-unstyled mb-0">
-                <li><strong>Email:</strong> info@chemiconsult.com.ar</li>
-                <li><strong>Tel:</strong> +54 11 4723 5698</li>
-                <li>
-                    <strong>WhatsApp:</strong>
-                    <a href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información" target="_blank"
-                       style="color: inherit; text-decoration: none;">
-                        +54 11 5869 2422
-                    </a>
-                </li>
-            </ul>
-        </div>
+            <!-- Datos de contacto -->
+            <div class="col-12 col-md-auto">
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Email:</strong> info@chemiconsult.com.ar</li>
+                    <li><strong>Tel:</strong> +54 11 4723 5698</li>
+                    <li>
+                        <strong>WhatsApp:</strong>
+                        <a href="https://wa.me/5491158692422?text=Hola,%20necesito%20más%20información"
+                           target="_blank" class="footer-wpp-link">
+                            +54 11 5869 2422
+                        </a>
+                    </li>
+                </ul>
+            </div>
 
-        <!-- Redes sociales -->
-        <div class="footer-social d-flex justify-content-center align-items-center gap-3">
-            <a href="https://www.instagram.com/chemiconsult.lab/" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg"
-                     alt="Instagram" width="30">
-            </a>
-            <a href="https://ar.linkedin.com/company/chemiconsult-ar" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/c/ca/LinkedIn_logo_initials.png"
-                     alt="LinkedIn" width="30">
-            </a>
-            <a href="https://maps.app.goo.gl/omrBacEPZCKpe8n19" target="_blank" rel="noopener noreferrer">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/3/39/Google_Maps_icon_%282015-2020%29.svg"
-                     alt="Google Maps" width="30">
-            </a>
-        </div>
+            <!-- Redes sociales -->
+            <div class="col-12 col-md-auto d-flex justify-content-center align-items-center gap-3">
+                <a href="https://www.instagram.com/chemiconsult.lab/" target="_blank" rel="noopener noreferrer"
+                   aria-label="Instagram" class="footer-social-link">
+                    <img src="img/icons/instagram-1-svgrepo-com.svg" alt="Instagram" class="footer-social-icon">
+                </a>
+                <a href="https://ar.linkedin.com/company/chemiconsult-ar" target="_blank" rel="noopener noreferrer"
+                   aria-label="LinkedIn" class="footer-social-link">
+                    <img src="img/icons/linkedin-svgrepo-com.svg" alt="LinkedIn" class="footer-social-icon">
+                </a>
+                <a href="https://maps.app.goo.gl/omrBacEPZCKpe8n19" target="_blank" rel="noopener noreferrer"
+                   aria-label="Google Maps" class="footer-social-link">
+                    <img src="img/icons/google-logo-new-maps-svgrepo-com.svg" alt="Google Maps" class="footer-social-icon">
+                </a>
+            </div>
 
-        <!-- Horarios -->
-        <div class="footer-horarios text-center text-md-start">
-            <h5>Horarios de atención</h5>
-            <ul class="list-unstyled mb-0">
-                <li><strong>Lunes a Viernes:</strong> 9 a 17 hs</li>
-                <li><strong>Sábado y Domingo:</strong> Cerrado</li>
-            </ul>
+            <!-- Horarios -->
+            <div class="col-12 col-md-auto">
+                <h5>Horarios de atención</h5>
+                <ul class="list-unstyled mb-0">
+                    <li><strong>Lunes a Viernes:</strong> 9 a 17 hs</li>
+                    <li><strong>Sábado y Domingo:</strong> Cerrado</li>
+                </ul>
+            </div>
+
         </div>
     </div>
 </footer>
 
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" ...></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
 <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
 <script src="https://www.google.com/recaptcha/api.js"></script>
 <script src="js/main.js"></script>
+
+<!-- ── Banner de cookies ── -->
+<div id="cookie-banner" role="dialog" aria-label="Aviso de cookies" aria-live="polite">
+    <div class="cookie-inner">
+        <div class="cookie-icon" aria-hidden="true"><i class="bi bi-shield-lock-fill"></i></div>
+        <div class="cookie-body">
+            <p class="cookie-title">Privacidad y cookies</p>
+            <p class="cookie-text">
+                Usamos <strong>Google Analytics</strong> para estadísticas de visitas y
+                <strong>Google reCAPTCHA</strong> en el formulario de contacto para protección contra spam.
+                El reCAPTCHA es funcional y siempre está activo. Podés aceptar o rechazar las cookies analíticas.
+            </p>
+        </div>
+        <div class="cookie-actions">
+            <button class="cookie-btn-secondary" id="cookieBtnDecline">Solo necesarias</button>
+            <button class="cookie-btn-primary" id="cookieBtnAccept">Aceptar todo</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function () {
+        var banner = document.getElementById('cookie-banner');
+        var consent = localStorage.getItem('ga_consent');
+
+        if (!consent) {
+            banner.classList.add('visible');
+        }
+
+        document.getElementById('cookieBtnAccept').addEventListener('click', function () {
+            localStorage.setItem('ga_consent', 'granted');
+            banner.classList.remove('visible');
+            loadGA();
+        });
+
+        document.getElementById('cookieBtnDecline').addEventListener('click', function () {
+            localStorage.setItem('ga_consent', 'denied');
+            banner.classList.remove('visible');
+        });
+    })();
+
+    function loadGA() {
+        if (window._gaLoaded) return;
+        window._gaLoaded = true;
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-162EMJYH1V';
+        document.head.appendChild(s);
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = function () { dataLayer.push(arguments); };
+        gtag('js', new Date());
+        gtag('config', 'G-162EMJYH1V');
+    }
+</script>
 </body>
 
 </html>

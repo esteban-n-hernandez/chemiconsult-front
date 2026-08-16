@@ -17,6 +17,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     setupDropzones();
 
     document.getElementById("archivedModal").addEventListener("show.bs.modal", loadArchivedTasks);
+
+    if (new URLSearchParams(location.search).get('nueva') === '1') {
+        abrirNuevaTarea();
+        bootstrap.Modal.getOrCreateInstance(document.getElementById('taskModal')).show();
+    }
 });
 
 // Trae la lista de usuarios para poblar los selects de asignación
@@ -78,10 +83,8 @@ function deadlineBadge(dueDate) {
 
 function formatDateShort(dateStr) {
     if (!dateStr) return '';
-    const d = new Date(dateStr + 'T00:00:00');
-    const opts = { day: '2-digit', month: 'short' };
-    if (d.getFullYear() !== new Date().getFullYear()) opts.year = 'numeric';
-    return d.toLocaleDateString('es-AR', opts);
+    const [y, m, d] = dateStr.split('T')[0].split('-');
+    return `${d}/${m}/${y}`;
 }
 
 async function loadTasks() {
@@ -253,7 +256,7 @@ function setupForm() {
 
         // El estado inicial solo aplica al crear — al editar no se toca (se cambia arrastrando)
         if (!esEdicion) {
-            payload.status = document.getElementById("status").value;
+            payload.status = document.querySelector('input[name="task-status"]:checked')?.value || 'TODO';
         }
 
         try {
@@ -491,8 +494,8 @@ async function restoreTask(id) {
 function formatDate(date) {
     if (!date) return "—";
     try {
-        const d = new Date(date);
-        return d.toLocaleDateString("es-AR", { day: "2-digit", month: "short", year: "numeric" });
+        const [y, m, d] = String(date).split('T')[0].split('-');
+        return `${d}/${m}/${y}`;
     } catch {
         return String(date);
     }

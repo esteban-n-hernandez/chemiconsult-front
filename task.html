@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
     <meta charset="UTF-8"/>
@@ -9,8 +9,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="css/sidebar.css"/>
     <link rel="stylesheet" href="css/task/task.css">
+    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="css/ui.css">
-    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO"></script>
+    <script src="js/auth.js" data-roles="ROLE_IT,ROLE_EMPLEADO" data-modulo="TAREAS"></script>
 </head>
 <body>
 
@@ -102,45 +103,72 @@
 
 <!-- Modal nueva tarea -->
 <div class="modal fade" id="taskModal" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog">
-        <form class="modal-content" id="taskForm">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content modal-alta" id="taskForm">
             <div class="modal-header">
-                <h5 class="modal-title" id="taskModalTitle">Nueva tarea</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="mh-icon"><i class="bi bi-check2-square"></i></div>
+                <div class="mh-info">
+                    <div class="mh-eyebrow">Tarea</div>
+                    <h5 class="modal-title" id="taskModalTitle">Nueva tarea</h5>
+                </div>
+                <button type="button" class="modal-close" data-bs-dismiss="modal">
+                    <i class="bi bi-x-lg"></i>
+                </button>
             </div>
             <div class="modal-body">
                 <input type="hidden" id="taskId">
-                <div class="mb-3">
-                    <label class="form-label">Título</label>
-                    <input type="text" class="form-control" id="title" required>
+
+                <div class="form-group">
+                    <label>Título <span class="required">*</span></label>
+                    <input type="text" class="form-control-custom" id="title" required/>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Descripción</label>
-                    <textarea class="form-control" id="description" rows="3"></textarea>
+
+                <div class="form-group">
+                    <label>Descripción <span class="task-opt">opcional</span></label>
+                    <textarea class="form-control-custom textarea-vertical" id="description" rows="3"
+                              placeholder="Contexto, pasos o links relevantes…"></textarea>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Fecha límite <span class="text-muted fw-normal" style="font-size:12px;">(opcional)</span></label>
-                    <input type="date" class="form-control" id="dueDate">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha límite <span class="task-opt">opcional</span></label>
+                        <input type="date" class="form-control-custom" id="dueDate"/>
+                    </div>
+                    <div class="form-group">
+                        <label>Asignar a</label>
+                        <select class="form-control-custom" id="asignadoUserId">
+                            <option value="">Sin asignar</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="mb-3">
-                    <label class="form-label">Asignar a</label>
-                    <select class="form-select" id="asignadoUserId">
-                        <option value="">Sin asignar</option>
-                    </select>
-                </div>
-                <div class="mb-3" id="statusGroup">
-                    <label class="form-label">Estado inicial</label>
-                    <select class="form-select" id="status">
-                        <option value="TODO">Pendiente</option>
-                        <option value="IN_PROGRESS">En progreso</option>
-                        <option value="EN_REVISION">En revisión</option>
-                        <option value="DONE">Finalizada</option>
-                    </select>
+
+                <div class="form-group" id="statusGroup">
+                    <label>Estado inicial</label>
+                    <div class="estado-picker">
+                        <label class="estado-option">
+                            <input type="radio" name="task-status" value="TODO" checked/>
+                            <span class="estado-dot todo"></span> Pendiente
+                        </label>
+                        <label class="estado-option">
+                            <input type="radio" name="task-status" value="IN_PROGRESS"/>
+                            <span class="estado-dot in-progress"></span> En progreso
+                        </label>
+                        <label class="estado-option">
+                            <input type="radio" name="task-status" value="EN_REVISION"/>
+                            <span class="estado-dot en-revision"></span> En revisión
+                        </label>
+                        <label class="estado-option">
+                            <input type="radio" name="task-status" value="DONE"/>
+                            <span class="estado-dot done"></span> Finalizada
+                        </label>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
-                <button class="btn btn-outline-secondary" type="button" data-bs-dismiss="modal">Cancelar</button>
-                <button class="btn btn-primary" type="submit" id="taskSubmitBtn">Guardar</button>
+                <button class="btn-cancelar" type="button" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn-guardar" type="submit" id="taskSubmitBtn">
+                    <i class="bi bi-check-lg"></i> Guardar
+                </button>
             </div>
         </form>
     </div>

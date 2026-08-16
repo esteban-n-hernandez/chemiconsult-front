@@ -4,12 +4,161 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700&family=Work+Sans:wght@400;500;600&display=swap');
 
+/* ── Variables globales ── */
+:root {
+    /* Brand */
+    --verde:             #5EA504;
+    --verde-oscuro:      #4a8403;
+    --verde-suave:       #f2f7e9;
+    --verde-suave-hover: #e9f2db;
+    --verde-light:       #eaf5d3;
+
+    /* Aliases legacy */
+    --gris:  #6c757d;
+    --borde: #dee2e6;
+
+    /* Text */
+    --color-text-secondary: #6c757d;
+    --color-text-tertiary:  #adb5bd;
+    --color-text-info:      #0d6efd;
+    --color-text-success:   #146c43;
+    --color-text-warning:   #856404;
+    --color-text-danger:    #842029;
+
+    /* Semantic backgrounds */
+    --color-background-info:    #cfe2ff;
+    --color-background-success: #d1e7dd;
+    --color-background-warning: #fff3cd;
+    --color-background-danger:  #f8d7da;
+
+    /* Borders */
+    --color-border-tertiary: #dee2e6;
+    --color-border-soft:     #eceef0;
+
+    /* Surfaces & text */
+    --bg-app:     #f0f2f5;
+    --bg-surface: #ffffff;
+    --bg-subtle:  #f8f9fa;
+    --text-main:  #1a1a2e;
+
+    /* Typography */
+    --font-display: 'Bricolage Grotesque', sans-serif;
+    --font-body:    'Work Sans', 'Segoe UI', sans-serif;
+    --font-mono:    'Space Mono', monospace;
+}
+
+/* ── Dark mode — tokens ── */
+@media (prefers-color-scheme: dark) {
+    :root {
+        color-scheme: dark;
+        --bg-app:     #111111;
+        --bg-surface: #1c1c1c;
+        --bg-subtle:  #252525;
+        --text-main:  #e8e8e8;
+
+        --verde-suave:       #182d09;
+        --verde-suave-hover: #1e3a0c;
+        --verde-light:       #182d09;
+
+        --gris:  #9e9e9e;
+        --borde: #303030;
+        --color-text-secondary: #9e9e9e;
+        --color-text-tertiary:  #656565;
+        --color-text-info:      #60a5fa;
+        --color-text-success:   #4ade80;
+        --color-text-warning:   #fbbf24;
+        --color-text-danger:    #f87171;
+
+        --color-background-info:    #1a2d47;
+        --color-background-success: #14532d;
+        --color-background-warning: #451a03;
+        --color-background-danger:  #450a0a;
+
+        --color-border-tertiary: #303030;
+        --color-border-soft:     #222222;
+    }
+}
+
+/* Toggle manual: dark */
+:root[data-theme="dark"] {
+    color-scheme: dark;
+    --bg-app:     #111111;
+    --bg-surface: #1c1c1c;
+    --bg-subtle:  #252525;
+    --text-main:  #e8e8e8;
+
+    --verde-suave:       #182d09;
+    --verde-suave-hover: #1e3a0c;
+    --verde-light:       #182d09;
+
+    --gris:  #9e9e9e;
+    --borde: #303030;
+    --color-text-secondary: #9e9e9e;
+    --color-text-tertiary:  #656565;
+    --color-text-info:      #60a5fa;
+    --color-text-success:   #4ade80;
+    --color-text-warning:   #fbbf24;
+    --color-text-danger:    #f87171;
+
+    --color-background-info:    #1a2d47;
+    --color-background-success: #14532d;
+    --color-background-warning: #451a03;
+    --color-background-danger:  #450a0a;
+
+    --color-border-tertiary: #303030;
+    --color-border-soft:     #222222;
+}
+
+/* Toggle manual: light (fuerza claro aunque el OS esté en dark) */
+:root[data-theme="light"] {
+    color-scheme: light;
+    --bg-app:     #f0f2f5;
+    --bg-surface: #ffffff;
+    --bg-subtle:  #f8f9fa;
+    --text-main:  #1a1a2e;
+
+    --verde-suave:       #f2f7e9;
+    --verde-suave-hover: #e9f2db;
+    --verde-light:       #eaf5d3;
+
+    --gris:  #6c757d;
+    --borde: #dee2e6;
+    --color-text-secondary: #6c757d;
+    --color-text-tertiary:  #adb5bd;
+    --color-text-info:      #0d6efd;
+    --color-text-success:   #146c43;
+    --color-text-warning:   #856404;
+    --color-text-danger:    #842029;
+
+    --color-background-info:    #cfe2ff;
+    --color-background-success: #d1e7dd;
+    --color-background-warning: #fff3cd;
+    --color-background-danger:  #f8d7da;
+
+    --color-border-tertiary: #dee2e6;
+    --color-border-soft:     #eceef0;
+}
+
 /* Normalización base — garantiza consistencia con o sin Bootstrap */
 *, *::before, *::after { box-sizing: border-box; }
 body {
     margin: 0;
     padding: 0;
-    line-height: 1.5;   /* evita que el sidebar se vea "más chico" en páginas sin Bootstrap */
+    line-height: 1.5;
+    font-family: 'Work Sans', 'Segoe UI', system-ui, sans-serif;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+    background: var(--bg-app);
+    background-image: radial-gradient(rgba(26,26,46,.04) 1px, transparent 1px);
+    background-size: 5px 5px;
+    color: var(--text-main);
+}
+
+.content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
 }
 
 /* ── Sidebar ── */
@@ -136,6 +285,22 @@ body {
 
 .sidebar a:hover i {
     color: #ffffff;
+}
+
+/* ── Drag & drop reorder ── */
+.sidebar a[draggable="true"] {
+    cursor: grab;
+}
+.sidebar a[draggable="true"]:active {
+    cursor: grabbing;
+}
+.sidebar a.sidebar-dragging {
+    opacity: 0.4;
+}
+.sidebar a.sidebar-drag-over {
+    background: rgba(255, 255, 255, 0.18);
+    outline: 2px dashed rgba(255, 255, 255, 0.5);
+    outline-offset: -2px;
 }
 
 /* ── Sección inferior (Perfil + Logout) ── */
@@ -266,7 +431,7 @@ body {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 1.75rem;
-    background: white;
+    background: var(--bg-surface);
     border-radius: 18px;
     border-left: 4px solid #5EA504;
     padding: 1.1rem 1.5rem;
@@ -276,13 +441,13 @@ body {
 .page-header h1 {
     font-size: 1.55rem;
     font-weight: 700;
-    color: #1a1a2e;
+    color: var(--text-main);
     margin: 0;
 }
 
 .page-header p {
     font-size: 13px;
-    color: #6c757d;
+    color: var(--color-text-secondary);
     margin: 2px 0 0;
 }
 
@@ -301,12 +466,12 @@ body {
     font-size: 14px;
     font-weight: 500;
     margin: 0;
-    color: #1a1a2e;
+    color: var(--text-main);
 }
 
 .header-user-role {
     font-size: 12px;
-    color: #6c757d;
+    color: var(--color-text-secondary);
     margin: 0;
 }
 
